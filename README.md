@@ -82,9 +82,6 @@ File List for the `Clearinghouse_Trip_Exchange_Data_Package`
 > 1. Filename: [CODEBOOK.md](CODEBOOK.md)
 > Short Description:  Codebook / controlled vocabulary notes (e.g., mobility aid code lists referenced by the template).  
 
-> 1. Filename: [DMP.md](DMP.md)
-> Short Description:  Data Management Plan content aligned to USDOT SMART / DOT recipient reporting guidance.  
-
 > 1. Filename: [CODE_SCRIPTS.md](CODE_SCRIPTS.md)
 > Short Description:  Inventory of scripts and supporting materials for working with the template and related artifacts.  
 

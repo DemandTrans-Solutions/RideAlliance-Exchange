@@ -324,7 +324,6 @@ Both scripts rely on `Dockerfile` configured for linux/amd64 platform with Eclip
 - **[README.md](README.md)** — Main project README with overview and setup
 - **[CODEBOOK.md](CODEBOOK.md)** — Data dictionary and code definitions
 - **[DATA_DICTIONARY.md](DATA_DICTIONARY.md)** — Comprehensive data structure documentation
-- **[DMP.md](DMP.md)** — Data Management Plan for federal compliance
 - **[LICENSE](LICENSE)** — Project license terms
 
 ### API Documentation
