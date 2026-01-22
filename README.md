@@ -70,10 +70,10 @@ This document was created to meet the requirements enumerated in the U.S. Depart
 
 File List for the `Clearinghouse_Trip_Exchange_Data_Package`  
 
-> 1. Filename: `../import-export/global-trip-template.xlsx`  
+> 1. Filename: `trip-exchange-front-end/import-export/global-trip-template.xlsx`  
 > Short Description:  Global trip template workbook used to structure trip exchange/import/export tabular data.  
 
-> 1. Filename: `../data.json`  
+> 1. Filename: `data.json`  
 > Short Description:  DCAT-US v1.1 metadata file for federal search/discovery (data.gov / transportation.data.gov compatibility).  
 
 > 1. Filename: `DATA_DICTIONARY.md`  
@@ -99,7 +99,7 @@ File List for the `Clearinghouse_Trip_Exchange_Data_Package`
 
 ## E. Data-Specific Information  
 
-1. `../import-export/global-trip-template.xlsx`  
+1. `trip-exchange-front-end/import-export/global-trip-template.xlsx`  
 
 - Number of variables (columns): `65`  
 - Number of cases/rows: `Template workbook; Global Trip Template sheet contains 1 header row and 3 empty example rows`  
