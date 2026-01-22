@@ -1,0 +1,561 @@
+<div class="admin-module">
+  <div *ngIf="id === 'displayGrid'" class="data-view">
+    <!-- Provider Selection Section (Admin Only) -->
+    <div *ngIf="role === 'ROLE_ADMIN'" class="provider-selection-section">
+      <form novalidate #providerPartnersForm="ngForm" class="provider-form">
+        <div class="form-group">
+          <label class="section-subtitle">
+            {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER_HEADER' | translate }}
+          </label>
+        </div>
+        <div class="provider-select-container">
+          <div class="select-container">
+            <label class="provider-label">
+              {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER' | translate }}
+              <span class="mandatory-input">*</span>
+            </label>
+            <select
+              id="provider"
+              class="form-control"
+              [(ngModel)]="providerPartnersId"
+              name="provider"
+              required
+              pattern="[0-9\ ]{1,100}"
+              #provider="ngModel"
+              (change)="onProviderChange(providerPartnersId)"
+              [ngClass]="{'invalid-input': !provider.valid && !provider.pristine }"
+            >
+              <option [ngValue]="null">
+                {{ 'ADMIN_PROVIDER_PARTNERS.PLEASE_SELECT' | translate }}
+              </option>
+              <option *ngFor="let provider of providersList" [ngValue]="provider.providerId">
+                {{provider.providerName}}
+              </option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Service Area List View -->
+    <div *ngIf="role === 'ROLE_ADMIN'" class="service-header">
+      <h2 class="section-title">
+        {{ 'SERVICE_AREA.SERVICE_DETAILS' | translate }} {{providerPartnersName}}
+      </h2>
+    </div>
+
+    <div *ngIf="role === 'ROLE_PROVIDERADMIN'" class="service-header">
+      <h2 class="section-title">{{ 'SERVICE_AREA.SERVICES' | translate }}</h2>
+    </div>
+
+    <div class="action-bar">
+      <!-- <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+          <input
+            #gb
+            type="text"
+            class="search-input"
+            pInputText
+            placeholder="{{ 'SERVICE_AREA.SEARCH_PLACEHOLDER' | translate }}"
+            [attr.aria-label]="'SERVICE_AREA.SEARCH_ARIA' | translate"
+          />
+        </div>
+      </div> -->
+
+      <div class="action-buttons">
+        <!--
+        <button
+          *ngIf="role === 'ROLE_ADMIN'"
+          type="button"
+          class="btn-secondary"
+          (click)="back()"
+          [attr.aria-label]="'SERVICE_AREA.CANCEL_BACK_ARIA' | translate"
+        >
+          <i class="ph ph-arrow-left" aria-hidden="true"></i>
+          <span>{{ 'SERVICE_AREA.CANCEL' | translate }}</span>
+        </button>
+        -->
+        <button
+          class="btn-primary"
+          (click)="addServiceArea()"
+          [attr.aria-label]="'SERVICE_AREA.ADD_SERVICE_AREA_ARIA' | translate"
+        >
+          <i class="ph ph-plus" aria-hidden="true"></i>
+          <span>{{ 'SERVICE_AREA.ADD_SERVICE_AREA' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="data-table-container">
+      <p-table
+        [value]="serviceList"
+        styleClass="services-table"
+        [rowsPerPageOptions]="[10,20]"
+        [rows]="10"
+        [paginator]="true"
+        [filterDelay]="0"
+        [globalFilterFields]="['serviceName','pickupRate','dropOffRate']"
+        [resizableColumns]="true"
+      >
+        <!--
+        <ng-template pTemplate="caption">
+          <div class="table-header">
+            <span class="search-input-container">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                #gb
+                (input)="filterGlobal($event)"
+                placeholder="{{ 'SERVICE_AREA.SEARCH_PLACEHOLDER' | translate }}"
+                [attr.aria-label]="'SERVICE_AREA.SEARCH_ARIA' | translate"
+              />
+            </span>
+          </div>
+        </ng-template>
+-->
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="serviceName" class="column-name">
+              {{ 'SERVICE_AREA.SERVICE_NAME' | translate }}
+              <p-sortIcon field="serviceName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="pickupRate" class="column-pickup">
+              {{ 'SERVICE_AREA.PICKUP_RATE' | translate }}
+              <p-sortIcon field="pickupRate"></p-sortIcon>
+            </th>
+            <th pSortableColumn="dropOffRate" class="column-dropoff">
+              {{ 'SERVICE_AREA.DROPOFF_RATE' | translate }}
+              <p-sortIcon field="dropOffRate"></p-sortIcon>
+            </th>
+            <th class="column-actions">{{ 'SERVICE_AREA.ACTIONS' | translate }}</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-service>
+          <tr>
+            <td class="column-name">
+              <span class="mobile-header"
+                >{{ 'SERVICE_AREA.MOBILE_HEADER_SERVICE' | translate }}</span
+              >
+              {{service.serviceName}}
+            </td>
+            <td class="column-pickup">
+              <span class="mobile-header"
+                >{{ 'SERVICE_AREA.MOBILE_HEADER_PICKUP' | translate }}</span
+              >
+              <span class="rate-value">${{service.pickupRate}}</span>
+            </td>
+            <td class="column-dropoff">
+              <span class="mobile-header"
+                >{{ 'SERVICE_AREA.MOBILE_HEADER_DROPOFF' | translate }}</span
+              >
+              <span class="rate-value">${{service.dropOffRate}}</span>
+            </td>
+            <td class="column-actions">
+              <span class="mobile-header"
+                >{{ 'SERVICE_AREA.MOBILE_HEADER_ACTIONS' | translate }}</span
+              >
+              <div class="action-icons">
+                <button
+                  class="btn-icon btn-edit"
+                  [title]="'SERVICE_AREA.EDIT_SERVICE_TITLE' | translate"
+                  [attr.aria-label]="'SERVICE_AREA.EDIT_SERVICE_ARIA' | translate"
+                  (click)="editservice(service)"
+                >
+                  <i class="ph ph-pencil-simple"></i>
+                </button>
+
+                <button
+                  class="btn-icon"
+                  [ngClass]="{'btn-success': !service.isActive, 'btn-danger': service.isActive}"
+                  [title]="service.isActive ? ('SERVICE_AREA.DEACTIVATE_TITLE' | translate) : ('SERVICE_AREA.ACTIVATE_TITLE' | translate)"
+                  [attr.aria-label]="service.isActive ? ('SERVICE_AREA.DEACTIVATE_ARIA' | translate) : ('SERVICE_AREA.ACTIVATE_ARIA' | translate)"
+                  (click)="updateStatus(service)"
+                >
+                  <i
+                    class="ph"
+                    [ngClass]="{'ph-toggle-right': !service.isActive, 'ph-toggle-left': service.isActive}"
+                  ></i>
+                </button>
+
+                <button
+                  class="btn-icon btn-download"
+                  [title]="'SERVICE_AREA.DOWNLOAD_GEOJSON_TITLE' | translate"
+                  [attr.aria-label]="'SERVICE_AREA.DOWNLOAD_GEOJSON_ARIA' | translate"
+                  (click)="downloadGeoJSON(service)"
+                >
+                  <i class="ph ph-download-simple"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>{{ 'SERVICE_AREA.NO_RECORDS' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!--
+    <div class="action-bar footer-actions">
+      <button
+        *ngIf="role === 'ROLE_ADMIN'"
+        type="button"
+        class="btn-secondary"
+        (click)="back()"
+        [attr.aria-label]="'SERVICE_AREA.CANCEL_BACK_ARIA' | translate"
+      >
+        <i class="ph ph-arrow-left" aria-hidden="true"></i>
+        <span>{{ 'SERVICE_AREA.CANCEL' | translate }}</span>
+      </button>
+    </div>
+  --></div>
+
+  <!-- Add/Edit Service Area Form View -->
+  <div *ngIf="id === 'display'" class="form-view">
+    <div class="form-container">
+      <h2 class="form-title">
+        {{pageName === 'Add' ? ('SERVICE_AREA.ADD' | translate) : ('SERVICE_AREA.EDIT' |
+        translate)}} {{ 'SERVICE_AREA.SERVICE' | translate }}
+      </h2>
+
+      <div class="service-form-layout">
+        <!-- Form section (left side) -->
+        <div class="service-form-main">
+          <form class="data-form" #serviceForm="ngForm">
+            <div class="form-group">
+              <label for="serviceName" class="form-label"
+                >{{ 'SERVICE_AREA.SERVICE_NAME' | translate }}</label
+              >
+              <input
+                type="text"
+                id="serviceName"
+                class="form-control"
+                [(ngModel)]="service.serviceName"
+                name="serviceName"
+                maxlength="100"
+                pattern="[A-Za-z0-9 ]{1,100}"
+                #serviceName="ngModel"
+                [ngClass]="{'invalid-input': !serviceName.valid && !serviceName.pristine}"
+                aria-describedby="serviceName-error"
+              />
+              <div
+                id="serviceName-error"
+                class="error-message"
+                *ngIf="!serviceName.valid && !serviceName.pristine"
+              >
+                {{ 'SERVICE_AREA.VALID_NAME_ERROR' | translate }}
+              </div>
+            </div>
+
+            <!-- File upload for KML, GeoJSON, or Shapefile -->
+            <div class="form-group">
+              <label for="geoFile" class="form-label">
+                {{ 'SERVICE_AREA.UPLOAD_GEO_FILE' | translate }}
+              </label>
+              <div class="file-upload-container">
+                <i class="ph ph-upload"></i>
+                <input
+                  type="file"
+                  id="geoFile"
+                  class="form-control"
+                  accept=".kml,.geojson,.json,.shp"
+                  (change)="onFileSelected($event)"
+                  [attr.aria-describedby]="'geoFile-help'"
+                />
+                <div id="geoFile-help" class="helper-text">
+                  {{ 'SERVICE_AREA.SUPPORTED_FORMATS' | translate }}
+                </div>
+              </div>
+            </div>
+
+            <!-- File upload for PRJ file (Shapefile projection) -->
+            <div class="form-group" *ngIf="uploadedFileName.endsWith('.shp')">
+              <label for="prjFile" class="form-label">
+                {{ 'SERVICE_AREA.UPLOAD_PRJ_FILE' | translate }}
+                <span class="mandatory-input">*</span>
+              </label>
+              <div class="file-upload-container">
+                <i class="ph ph-upload"></i>
+                <input
+                  type="file"
+                  id="prjFile"
+                  class="form-control"
+                  accept=".prj"
+                  (change)="onPrjFileSelected($event)"
+                  [attr.aria-describedby]="'prjFile-help'"
+                />
+                <div id="prjFile-help" class="helper-text">
+                  {{ 'SERVICE_AREA.PRJ_FILE_HELP' | translate }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="pickupRate" class="form-label"
+                  >{{ 'SERVICE_AREA.PICKUP_RATE' | translate }}</label
+                >
+                <div class="input-currency">
+                  <span class="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    id="pickupRate"
+                    class="form-control"
+                    [(ngModel)]="service.pickupRate"
+                    name="pickupRate"
+                    #pickupRate="ngModel"
+                    min="0"
+                    step="0.01"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [ngClass]="{'invalid-input': !pickupRate.valid && !pickupRate.pristine}"
+                    aria-describedby="pickupRate-error"
+                  />
+                </div>
+                <div
+                  id="pickupRate-error"
+                  class="error-message"
+                  *ngIf="!pickupRate.valid && !pickupRate.pristine"
+                >
+                  {{ 'SERVICE_AREA.VALID_PICKUP_RATE_ERROR' | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="dropoffRate" class="form-label"
+                  >{{ 'SERVICE_AREA.DROPOFF_RATE' | translate }}</label
+                >
+                <div class="input-currency">
+                  <span class="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    id="dropoffRate"
+                    class="form-control"
+                    [(ngModel)]="service.dropOffRate"
+                    name="dropoffRate"
+                    #dropoffRate="ngModel"
+                    min="0"
+                    step="0.01"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [ngClass]="{'invalid-input': !dropoffRate.valid && !dropoffRate.pristine}"
+                    aria-describedby="dropoffRate-error"
+                  />
+                </div>
+                <div
+                  id="dropoffRate-error"
+                  class="error-message"
+                  *ngIf="!dropoffRate.valid && !dropoffRate.pristine"
+                >
+                  {{ 'SERVICE_AREA.VALID_DROPOFF_RATE_ERROR' | translate }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="costperMile" class="form-label"
+                  >{{ 'SERVICE_AREA.COST_PER_MILE' | translate }}</label
+                >
+                <div class="input-currency">
+                  <span class="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    id="costperMile"
+                    class="form-control"
+                    [(ngModel)]="service.costPerMile"
+                    name="costperMile"
+                    #costperMile="ngModel"
+                    min="0"
+                    step="0.01"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [ngClass]="{'invalid-input': !costperMile.valid && !costperMile.pristine}"
+                    aria-describedby="costperMile-error"
+                  />
+                </div>
+                <div
+                  id="costperMile-error"
+                  class="error-message"
+                  *ngIf="!costperMile.valid && !costperMile.pristine"
+                >
+                  {{ 'SERVICE_AREA.VALID_COST_PER_MILE_ERROR' | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="costperMinute" class="form-label"
+                  >{{ 'SERVICE_AREA.COST_PER_MINUTE' | translate }}</label
+                >
+                <div class="input-currency">
+                  <span class="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    id="costperMinute"
+                    class="form-control"
+                    [(ngModel)]="service.costPerMinute"
+                    name="costperMinute"
+                    #costperMinute="ngModel"
+                    min="0"
+                    step="0.01"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [ngClass]="{'invalid-input': !costperMinute.valid && !costperMinute.pristine}"
+                    aria-describedby="costperMinute-error"
+                  />
+                </div>
+                <div
+                  id="costperMinute-error"
+                  class="error-message"
+                  *ngIf="!costperMinute.valid && !costperMinute.pristine"
+                >
+                  {{ 'SERVICE_AREA.VALID_COST_PER_MINUTE_ERROR' | translate }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="wheelchairSpaceCost" class="form-label"
+                  >{{ 'SERVICE_AREA.WHEELCHAIR_SPACE_COST' | translate }}</label
+                >
+                <div class="input-currency">
+                  <span class="currency-symbol">$</span>
+                  <input
+                    type="number"
+                    id="wheelchairSpaceCost"
+                    class="form-control"
+                    [(ngModel)]="service.wheelchairSpaceCost"
+                    name="wheelchairSpaceCost"
+                    #wheelchairSpaceCost="ngModel"
+                    min="0"
+                    step="0.01"
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [ngClass]="{'invalid-input': !wheelchairSpaceCost.valid && !wheelchairSpaceCost.pristine}"
+                    aria-describedby="wheelchairSpaceCost-error"
+                  />
+                </div>
+                <div
+                  id="wheelchairSpaceCost-error"
+                  class="error-message"
+                  *ngIf="!wheelchairSpaceCost.valid && !wheelchairSpaceCost.pristine"
+                >
+                  {{ 'SERVICE_AREA.VALID_WHEELCHAIR_COST_ERROR' | translate }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="eligi" class="form-label"
+                  >{{ 'SERVICE_AREA.ELIGIBILITY' | translate }}</label
+                >
+                <textarea
+                  id="eligi"
+                  class="form-control"
+                  [(ngModel)]="service.eligibility"
+                  name="eligi"
+                  maxlength="5000"
+                  #eligi="ngModel"
+                  rows="4"
+                  [ngClass]="{'invalid-input': !eligi.valid && !eligi.pristine}"
+                  aria-describedby="eligi-error"
+                ></textarea>
+                <div id="eligi-error" class="error-message" *ngIf="!eligi.valid && !eligi.pristine">
+                  {{ 'SERVICE_AREA.VALID_ELIGIBILITY_ERROR' | translate }}
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="form-actions-container">
+            <div class="form-actions">
+              <button
+                type="button"
+                class="btn-icon btn-download"
+                (click)="downloadGeoJSON(service)"
+                [title]="'SERVICE_AREA.DOWNLOAD_GEOJSON_TITLE' | translate"
+                [attr.aria-label]="'SERVICE_AREA.DOWNLOAD_GEOJSON_ARIA' | translate"
+              >
+                <i class="ph ph-download-simple"></i>
+              </button>
+              <button
+                type="button"
+                class="btn-secondary"
+                (click)="cancelEdit()"
+                [attr.aria-label]="'SERVICE_AREA.CANCEL_ARIA' | translate"
+              >
+                {{ 'SERVICE_AREA.CANCEL' | translate }}
+              </button>
+
+              <button
+                type="button"
+                class="btn-primary"
+                (click)="addEditService(service)"
+                [attr.aria-label]="pageName === 'Add' ? ('SERVICE_AREA.SAVE_ARIA' | translate) : ('SERVICE_AREA.UPDATE_ARIA' | translate)"
+              >
+                {{pageName === 'Add' ? ('SERVICE_AREA.SAVE' | translate) : ('SERVICE_AREA.UPDATE' |
+                translate)}}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map section (right side) -->
+        <div class="service-form-map">
+          <div class="map-instructions-container">
+            <button
+              class="instructions-toggle"
+              (click)="toggleMapInstructions()"
+              [attr.aria-expanded]="showMapInstructions"
+              [attr.aria-controls]="'map-instructions-content'"
+            >
+              <i class="ph ph-info"></i>
+              <span>{{ 'SERVICE_AREA.MAP_INSTRUCTIONS_TITLE' | translate }}</span>
+              <i
+                class="fas"
+                [ngClass]="showMapInstructions ? 'ph-caret-up' : 'ph-caret-down'"
+              ></i>
+            </button>
+            <div
+              id="map-instructions-content"
+              class="map-instructions"
+              [ngClass]="{'collapsed': !showMapInstructions}"
+            >
+              <ul>
+                <li>
+                  <i class="ph ph-polygon"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DRAW' |
+                  translate }}
+                </li>
+                <li>
+                  <i class="ph ph-pencil"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_EDIT' | translate }}
+                </li>
+                <li>
+                  <i class="ph ph-eraser"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DELETE' |
+                  translate }}
+                </li>
+                <li>
+                  <i class="ph ph-upload"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_UPLOAD' |
+                  translate }}
+                </li>
+              </ul>
+              <p class="map-tip">{{ 'SERVICE_AREA.MAP_INSTRUCTIONS_TIP' | translate }}</p>
+            </div>
+          </div>
+          <div
+            class="service-map"
+            leaflet
+            [leafletOptions]="leafletOptions"
+            (leafletMapReady)="onMapReady($event)"
+            [attr.aria-label]="'SERVICE_AREA.MAP_ARIA' | translate"
+          ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

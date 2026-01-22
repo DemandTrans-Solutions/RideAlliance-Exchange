@@ -1,0 +1,62 @@
+// Common form styles
+
+// Button font size variables
+$button-font-size-default: 16px;
+$button-font-size-large: 18px;
+$button-font-size-xlarge: 20px;
+
+.form-group {
+  margin-bottom: 0;
+}
+
+// Search box
+.datatable-search-box {
+  max-width: 100%;
+  padding: 0 15px 0 15px;
+  height: 35px;
+  font-size: 14px;
+}
+
+// Input group addon
+.input-group-addon {
+  height: 35px;
+  padding: 5px 5px;
+  font-size: 14px;
+}
+
+// Button styles
+.btn {
+  font-size: $button-font-size-default;
+
+  &.btn-lg {
+    font-size: $button-font-size-large;
+  }
+
+  &.btn-xl {
+    font-size: $button-font-size-xlarge;
+  }
+}
+
+// Login button specific styling
+.login-button {
+  font-size: $button-font-size-xlarge;
+  font-weight: 500;
+}
+
+// Global calendar styling
+// This ensures p-calendar components don't expand too wide regardless of container width
+:host ::ng-deep p-calendar,
+p-calendar {
+  .ui-calendar {
+    width: 100%;
+  }
+
+  .ui-datepicker {
+    max-width: 300px !important;
+    width: auto !important;
+  }
+
+  input {
+    width: 100%;
+  }
+}

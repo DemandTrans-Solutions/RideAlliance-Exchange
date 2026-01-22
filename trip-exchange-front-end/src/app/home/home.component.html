@@ -1,0 +1,16 @@
+<h2>{{ 'HOME.TITLE' | translate }}</h2>
+
+<div>
+  {{ 'HOME.DATE_FORMAT_EXAMPLE' | translate }}: {{mydate | date}} <br />
+  {{ 'HOME.NUMBER_FORMAT_EXAMPLE' | translate }}: {{myamount | number}} <br />
+  {{ 'HOME.CURRENCY_FORMAT_EXAMPLE' | translate }}: {{myamount | currency}} <br />
+</div>
+
+<alert type="info">{{ 'HOME.BOOTSTRAP_GREETING' | translate }} {{ mydate.toDateString() }}</alert>
+<div style="display: inline-block; min-height: 290px">
+  <datepicker
+    [(ngModel)]="mydate"
+    showWeeks="true"
+    [attr.aria-label]="'HOME.DATEPICKER_LABEL' | translate"
+  ></datepicker>
+</div>

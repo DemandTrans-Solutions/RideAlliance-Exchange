@@ -1,0 +1,945 @@
+// Admin Module Design System - April 2025
+
+:root {
+  // Primary colors
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --primary-light: #5dade2;
+  --primary-contrast: #ffffff;
+
+  // Accent colors
+  --success-color: #2ecc71;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --info-color: #3498db;
+
+  // Neutral colors
+  --background-color: #f7f9fc;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --text-light: #666666;
+  --text-muted: #999999;
+  --border-color: #e0e0e0;
+
+  // Menu colors
+  --menu-text-color: #333333;
+  --menu-text-hover: #2980b9;
+  --menu-background-hover: rgba(52, 152, 219, 0.05);
+
+  // Spacing
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+
+  // Shadow
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --dropdown-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+  // Border radius
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  // Transitions
+  --transition-standard: all 0.2s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // Font settings
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-xxl: 2rem;
+
+  // Z-index layers
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-tooltip: 1070;
+}
+
+// Dark mode variables
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #121212;
+    --card-background: #1e1e1e;
+    --text-color: #f0f0f0;
+    --text-light: #b0b0b0;
+    --text-muted: #8a8a8a;
+    --border-color: #444444;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+
+    // Adjust accent colors for dark mode
+    --primary-light: #4388be;
+    --success-color: #27ae60;
+    --warning-color: #e67e22;
+    --danger-color: #c0392b;
+
+    // Improve menu text readability in dark mode
+    --menu-text-color: #f0f0f0;
+    --menu-text-hover: #5dade2;
+    --menu-background-hover: rgba(52, 152, 219, 0.15);
+  }
+
+  // Fix for icon buttons in dark mode
+  .btn-icon {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+
+    i {
+      color: #f0f0f0 !important;
+      font-size: 14px !important;
+      width: auto !important;
+      height: auto !important;
+    }
+
+    &.btn-edit i {
+      color: var(--primary-light) !important;
+    }
+
+    &.btn-danger i {
+      color: var(--danger-color) !important;
+    }
+
+    &.btn-success i {
+      color: var(--success-color) !important;
+    }
+  }
+}
+
+// Base layout styles
+.admin-container {
+  display: flex;
+  min-height: calc(100vh - 120px); // match reports container
+  background-color: var(--background-color);
+}
+
+.admin-sidebar {
+  flex: 0 0 250px;
+  background-color: var(--card-background);
+  border-right: 1px solid var(--border-color);
+  padding-top: var(--space-lg);
+}
+
+.admin-content {
+  flex: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+.admin-section {
+  animation: fadeIn 0.3s ease-in-out;
+  width: 100%; /* Make the section take full width */
+}
+
+// Remove grid layout and use flexbox for admin layout
+.admin-panel {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-lg);
+}
+
+// Sidebar navigation styling to match reports
+@import '../shared/styles/index';
+@import '../reports/reports.component.scss';
+
+// Use reports component styles for sidebar navigation
+.admin-sidebar {
+  @extend .reports-sidebar;
+}
+.admin-nav-list {
+  @extend .nav-menu;
+}
+.admin-nav-item {
+  @extend .nav-item;
+}
+.admin-nav-link {
+  @extend .nav-link;
+}
+
+// Main content flex-grow
+.admin-main {
+  flex: 1;
+  overflow-x: auto;
+}
+
+// Section title flush left
+.admin-module .section-title {
+  margin: 0 0 var(--space-lg) 0;
+  padding: 0;
+}
+
+// Data view styles (for tables/lists)
+.data-view {
+  .action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-md);
+
+    .search-container {
+      flex: 1;
+      min-width: 200px;
+      max-width: 400px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: var(--space-md) var(--space-md) var(--space-md) calc(var(--space-md) * 3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--card-background);
+    color: var(--text-color);
+    font-size: var(--font-size-md);
+    transition: var(--transition-standard);
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    &::placeholder {
+      color: var(--text-light);
+    }
+  }
+
+  .data-table-container {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    margin-bottom: var(--space-lg);
+  }
+
+  .empty-message {
+    padding: var(--space-xl);
+    text-align: center;
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+
+    i {
+      font-size: var(--font-size-xl);
+      color: var(--text-muted);
+    }
+  }
+
+  .footer-actions {
+    margin-top: var(--space-lg);
+    justify-content: flex-end;
+  }
+}
+
+// Form view styles
+.form-view {
+  .form-container {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--card-shadow);
+    margin-bottom: var(--space-lg);
+    max-height: 80vh; /* Limit height to 80% of the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling when content exceeds the height */
+    position: relative; /* Required for sticky form actions */
+  }
+
+  .form-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    margin-bottom: var(--space-xl);
+    color: var(--text-color);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .data-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    width: 100%;
+
+    .form-group {
+      flex: 1 1 350px;
+      min-width: 250px;
+    }
+
+    .form-group-half {
+      flex: 0 1 calc(50% - var(--space-lg));
+      min-width: 120px;
+    }
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+
+  .form-label {
+    font-weight: 500;
+    font-size: var(--font-size-md);
+    color: var(--text-color);
+  }
+
+  .sub-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    margin-bottom: var(--space-xs);
+  }
+
+  .required-indicator {
+    color: var(--danger-color);
+    margin-left: var(--space-xs);
+  }
+
+  .form-control,
+  .form-select {
+    padding: var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--card-background);
+    color: var(--text-color);
+    font-size: var(--font-size-md);
+    transition: var(--transition-standard);
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    &::placeholder {
+      color: var(--text-light);
+    }
+
+    &.invalid-input {
+      border-color: var(--danger-color);
+    }
+
+    &:disabled,
+    &.disabled {
+      background-color: rgba(0, 0, 0, 0.05);
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+  }
+
+  .time-inputs {
+    display: flex;
+    gap: var(--space-md);
+
+    .time-input-group {
+      flex: 1;
+    }
+  }
+
+  .input-currency {
+    position: relative;
+
+    .currency-symbol {
+      position: absolute;
+      left: var(--space-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    input {
+      padding-left: calc(var(--space-md) * 2);
+    }
+  }
+
+  .error-message {
+    font-size: var(--font-size-sm);
+    color: var(--danger-color);
+    margin-top: var(--space-xs);
+  }
+
+  .checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-md);
+  }
+
+  .form-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+
+    input[type='checkbox'] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-color);
+    }
+
+    .checkbox-label {
+      font-size: var(--font-size-md);
+      color: var(--text-color);
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+  .checkbox-hint {
+    font-size: var(--font-size-sm);
+    color: var(--text-light);
+    margin-left: calc(18px + var(--space-sm));
+    margin-top: var(--space-xs);
+  }
+
+  .service-form-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+
+    .service-form-main {
+      flex: 1 1 500px;
+    }
+
+    .service-form-map {
+      flex: 1 1 400px;
+      min-height: 400px;
+
+      .service-map {
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--border-color);
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    padding: var(--space-md) 0 0;
+    background-color: var(--card-background);
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    border-top: 1px solid var(--border-color);
+  }
+}
+
+// Button styles
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--primary-contrast);
+  border: none;
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.4);
+  }
+
+  &:disabled {
+    background-color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--text-light);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  &.btn-clear {
+    color: var(--text-light);
+  }
+}
+
+.btn-icon {
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  min-width: 36px;
+  height: 32px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-sm);
+  transition: var(--transition-standard);
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  }
+
+  &.btn-edit {
+    color: var(--primary-color);
+
+    &:hover {
+      background-color: rgba(52, 152, 219, 0.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+    }
+  }
+
+  &.btn-danger {
+    color: var(--danger-color);
+
+    &:hover {
+      background-color: rgba(231, 76, 60, 0.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.3);
+    }
+  }
+
+  &.btn-success {
+    color: var(--success-color);
+
+    &:hover {
+      background-color: rgba(46, 204, 113, 0.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.3);
+    }
+  }
+
+  &:disabled {
+    color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  i {
+    font-size: var(--font-size-md);
+    margin: 0; /* Remove default margin to ensure proper centering */
+    display: flex; /* Enable flexbox for the icon */
+    align-items: center; /* Center icon vertically */
+    justify-content: center; /* Center icon horizontally */
+    width: 100%; /* Take full width of button */
+    height: 100%; /* Take full height of button */
+  }
+}
+
+// Status indicators
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  background-color: var(--background-color);
+  color: var(--text-color);
+
+  &.status-positive {
+    background-color: rgba(46, 204, 113, 0.15);
+    color: var(--success-color);
+  }
+
+  &.status-negative {
+    background-color: rgba(231, 76, 60, 0.15);
+    color: var(--danger-color);
+  }
+
+  &.status-pending {
+    background-color: rgba(243, 156, 18, 0.15);
+    color: var(--warning-color);
+  }
+
+  &.status-neutral {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: var(--primary-color);
+  }
+}
+
+// Table styles
+:host ::ng-deep {
+  .users-table,
+  .providers-table,
+  .services-table,
+  .partnerships-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      background-color: rgba(0, 0, 0, 0.03);
+      font-weight: 600;
+      text-align: left;
+      padding: var(--space-md);
+      border-bottom: 2px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    td {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition-standard);
+    }
+
+    tr:hover td {
+      background-color: rgba(52, 152, 219, 0.05);
+    }
+
+    .p-paginator {
+      background-color: var(--card-background);
+      border-top: 1px solid var(--border-color);
+      padding: var(--space-md);
+      display: flex;
+      justify-content: center;
+    }
+
+    .mobile-header {
+      display: none;
+      font-weight: 600;
+      margin-bottom: var(--space-xs);
+    }
+
+    .email-link,
+    .phone-link {
+      color: var(--primary-color);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .action-icons {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+    }
+
+    .table-header {
+      padding: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
+
+// Toast notification styles
+:host ::ng-deep {
+  .p-toast {
+    opacity: 1;
+
+    .p-toast-message {
+      background-color: var(--card-background);
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--dropdown-shadow);
+      border-left: 6px solid var(--primary-color);
+      color: var(--text-color); // Add this to ensure text color matches theme
+
+      &.p-toast-message-success {
+        border-left-color: var(--success-color);
+      }
+
+      &.p-toast-message-error {
+        border-left-color: var(--danger-color);
+      }
+
+      &.p-toast-message-warn {
+        border-left-color: var(--warning-color);
+      }
+
+      &.p-toast-message-info {
+        border-left-color: var(--info-color);
+      }
+
+      // Add message content color to ensure it uses theme text color
+      .p-toast-message-content {
+        color: var(--text-color);
+      }
+
+      // Style toast close button for better visibility in dark mode
+      .p-toast-icon-close {
+        color: var(--text-light);
+
+        &:hover {
+          color: var(--text-color);
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      padding: var(--space-md);
+    }
+
+    .toast-icon {
+      font-size: var(--font-size-xl);
+      margin-right: var(--space-md);
+    }
+
+    .toast-title {
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: var(--space-xs);
+    }
+
+    .toast-text {
+      margin: 0;
+    }
+  }
+}
+
+// Dark mode specific toast styling
+@media (prefers-color-scheme: dark) {
+  :host ::ng-deep {
+    .p-toast {
+      .p-toast-message {
+        background-color: var(--card-background); // Use dark mode background
+        color: var(--text-color); // Use dark mode text color
+
+        // Ensure all text content is visible in dark mode
+        .p-toast-summary,
+        .p-toast-detail {
+          color: var(--text-color);
+        }
+
+        // Style icons for better visibility in dark mode
+        .p-toast-icon {
+          color: inherit;
+        }
+
+        // Adjust message type colors for dark mode
+        &.p-toast-message-success .p-toast-icon {
+          color: var(--success-color);
+        }
+
+        &.p-toast-message-error .p-toast-icon {
+          color: var(--danger-color);
+        }
+
+        &.p-toast-message-warn .p-toast-icon {
+          color: var(--warning-color);
+        }
+
+        &.p-toast-message-info .p-toast-icon {
+          color: var(--info-color);
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0;
+  }
+
+  .admin-nav-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .admin-nav-item {
+    width: auto; /* Allow items to size according to content on mobile */
+  }
+
+  .admin-nav-link {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: var(--space-md) var(--space-sm);
+    padding-left: var(--space-md); // single indent from panel edge
+    padding-right: var(--space-md);
+
+    &:hover,
+    &:focus {
+      border-left-color: transparent;
+      border-bottom-color: var(--primary-light);
+    }
+
+    &.active {
+      border-left-color: transparent;
+      border-bottom-color: var(--primary-color);
+    }
+  }
+
+  :host ::ng-deep {
+    .users-table,
+    .providers-table,
+    .services-table,
+    .partnerships-table {
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-md) 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      td {
+        display: flex;
+        padding: var(--space-sm) var(--space-md);
+        border-bottom: none;
+        text-align: right;
+
+        &:before {
+          content: attr(data-label);
+          font-weight: 600;
+          margin-right: auto;
+        }
+      }
+
+      .mobile-header {
+        display: block;
+        color: var(--text-light);
+      }
+
+      .action-icons {
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+// Accessibility - reduce motion
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Ensure tables fill remaining width in sidebar+content layout
+.reports-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+
+  .data-table-container {
+    flex: 1 1 auto;
+    min-width: 0; // allow shrinking inside flex container
+    width: 100%;
+  }
+}

@@ -1,0 +1,12 @@
+{
+	"recommendations": [
+		"angular.ng-template",
+		"dbaeumer.vscode-eslint",
+		"esbenp.prettier-vscode",
+		"johnpapa.angular2",
+		"mikael.angular-beastcode",
+		"cyrilletuzi.angular-schematics",
+		"nrwl.angular-console",
+		"editorconfig.editorconfig"
+	]
+}

@@ -1,0 +1,8 @@
+// Import shared styles with corrected path
+@import '../../shared/styles/index';
+
+// Component-specific styles
+th,
+td {
+  text-align: center !important;
+}

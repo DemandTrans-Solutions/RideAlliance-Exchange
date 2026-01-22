@@ -1,0 +1,67 @@
+{
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+  "dataset": [
+    {
+      "@type": "dcat:Dataset",
+      "title": "Ride Alliance HST Exchange Hub – Website",
+      "description": "Open-source web application supporting human services transportation (HST) trip exchange workflows, authentication, and provider coordination. Data outputs will be published in open, platform-independent formats (CSV, JSON, XML, TXT, PDF, JPEG, PNG) with no PII or sensitive data, and preserved in the National Transportation Library (NTL) with persistent identifiers.",
+      "keyword": [
+        "trip exchange",
+        "ride alliance",
+        "HST",
+        "transportation",
+        "open source",
+        "web application",
+        "Paratransit",
+        "Demand responsive transit",
+        "Ridesharing",
+        "Mobility",
+        "Data exchange",
+        "Interoperability"
+      ],
+      "modified": "2026-01-05",
+      "issued": "2025-06-29",
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "DemandTrans Solutions"
+      },
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "todd.voirol@demandtrans.com",
+        "hasEmail": "mailto:todd.voirol@demandtrans.com"
+      },
+      "identifier": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+      "accessLevel": "public",
+      "rights": "Open Use per USDOT funding with Attribution (Creative Commons 4.0/CC BY 4.0): This dataset is open access per USDOT funding. No restrictions on access or use. Users may share, copy, and redistribute in any medium with the condition they attribute to this source.",
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "bureauCode": [],
+      "programCode": [],
+      "landingPage": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+      "language": ["en-US"],
+      "accrualPeriodicity": "irregular",
+      "theme": ["Transportation"],
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+          "description": "Source code repository; includes build artifacts and documentation. Data outputs will be posted in open formats (CSV, JSON, XML, TXT, PDF, JPEG, PNG) per project plan.",
+          "format": "API",
+          "title": "Trip Exchange Front-End Source and Documentation"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "accessURL": "https://ntl.bts.gov/",
+          "description": "Planned preservation location (National Transportation Library) for project datasets; persistent identifier to be registered upon deposit.",
+          "format": "Repository",
+          "title": "National Transportation Library Archive (planned)"
+        }
+      ],
+      "references": [
+        "https://resources.data.gov/resources/dcat-us/"
+      ]
+    }
+  ]
+}

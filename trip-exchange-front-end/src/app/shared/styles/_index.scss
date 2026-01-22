@@ -1,0 +1,70 @@
+// Shared styles index file
+
+// Common table styles
+table {
+  width: 100%;
+}
+
+th, td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.table-td-padding {
+  padding: 5px !important;
+}
+
+// Scrollable table container
+.scrollable-table {
+  max-height: 700px;
+  overflow: auto;
+}
+
+// Pagination
+.ui-paginator-element {
+  padding: 0 5px 0 5px;
+}
+
+// Common form styles
+.form-group {
+  margin-bottom: 0;
+}
+
+// Search box
+.datatable-search-box {
+  max-width: 100%;
+  padding: 0 15px 0 15px;
+  height: 35px;
+  font-size: 14px;
+}
+
+// Input group addon
+.input-group-addon {
+  height: 35px;
+  padding: 5px 5px;
+  font-size: 14px;
+}
+
+// Status indicators
+.active {
+  color: #34a853;
+}
+
+.deactive {
+  color: #ea4335;
+}
+
+// Common icon styles
+i {
+  margin: 5px;
+  font-size: 15px;
+}
+
+// Large icons
+.icons {
+  font-size: 25px;
+}

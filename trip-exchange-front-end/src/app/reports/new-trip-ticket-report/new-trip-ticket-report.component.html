@@ -1,0 +1,373 @@
+<div class="report-container">
+  <header class="report-header">
+    <h2 class="report-title">{{ 'NEW_TRIP_TICKET_REPORT.TITLE' | translate }}</h2>
+    <div class="export-buttons">
+      <button class="btn btn-secondary" (click)="exportToExcel()" aria-label="{{ 'NEW_TRIP_TICKET_REPORT.EXPORT_EXCEL_ARIA' | translate }}">
+        <i class="ph ph-file-xls" aria-hidden="true"></i>
+        {{ 'NEW_TRIP_TICKET_REPORT.EXPORT_EXCEL' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="exportToCSV()" aria-label="{{ 'NEW_TRIP_TICKET_REPORT.EXPORT_CSV_ARIA' | translate }}">
+        <i class="ph ph-file-csv" aria-hidden="true"></i>
+        {{ 'NEW_TRIP_TICKET_REPORT.EXPORT_CSV' | translate }}
+      </button>
+    </div>
+  </header>
+
+
+  <!-- Instructions: short summary + how-to -->
+  <div class="instruction-panel" role="region" aria-label="{{ 'NEW_TRIP_TICKET_REPORT.INSTRUCTIONS_ARIA' | translate }}">
+    <div class="instruction-content">
+      <i class="ph ph-info" aria-hidden="true"></i>
+      <div class="instruction-copy">
+        <!--<h3 class="instruction-title">{{ 'NEW_TRIP_TICKET_REPORT.TITLE' | translate }}</h3>-->
+        <p class="instruction-text">{{ 'NEW_TRIP_TICKET_REPORT.DESC' | translate }}</p>
+        <p class="instruction-run">
+          <strong>{{ 'REPORTS.HOW_TO_RUN_LABEL' | translate }}:</strong>
+          {{ 'NEW_TRIP_TICKET_REPORT.RUN' | translate }}
+          <span class="btn btn-primary btn-inline">{{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT' | translate }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-panel">
+    <div class="filter-container">
+      <div class="filter-row">
+        <div class="filter-group" *ngIf="loggerRole === 'ROLE_ADMIN'">
+          <label for="pro" class="filter-label">
+            {{ 'NEW_TRIP_TICKET_REPORT.PROVIDER' | translate }}
+            <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <select
+              id="pro"
+              class="form-control"
+              [(ngModel)]="providerPartnersId"
+              name="provider"
+              [required]="true"
+              (ngModelChange)="getDate(providerPartnersId)"
+              aria-describedby="provider-error"
+            >
+              <option [ngValue]="pleaseSelect">
+                {{ 'NEW_TRIP_TICKET_REPORT.PLEASE_SELECT' | translate }}
+              </option>
+              <option *ngFor="let provider of providersList" [ngValue]="provider.providerId">
+                {{provider.providerName}}
+              </option>
+            </select>
+            <div
+              id="provider-error"
+              class="error-message"
+              *ngIf="providerPartnersId === pleaseSelect"
+            >
+              {{ 'NEW_TRIP_TICKET_REPORT.PROVIDER_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="fromDateTime" class="filter-label">
+            {{ 'NEW_TRIP_TICKET_REPORT.FROM_DATE' | translate }}
+            <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="fromDate"
+              [showTime]="true"
+              id="fromDateTime"
+              hourFormat="12"
+              [style]="{'width':'100%'}"
+              inputId="fromDateTime"
+              aria-label="{{ 'NEW_TRIP_TICKET_REPORT.FROM_DATE_ARIA' | translate }}"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="ToDateTime" class="filter-label">
+            {{ 'NEW_TRIP_TICKET_REPORT.TO_DATE' | translate }}
+            <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="toDate"
+              [showTime]="true"
+              id="ToDateTime"
+              hourFormat="12"
+              [style]="{'width':'100%'}"
+              [minDate]="fromDate"
+              (ngModelChange)="maxDate()"
+              inputId="ToDateTime"
+              aria-label="{{ 'NEW_TRIP_TICKET_REPORT.TO_DATE_ARIA' | translate }}"
+            >
+            </p-calendar>
+            <div class="error-message" *ngIf="minRange">
+              {{ 'NEW_TRIP_TICKET_REPORT.TO_DATE_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group filter-actions">
+          <button
+            class="btn btn-primary"
+            (click)="filter(toDate,reportTicketFilterStatus,providerPartnersId)"
+            aria-label="{{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT_ARIA' | translate }}"
+          >
+            <i class="ph ph-funnel" aria-hidden="true"></i>
+            {{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="filter-group filter-group-wide">
+          <label class="filter-label"
+            >{{ 'NEW_TRIP_TICKET_REPORT.STATUS_FILTER' | translate }}</label
+          >
+          <div class="filter-control">
+            <p-multiSelect
+              [options]="TicketStatus"
+              [(ngModel)]="reportTicketFilterStatus"
+              placeholder="{{ 'NEW_TRIP_TICKET_REPORT.STATUS_PLACEHOLDER' | translate }}"
+              styleClass="ticket-status-select"
+              [style]="{'width':'100%'}"
+              aria-label="{{ 'NEW_TRIP_TICKET_REPORT.STATUS_ARIA' | translate }}"
+            >
+            </p-multiSelect>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="report-loading" *ngIf="loading">
+    <div class="loading-spinner">
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+    </div>
+    <span class="loading-text">{{ 'NEW_TRIP_TICKET_REPORT.LOADING' | translate }}</span>
+  </div>
+
+  <div class="report-table-container">
+    <div class="table-search">
+      <div class="search-control">
+        <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+        <input
+          #gb
+          type="text"
+          class="search-input"
+          placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PLACEHOLDER' | translate }}"
+          aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_ARIA' | translate }}"
+        />
+      </div>
+    </div>
+
+    <p-table
+      #dt
+      [value]="ticketList"
+      [globalFilterFields]="['submittedDateTime', '_customerName', 'claimantProviders', 'pickupDateTime', 'dropoffDateTime', 'pickup', 'dropoff', 'status.type', 'tripDetails']"
+      styleClass="p-datatable-sm responsive-table"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10,25,50]"
+      [scrollable]="true"
+      scrollHeight="flex"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.SUBMITTED_DATE' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'submittedDateTime')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DATE' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DATE_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.CUSTOMER_NAME' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, '_customerName')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_NAME' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_NAME_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.CLAIMANT_PROVIDER' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'claimantProviders')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PROVIDER' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PROVIDER_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.PICKUP_DATE' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'pickupDateTime')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PICKUP' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PICKUP_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.DROPOFF_DATE' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'dropoffDateTime')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DROPOFF' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DROPOFF_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.PICKUP_ADDRESS' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'pickup')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PICKUP_ADDRESS' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_PICKUP_ADDRESS_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.DROPOFF_ADDRESS' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'dropoff')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DROPOFF_ADDRESS' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DROPOFF_ADDRESS_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title">{{ 'NEW_TRIP_TICKET_REPORT.STATUS' | translate }}</span>
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'status.type')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_STATUS' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_STATUS_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+          <th>
+            <div class="column-filter">
+              <span class="column-title"
+                >{{ 'NEW_TRIP_TICKET_REPORT.TRIP_DETAILS' | translate }}</span
+              >
+              <input
+                pInputText
+                type="text"
+                (input)="onFilter($event, 'tripDetails')"
+                placeholder="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DETAILS' | translate }}"
+                class="column-search"
+                aria-label="{{ 'NEW_TRIP_TICKET_REPORT.SEARCH_DETAILS_ARIA' | translate }}"
+              />
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-ticket>
+        <tr [ngClass]="lookupRowStyleClass(ticket)">
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.SUBMITTED_DATE' | translate">
+            {{ticket.submittedDateTime}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.CUSTOMER_NAME' | translate">
+            {{ticket._customerName}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.CLAIMANT_PROVIDER' | translate">
+            {{ticket.claimantProviders}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.PICKUP_DATE' | translate">
+            {{ticket.pickupDateTime}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.DROPOFF_DATE' | translate">
+            {{ticket.dropoffDateTime}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.PICKUP_ADDRESS' | translate">
+            {{ticket.pickup}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.DROPOFF_ADDRESS' | translate">
+            {{ticket.dropoff}}
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.STATUS' | translate">
+            <span
+              class="status-badge-new"
+              [ngClass]="'status-' + ticket.status.type.toLowerCase().replace(' ', '-')"
+            >
+              {{ticket.status.type}}
+            </span>
+          </td>
+          <td [dataLabel]="'NEW_TRIP_TICKET_REPORT.TRIP_DETAILS' | translate">
+            {{ticket.tripDetails}}
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="9" class="empty-message">
+            <div class="empty-state">
+              <i class="ph ph-magnifying-glass fa-3x" aria-hidden="true"></i>
+              <p>{{ 'NEW_TRIP_TICKET_REPORT.NO_TICKETS' | translate }}</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="report-footer">
+      <div class="report-summary">
+        <span class="report-total"
+          >{{ 'NEW_TRIP_TICKET_REPORT.TOTAL_TICKETS' | translate }}
+          <strong>{{arrayLength}}</strong></span
+        >
+      </div>
+    </div>
+  </div>
+</div>

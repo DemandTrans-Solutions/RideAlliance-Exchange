@@ -1,0 +1,7 @@
+{
+    "servers": {
+        "dbhub-mcp-server-mysql": {
+            "url": "http://localhost:8090/message"
+        }
+    }
+}

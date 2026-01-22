@@ -1,0 +1,387 @@
+<div class="admin-module">
+  <!-- Provider selection form from admin-provider-partners component -->
+  <div *ngIf="role === 'ROLE_ADMIN' && showGrid" class="provider-selector">
+    <form novalidate #providerPartnersForm="ngForm">
+      <div class="form-group">
+        <label class="col-sm-6 text-primary size-h7">
+          <u>{{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER_HEADER' | translate }}</u>
+        </label>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <label class="add-ticket-label">
+            {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER' | translate }}<span class="mandatory-input"
+              >*</span
+            >
+          </label>
+          <select
+            id="provider"
+            class="form-control"
+            [(ngModel)]="providerPartnersId"
+            name="provider"
+            required
+            pattern="[0-9\ ]{1,100}"
+            #provider="ngModel"
+            (change)="loadProviderPartnerData(providerPartnersId)"
+            [ngClass]="{'invalid-input': !provider.valid && !provider.pristine }"
+          >
+            <option [ngValue]="null">
+              {{ 'ADMIN_PROVIDER_PARTNERS.PLEASE_SELECT' | translate }}
+            </option>
+            <option *ngFor="let provider of allProvidersList" [ngValue]="provider.providerId">
+              {{provider.providerName}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+    <hr />
+  </div>
+
+  <!-- Provider-partners list view -->
+  <div *ngIf="showGrid" class="data-view">
+    <form
+      *ngIf="role === 'ROLE_ADMIN'"
+      novalidate
+      #providerForm="ngForm"
+      class="partnership-header"
+    >
+      <h2 class="section-title">
+        {{ 'PROVIDER_PARTNERS.PARTNERSHIP_DETAILS' | translate }} {{providerPartnersName}}
+      </h2>
+    </form>
+
+    <div *ngIf="role === 'ROLE_PROVIDERADMIN'" class="partnership-header">
+      <h2 class="section-title">{{ 'PROVIDER_PARTNERS.TITLE' | translate }}</h2>
+    </div>
+
+    <div class="action-bar">
+      <div class="action-buttons">
+        <button
+          class="btn-primary"
+          (click)="addProviderPartner()"
+          [attr.aria-label]="'PROVIDER_PARTNERS.ADD_PARTNERSHIP_ARIA' | translate"
+        >
+          <i class="ph ph-plus" aria-hidden="true"></i>
+          <span>{{ 'PROVIDER_PARTNERS.ADD_PARTNERSHIP' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="data-table-container">
+      <p-table
+        [value]="userListData"
+        styleClass="partnerships-table"
+        [sortMode]="'multiple'"
+        [rows]="7"
+        [paginator]="true"
+        [globalFilterFields]="['requesterProviderName', 'coordinatorProviderName', 'requestStatus.status']"
+        [reorderableColumns]="true"
+        [resizableColumns]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="requesterProviderName" class="column-requestor">
+              {{ 'PROVIDER_PARTNERS.REQUESTOR_PROVIDER' | translate }}
+              <p-sortIcon field="requesterProviderName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="coordinatorProviderName" class="column-coordinator">
+              {{ 'PROVIDER_PARTNERS.COORDINATOR_PROVIDER' | translate }}
+              <p-sortIcon field="coordinatorProviderName"></p-sortIcon>
+            </th>
+            <th class="column-trusted">{{ 'PROVIDER_PARTNERS.TRUSTED' | translate }}</th>
+            <th pSortableColumn="requestStatus.status" class="column-status">
+              {{ 'PROVIDER_PARTNERS.STATUS' | translate }}
+              <p-sortIcon field="requestStatus.status"></p-sortIcon>
+            </th>
+            <th class="column-actions">{{ 'PROVIDER_PARTNERS.ACTIONS' | translate }}</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-providerPartners let-i="rowIndex">
+          <tr>
+            <td class="column-requestor">
+              <span class="mobile-header"
+                >{{ 'PROVIDER_PARTNERS.REQUESTOR_PROVIDER' | translate }}:</span
+              >
+              {{providerPartners.requesterProviderName}}
+            </td>
+            <td class="column-coordinator">
+              <span class="mobile-header"
+                >{{ 'PROVIDER_PARTNERS.COORDINATOR_PROVIDER' | translate }}:</span
+              >
+              {{providerPartners.coordinatorProviderName}}
+            </td>
+            <td class="column-trusted">
+              <span class="mobile-header">{{ 'PROVIDER_PARTNERS.TRUSTED' | translate }}:</span>
+              <div *ngIf="providerPartners.Login == providerPartners.requesterProviderId">
+                <div
+                  *ngIf="providerPartners.isTrustedPartnerForRequester == false"
+                  class="status-chip status-negative"
+                >
+                  {{ 'PROVIDER_PARTNERS.NO' | translate }}
+                </div>
+                <div
+                  *ngIf="providerPartners.isTrustedPartnerForRequester == true"
+                  class="status-chip status-positive"
+                >
+                  {{ 'PROVIDER_PARTNERS.YES' | translate }}
+                </div>
+              </div>
+              <div *ngIf="providerPartners.Login == providerPartners.coordinatorProviderId">
+                <div
+                  *ngIf="providerPartners.isTrustedPartnerForCoordinator == false"
+                  class="status-chip status-negative"
+                >
+                  {{ 'PROVIDER_PARTNERS.NO' | translate }}
+                </div>
+                <div
+                  *ngIf="providerPartners.isTrustedPartnerForCoordinator == true"
+                  class="status-chip status-positive"
+                >
+                  {{ 'PROVIDER_PARTNERS.YES' | translate }}
+                </div>
+              </div>
+            </td>
+            <td class="column-status">
+              <span class="mobile-header">{{ 'PROVIDER_PARTNERS.STATUS' | translate }}:</span>
+              <span
+                class="status-chip"
+                [ngClass]="getStatusClass(providerPartners.requestStatus.status)"
+              >
+                {{providerPartners.requestStatus.status}}
+              </span>
+            </td>
+            <td class="column-actions">
+              <span class="mobile-header">{{ 'PROVIDER_PARTNERS.ACTIONS' | translate }}:</span>
+              <div class="action-icons">
+                <ng-container
+                  *ngIf="providerPartners.requesterProviderId == providerPartners.Login"
+                >
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Approved'"
+                    class="btn-icon btn-danger"
+                    [title]="'PROVIDER_PARTNERS.END_PARTNERSHIP_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.END_PARTNERSHIP_ARIA' | translate"
+                    (click)="statusUpdateEndPartnership(providerPartners)"
+                  >
+                    <i class="ph ph-hand-palm"></i>
+                  </button>
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Approved'"
+                    class="btn-icon btn-edit"
+                    [title]="'PROVIDER_PARTNERS.EDIT_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.EDIT_ARIA' | translate"
+                    (click)="editProviderPartners(i,providerPartners)"
+                  >
+                    <i class="ph ph-pencil-simple"></i>
+                  </button>
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Pending'"
+                    class="btn-icon btn-danger"
+                    [title]="'PROVIDER_PARTNERS.CANCEL_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.CANCEL_ARIA' | translate"
+                    (click)="statusUpdateCancelled(providerPartners)"
+                  >
+                    <i class="ph ph-x"></i>
+                  </button>
+                </ng-container>
+
+                <ng-container
+                  *ngIf="providerPartners.coordinatorProviderId == providerPartners.Login"
+                >
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Pending'"
+                    class="btn-icon btn-success"
+                    [title]="'PROVIDER_PARTNERS.APPROVE_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.APPROVE_ARIA' | translate"
+                    (click)="statusUpdateApproved(providerPartners)"
+                  >
+                    <i class="ph ph-thumbs-up"></i>
+                  </button>
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Pending'"
+                    class="btn-icon btn-danger"
+                    [title]="'PROVIDER_PARTNERS.DENY_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.DENY_ARIA' | translate"
+                    (click)="statusUpdateDeclined(providerPartners)"
+                  >
+                    <i class="ph ph-thumbs-down"></i>
+                  </button>
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Approved'"
+                    class="btn-icon btn-danger"
+                    [title]="'PROVIDER_PARTNERS.END_PARTNERSHIP_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.END_PARTNERSHIP_ARIA' | translate"
+                    (click)="statusUpdateEndPartnership(providerPartners)"
+                  >
+                    <i class="ph ph-hand-palm"></i>
+                  </button>
+                  <button
+                    *ngIf="providerPartners.requestStatus.status === 'Approved'"
+                    class="btn-icon btn-edit"
+                    [title]="'PROVIDER_PARTNERS.EDIT_TITLE' | translate"
+                    [attr.aria-label]="'PROVIDER_PARTNERS.EDIT_ARIA' | translate"
+                    (click)="editProviderPartners(i,providerPartners)"
+                  >
+                    <i class="ph ph-pencil-simple"></i>
+                  </button>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>{{ 'PROVIDER_PARTNERS.NO_RECORDS' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Add/Edit provider-partners form - moved outside the showGrid container -->
+  <div *ngIf="!showGrid" class="form-view">
+    <div *ngIf="pageName === 'Add'" class="form-container">
+      <h2 class="form-title">
+        {{pageName}} {{ 'PROVIDER_PARTNERS.PROVIDER_PARTNER' | translate }}
+      </h2>
+
+      <form novalidate #userForm="ngForm" class="data-form">
+        <div class="form-group">
+          <label for="provider" class="form-label">
+            {{ 'PROVIDER_PARTNERS.PARTNER_NAME' | translate }}
+            <span class="required-indicator">*</span>
+          </label>
+          <select
+            id="provider"
+            class="form-select"
+            [(ngModel)]="providerPartners.coordinatorProviderId"
+            name="provider"
+            [required]="true"
+            pattern="[0-9\ ]{1,100}"
+            #provider="ngModel"
+            [ngClass]="{'invalid-input': !provider.valid && !provider.pristine}"
+            aria-describedby="provider-error"
+          >
+            <option *ngFor="let provider of providersList" [value]="provider.providerId">
+              {{provider.providerName}}
+            </option>
+          </select>
+          <div
+            id="provider-error"
+            class="error-message"
+            *ngIf="!provider.valid && !provider.pristine"
+          >
+            {{ 'PROVIDER_PARTNERS.VALID_PARTNER_ERROR' | translate }}
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            [attr.aria-label]="'PROVIDER_PARTNERS.CANCEL_ARIA' | translate"
+          >
+            {{ 'PROVIDER_PARTNERS.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="addEditProviderPartner(providerPartners)"
+            [disabled]="!userForm.form.valid"
+            [attr.aria-label]="'PROVIDER_PARTNERS.SEND_REQUEST_ARIA' | translate"
+          >
+            {{ 'PROVIDER_PARTNERS.SEND_REQUEST' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="pageName === 'Edit'" class="form-container">
+      <h2 class="form-title">
+        {{pageName}} {{ 'PROVIDER_PARTNERS.PROVIDER_PARTNER' | translate }}
+      </h2>
+
+      <form novalidate #userForm="ngForm" class="data-form">
+        <div class="form-group">
+          <label for="partnerName" class="form-label"
+            >{{ 'PROVIDER_PARTNERS.PARTNER_NAME' | translate }}</label
+          >
+          <input
+            type="text"
+            id="partnerName"
+            class="form-control"
+            [(ngModel)]="providerPartner.name"
+            #partner="ngModel"
+            name="provider"
+            [disabled]="true"
+            [attr.aria-label]="'PROVIDER_PARTNERS.PARTNER_NAME_ARIA' | translate"
+          />
+        </div>
+
+        <div class="form-group checkbox-group">
+          <div *ngIf="providerPartner.Login == providerPartner.requesterProviderId">
+            <div class="form-checkbox">
+              <input
+                id="isTrusted"
+                type="checkbox"
+                name="isTrusted"
+                [value]="true"
+                [(ngModel)]="providerPartner.isTrustedPartnerForRequester"
+                [attr.aria-label]="'PROVIDER_PARTNERS.TRUSTED_PARTNER_ARIA' | translate"
+              />
+              <label for="isTrusted" class="checkbox-label"
+                >{{ 'PROVIDER_PARTNERS.IS_TRUSTED_PARTNER' | translate }}</label
+              >
+            </div>
+            <div class="checkbox-hint">{{ 'PROVIDER_PARTNERS.TRUSTED_HINT' | translate }}</div>
+          </div>
+          <div *ngIf="providerPartner.Login == providerPartner.coordinatorProviderId">
+            <div class="form-checkbox">
+              <input
+                id="Trusted"
+                type="checkbox"
+                name="Trusted"
+                [value]="true"
+                [(ngModel)]="providerPartner.isTrustedPartnerForCoordinator"
+                [attr.aria-label]="'PROVIDER_PARTNERS.TRUSTED_PARTNER_ARIA' | translate"
+              />
+              <label for="Trusted" class="checkbox-label"
+                >{{ 'PROVIDER_PARTNERS.IS_TRUSTED_PARTNER' | translate }}</label
+              >
+            </div>
+            <div class="checkbox-hint">{{ 'PROVIDER_PARTNERS.TRUSTED_HINT' | translate }}</div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            [attr.aria-label]="'PROVIDER_PARTNERS.CANCEL_ARIA' | translate"
+          >
+            {{ 'PROVIDER_PARTNERS.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="addEditProviderPartner(providerPartner)"
+            [disabled]="!userForm.form.valid"
+            [attr.aria-label]="'PROVIDER_PARTNERS.UPDATE_ARIA' | translate"
+          >
+            {{ 'PROVIDER_PARTNERS.UPDATE' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+// Common table styles
+table {
+  width: 100%;
+}
+
+th,
+td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.table-td-padding {
+  padding: 5px !important;
+}
+
+// Scrollable table container
+.scrollable-table {
+  max-height: 700px;
+  overflow: auto;
+}
+
+// Pagination
+.ui-paginator-element {
+  padding: 0 5px 0 5px;
+}

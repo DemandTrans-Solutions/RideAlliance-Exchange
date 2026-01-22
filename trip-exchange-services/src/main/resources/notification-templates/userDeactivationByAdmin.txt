@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Deactivation by Admin</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  .email-container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .email-header {
+    background-color: #176799;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  .email-body {
+    padding: 20px;
+  }
+  .email-footer {
+    background-color: #ebebeb;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  a {
+    color: #176799;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+<div class="email-container">
+  <div class="email-header">
+    <h1>User Deactivation</h1>
+  </div>
+  <div class="email-body">
+    <p>Hello ${name},</p>
+    <p>Your account is deactivated successfully by admin. </p>
+
+  </div>
+  <div class="email-footer">
+    <p>&copy; 2025 TripExchange</p>
+  </div>
+</div>
+</body>
+</html>

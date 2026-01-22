@@ -1,0 +1,146 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: clearinghouse
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://REPLACE_WITH_URL
+    username: REPLACE_WITH_CREDENTIALS
+    password: REPLACE_WITH_CREDENTIALS
+    vectordb:
+      url: jdbc:postgresql://REPLACE_WITH_URL
+      username: REPLACE_WITH_CREDENTIALS
+      password: REPLACE_WITH_CREDENTIALS
+      driver-class-name: org.postgresql.Driver
+  ai:
+    mcp:
+      server:
+        enabled: false
+        stdio: false
+        #base-url: http://localhost:8080/mcp # or your desired port
+    bedrock:
+
+      # AWS Credentials and Region for Bedrock
+      aws:
+        region: us-east-1
+        access-key: REPLACE_WITH_CREDENTIALS
+        secret-key: REPLACE_WITH_CREDENTIALS
+
+      # Enable Cohere embedding model on Bedrock
+      cohere:
+        embedding:
+          enabled: true
+          model: cohere.embed-english-v3 # Specify the Cohere model ID
+
+      # Explicitly disable Titan embedding model on Bedrock
+      titan:
+        embedding:
+          enabled: false
+
+      # Configuration for the chat model
+      converse:
+        chat:
+          enabled: true
+          options:
+            model: amazon.nova-lite-v1:0
+            maxRequestsPerMinute: 50
+
+    # Configuration for the vector store
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1024 # This must match the dimensions of cohere.embed-english-v3
+  jpa:
+    properties:
+      javax:
+        persistence:
+          transactionType: JTA
+      hibernate:
+        transaction:
+          coordinator_class: jta
+          jta:
+            platform: org.hibernate.engine.transaction.jta.platform.internal.AtomikosJtaPlatform
+
+
+jdbc:
+  driverClassName: com.mysql.cj.jdbc.Driver
+  url: jdbc:mysql://REPLACE_WITH_URL
+  username: REPLACE_WITH_CREDENTIALS
+  password: REPLACE_WITH_CREDENTIALS
+
+hibernate:
+  dialect: org.hibernate.dialect.MySQL8Dialect
+  show_sql: false
+  format_sql: true
+
+email:
+  host: email-smtp.us-east-1.amazonaws.com
+  port: 587
+  username: REPLACE_WITH_CREDENTIALS
+  password: REPLACE_WITH_CREDENTIALS  
+  from:   REPLACE_WITH_CREDENTIALS
+  to: REPLACE_WITH_CREDENTIALS
+  subject: Trip Exchange
+  transport:
+    protocol: smtp
+  smtp:
+    auth: true
+    starttls:
+      enable: true
+  debug: true
+
+#for Azure API url
+azureApiUrl: https://atlas.microsoft.com/route/directions/json?
+subscriptionKey: REPLACE_WITH_CREDENTIALS
+
+
+message:
+  source:
+    basename: i18n/messages
+
+hostedSiteUrl: https://exchange.demandtrans-apis.com
+token:
+  secret: REPLACE_WITH_CREDENTIALS
+
+timezone:
+  syncAPI: America/Denver
+  abstractEntity: America/Denver
+
+
+#for weekly report sending #scheduled cron task with timezone
+cronExpression: 0 0 17 * * 5
+cronExpressionTimeZone: America/Denver
+
+
+logging:
+  level:
+    com:
+      clearinghouse: DEBUG
+    org:
+      hibernate: DEBUG
+      hibernate.SQL: DEBUG
+      hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+
+uber:
+  # Base URL for the TDS / Uber API middleware  
+  base-url: https://tds-services.demandtrans-apis.com
+  
+  # Client credentials used to obtain an access token from the /auth/apiKeyToken endpoint
+  # Replace these with real values in each environment (local/qa/prod) or use secrets management
+  client-id: REPLACE_WITH_CREDENTIALS
+  api-key: REPLACE_WITH_CREDENTIALS
+
+security:
+  login-validate:
+    # Base64 encoded 128/192/256-bit AES key. Provide via env var SHARED_KEY_BASE64 in production.
+    # sharedKey: "${SHARED_KEY_BASE64:}"
+    sharedKey: REPLACE_WITH_CREDENTIALS
+    # TTL in seconds for encoded payloads (used if payload includes a timestamp)
+    ttlSeconds: 120
+
+

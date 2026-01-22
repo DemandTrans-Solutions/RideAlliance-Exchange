@@ -1,0 +1,60 @@
+.cost-estimator-container {
+  // Modern styling for the cost estimator component
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    border: none;
+
+    .card-header {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+
+      h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+  }
+
+  // Input styling
+  .p-inputgroup {
+    .p-inputgroup-addon {
+      background-color: var(--surface-b);
+      color: var(--text-color);
+      border-color: var(--surface-d);
+    }
+  }
+
+  // Form control theming
+  .form-control {
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+    }
+
+    &::placeholder {
+      color: var(--text-color-secondary);
+      opacity: 0.7;
+    }
+
+    &:disabled {
+      background-color: var(--surface-d);
+      cursor: not-allowed;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .offset-md-2 {
+      margin-left: 0;
+    }
+
+    .col-md-8 {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,120 @@
+<div class="admin-container">
+  <div class="view-container">
+    <section id="content" class="animate-fade-up">
+      <div class="page-container">
+        <header class="page-header">
+          <div class="header-content">
+            <div class="header-icon">
+              <i class="ph ph-user" aria-hidden="true"></i>
+            </div>
+            <h1 class="page-title">{{ 'ADMIN_PAGE.TITLE' | translate }}</h1>
+          </div>
+        </header>
+
+        <div class="reports-layout">
+          <nav class="reports-sidebar" aria-label="{{ 'ADMIN_PAGE.NAV_ARIA' | translate }}">
+            <ul class="nav-menu">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/admin/providers" routerLinkActive="active">
+                  <i class="ph ph-buildings" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.PROVIDERS' | translate }}</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/admin/users" routerLinkActive="active">
+                  <i class="ph ph-users" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.USERS' | translate }}</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  (click)="checkUser()"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  [routerLink]="[role === 'ROLE_ADMIN' ? '/admin/adminProviderPartners' : '/admin/providerPartners']"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-handshake" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.PROVIDER_PARTNERS' | translate }}</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  (click)="checkService()"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  [routerLink]="['/admin/serviceArea']"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-van" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.SERVICES' | translate }}</span>
+                </a>
+              </li>
+              <!-- Added Fund Source menu item -->
+              <li class="nav-item" *ngIf="role === 'ROLE_ADMIN'">
+                <a
+                  class="nav-link"
+                  routerLink="/admin/fundSource"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-currency-dollar" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.FUND_SOURCE' | translate }}</span>
+                </a>
+              </li>
+              <!-- Added Cost Estimator menu item -->
+              <li class="nav-item" *ngIf="role === 'ROLE_ADMIN' || role === 'ROLE_PROVIDERADMIN'">
+                <a
+                  class="nav-link"
+                  routerLink="/admin/cost-estimator"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-calculator" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN_PAGE.COST_ESTIMATOR' | translate }}</span>
+                </a>
+              </li>
+              <!-- Added Hospitality (Medical Centers) menu item -->
+              <li class="nav-item" *ngIf="role === 'ROLE_ADMIN' || role === 'ROLE_PROVIDERADMIN'">
+                <a
+                  class="nav-link"
+                  routerLink="/admin/hospitality"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-hospital" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN.HOSPITALITY.TITLE' | translate }}</span>
+                </a>
+              </li>
+
+
+              <!-- Trip Acceptance is not implemented on the back end so it is hidden here
+              <li class="nav-item" *ngIf="role === 'ROLE_ADMIN' || role === 'ROLE_PROVIDERADMIN'">
+                <a
+                  class="nav-link"
+                  routerLink="/admin/trip-acceptance"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: false}"
+                  style="cursor: pointer"
+                >
+                  <i class="ph ph-check-circle" aria-hidden="true"></i>
+                  <span>{{ 'ADMIN.TRIP_ACCEPTANCE.TITLE' | translate }}</span>
+                </a>
+              </li>
+               -->
+            </ul>
+          </nav>
+
+          <main class="reports-content">
+            <router-outlet></router-outlet>
+          </main>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

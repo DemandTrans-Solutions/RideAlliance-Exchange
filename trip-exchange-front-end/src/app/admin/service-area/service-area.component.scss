@@ -1,0 +1,445 @@
+/* Component-specific styles */
+.admin-module {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 144px); /* Account for header, footer, and padding */
+  padding: 15px 0;
+  position: relative;
+}
+
+/* Form view container */
+.form-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 100%;
+}
+
+.form-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 0 15px;
+  padding-bottom: var(--space-lg); /* Add padding to ensure buttons are visible */
+}
+
+/* Form title */
+.form-title {
+  margin-bottom: 20px;
+}
+
+/* Service form layout */
+.service-form-layout {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  gap: 20px;
+  flex: 1;
+  min-height: 0; /* Allow content to scroll */
+  height: calc(100% - var(--space-lg)); /* Adjust height to include form-actions-container */
+}
+
+/* Map container styling */
+.service-form-map {
+  flex: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #d8d8d8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Map instructions styling */
+.map-instructions-container {
+  background-color: var(--card-background, #fff);
+  border-bottom: 1px solid var(--border-color, #d8d8d8);
+  z-index: 10;
+}
+
+.instructions-toggle {
+  background: none;
+  border: none;
+  width: 100%;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--neutral-800, #333);
+  background-color: var(--neutral-100, #f8f9fa);
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: var(--neutral-200, #e9ecef);
+  }
+
+  i {
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: 0;
+      margin-left: 8px;
+    }
+  }
+
+  span {
+    flex-grow: 1;
+    text-align: left;
+  }
+}
+
+.map-instructions {
+  padding: 15px;
+  background-color: var(--neutral-50, #f8f9fa);
+  transition: all 0.3s ease;
+  max-height: 300px;
+  overflow: hidden;
+
+  &.collapsed {
+    max-height: 0;
+    padding: 0 15px;
+    opacity: 0;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+
+    li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+
+      i {
+        margin-right: 10px;
+        margin-top: 3px;
+        color: var(--primary-color, #007bff);
+        width: 16px;
+        text-align: center;
+      }
+    }
+  }
+
+  .map-tip {
+    font-style: italic;
+    color: var(--neutral-700, #495057);
+    margin-top: 10px;
+    font-size: 0.9em;
+    padding: 8px 12px 8px 26px;
+    border-radius: 4px;
+    font-weight: 500;
+    background-color: var(--neutral-100, #f0f0f0);
+    border-left: 3px solid var(--primary-color, #007bff);
+  }
+}
+
+/* Leaflet map container */
+.service-map {
+  width: 100%;
+  flex: 1;
+  z-index: 1;
+}
+
+/* Service form main */
+.service-form-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-width: 50%;
+  padding-right: 20px;
+  overflow-y: auto;
+
+  .data-form {
+    margin-bottom: 0; // Remove bottom margin
+  }
+}
+
+.form-actions-container {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--card-background, #fff);
+  z-index: 100;
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+  margin-top: 0;
+}
+
+/* Dark mode override with higher specificity */
+@media (prefers-color-scheme: dark) {
+  .form-actions-container {
+    background-color: var(--neutral-200, #343a40) !important;
+  }
+
+  .map-instructions-container {
+    background-color: var(--neutral-200, #343a40) !important;
+    border-bottom: 1px solid var(--neutral-300, #495057) !important;
+  }
+
+  .instructions-toggle {
+    background-color: var(--neutral-300, #495057) !important;
+    color: var(--neutral-50, #f8f9fa) !important;
+
+    &:hover {
+      background-color: var(--neutral-400, #6c757d) !important;
+    }
+  }
+
+  .map-instructions {
+    background-color: var(--neutral-200, #343a40) !important;
+    color: var(--neutral-50, #f8f9fa) !important;
+
+    .map-tip {
+      color: var(--neutral-800, #212529) !important;
+      background-color: var(--neutral-300, #ced4da) !important;
+      border-left: 3px solid var(--primary-300, #0d6efd) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    ul li i {
+      color: var(--primary-200, #63a9f3) !important;
+    }
+  }
+}
+
+/* Section subtitle */
+.section-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  padding-top: var(--space-md);
+  padding-bottom: var(--space-md);
+  margin-top: 0;
+}
+
+/* Form actions */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 15px; // Reduce padding
+  background-color: var(--card-background, #fff);
+  border-top: 1px solid var(--border-color, #d8d8d8);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode override for form-actions */
+@media (prefers-color-scheme: dark) {
+  .form-actions {
+    background-color: var(--neutral-200, #343a40) !important;
+    border-top: 1px solid var(--neutral-300, #495057) !important;
+  }
+}
+
+/* Responsive layout */
+@media (min-width: 992px) {
+  .service-form-layout {
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .service-form-main {
+    flex: 1;
+    max-width: 50%;
+    padding-right: 20px;
+    overflow-y: auto;
+  }
+
+  .service-form-map {
+    flex: 1;
+    max-width: 50%;
+    height: auto;
+  }
+}
+
+/* File upload container styling */
+.file-upload-container {
+  margin-bottom: 15px;
+
+  .helper-text {
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+}
+
+/* Ensure proper Leaflet draw control styling */
+:host ::ng-deep {
+  .leaflet-draw-toolbar a {
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .leaflet-draw-actions a {
+    color: #333;
+    background-color: #f8f9fa;
+    width: auto;
+    height: auto;
+    line-height: normal;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-bottom: 1px solid #d8d8d8;
+  }
+
+  .leaflet-draw-actions a:hover {
+    background-color: #e9ecef;
+  }
+}
+
+/* Table styling */
+.data-table-container {
+  margin: 15px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Common table styles */
+table {
+  width: 100%;
+}
+
+th,
+td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.table-td-padding {
+  padding: 5px !important;
+}
+
+/* Scrollable table container */
+.scrollable-table {
+  max-height: 700px;
+  overflow: auto;
+}
+
+/* Form styling */
+.data-form {
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .input-currency {
+    position: relative;
+
+    .currency-symbol {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+    }
+
+    .form-control {
+      padding-left: 25px;
+    }
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+
+    .form-group {
+      flex: 1;
+    }
+  }
+}
+
+:host ::ng-deep .p-datatable {
+  font-size: 16px;
+
+  .p-datatable-header {
+    background-color: var(--neutral-100);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+  }
+
+  .p-datatable-thead > tr > th {
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    font-weight: 600;
+    padding: var(--space-md);
+    border-color: var(--neutral-200);
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .p-datatable-tbody > tr {
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--neutral-100);
+    }
+
+    > td {
+      padding: var(--space-md);
+      border-color: var(--neutral-200);
+      font-size: 16px;
+
+      .action-buttons {
+        display: flex;
+        gap: var(--space-xs);
+
+        button {
+          width: 28px;
+          height: 28px;
+          border-radius: var(--border-radius-full);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all var(--transition-fast);
+          background-color: var(--neutral-100);
+          border: none;
+          color: var(--neutral-600);
+
+          &:hover {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+          }
+
+          i {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  .p-paginator {
+    background-color: var(--neutral-100);
+    border-top: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+    font-size: 15px;
+
+    .p-paginator-pages .p-paginator-page.p-highlight {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  }
+
+  // Loading spinner
+  &-loading-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.action-buttons {
+  margin-bottom: 15px;
+}

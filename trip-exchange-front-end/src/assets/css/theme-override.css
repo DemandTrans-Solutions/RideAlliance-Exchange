@@ -1,0 +1,1728 @@
+/* Theme Override Stylesheet - Clearinghouse Client 2025 */
+/* Simplified, cross-browser compatible theming without !important conflicts */
+
+/* ============================================================================
+   LIGHT THEME
+   ============================================================================ */
+body.light-theme {
+  /* CSS Custom Properties */
+  --primary-color: #3a7bd5;
+  --primary-light: #5f9eff;
+  --primary-dark: #1c5eba;
+  --accent-color: #6c63ff;
+  --success-color: #00c853;
+  --warning-color: #ffc107;
+  --danger-color: #f44336;
+  --info-color: #03a9f4;
+
+  /* Neutral palette */
+  --neutral-900: #121417;
+  --neutral-800: #212529;
+  --neutral-700: #343a40;
+  --neutral-600: #495057;
+  --neutral-500: #6c757d;
+  --neutral-400: #adb5bd;
+  --neutral-300: #ced4da;
+  --neutral-200: #e9ecef;
+  --neutral-100: #f8f9fa;
+  --white: #ffffff;
+
+  /* Text color variable - critical for Windows compatibility */
+  --text-color: #343a40;
+  --text-color-dark: #343a40;
+  --text-color-light: #f8f9fa;
+
+  /* Icon colors */
+  --icon-color: #343a40;
+  --icon-hover-color: #3a7bd5;
+  --icon-active-color: #1c5eba;
+
+  /* Form colors */
+  --input-bg: #ffffff;
+  --input-text: #121417;
+  --input-border: #ced4da;
+  --input-placeholder: #6c757d;
+  --input-focus-border: #3a7bd5;
+  --input-focus-shadow: rgba(58, 123, 213, 0.2);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Body colors - direct assignment */
+  background-color: #ffffff;
+  color: #212529;
+}
+
+/* Text elements - explicit color assignment for light theme */
+/* Exclude PrimeNG overlays and their descendants */
+body.light-theme,
+body.light-theme p:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme span:not(.p-button-label):not(.p-badge):not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme div:not(.p-button):not(.badge):not(.p-datepicker):not(.p-calendar-panel):not(.p-multiselect-panel):not(.p-dropdown-panel):not(.p-dialog):not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h1:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h2:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h3:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h4:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h5:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme h6:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme li:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme td:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme th:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *),
+body.light-theme label:not(.p-datepicker *):not(.p-calendar-panel *):not(.p-multiselect-panel *):not(.p-dropdown-panel *):not(.p-dialog *) {
+  color: #343a40;
+}
+
+/* Icons - explicit color for light theme */
+body.light-theme .ph,
+body.light-theme i.ph {
+  color: #343a40;
+}
+
+/* Icons in interactive elements inherit parent color */
+body.light-theme button .ph,
+body.light-theme a .ph,
+body.light-theme .btn .ph {
+  color: inherit;
+}
+
+/* PrimeNG component text */
+body.light-theme .p-component {
+  color: #343a40;
+}
+
+/* Tables */
+body.light-theme .p-datatable {
+  background-color: #ffffff;
+  color: #121417;
+}
+
+body.light-theme .p-datatable .p-datatable-thead > tr > th {
+  background-color: #f8f9fa;
+  color: #343a40;
+  border-color: #e9ecef;
+}
+
+body.light-theme .p-datatable .p-datatable-tbody > tr {
+  background-color: #ffffff;
+  color: #121417;
+  border-color: #e9ecef;
+}
+
+body.light-theme .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #f8f9fa;
+}
+
+body.light-theme .p-datatable .p-datatable-tbody > tr > td {
+  color: #121417;
+  border-color: #e9ecef;
+}
+
+/* Ensure all text inside table cells is dark */
+body.light-theme .p-datatable .p-datatable-tbody > tr > td,
+body.light-theme .p-datatable .p-datatable-tbody > tr > td * {
+  color: #343a40;
+}
+
+/* Calendar */
+body.light-theme .p-datepicker {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.light-theme .p-datepicker * {
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker .p-datepicker-header {
+  background-color: #f8f9fa !important;
+  color: #343a40 !important;
+  border-bottom-color: #e9ecef !important;
+}
+
+body.light-theme .p-datepicker .p-datepicker-title,
+body.light-theme .p-datepicker .p-datepicker-title span {
+  color: #343a40 !important;
+}
+
+body.light-theme .p-datepicker table td {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker table td span {
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker table td.p-highlight span {
+  background-color: #3a7bd5 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .p-datepicker table td span:hover {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker {
+  background-color: #f8f9fa !important;
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker span {
+  color: #212529 !important;
+}
+
+/* Dialogs */
+body.light-theme .p-dialog {
+  background-color: #ffffff;
+  color: #343a40;
+}
+
+body.light-theme .p-dialog .p-dialog-header {
+  background-color: #f8f9fa;
+  color: #343a40;
+  border-bottom-color: #e9ecef;
+}
+
+body.light-theme .p-dialog .p-dialog-content {
+  background-color: #ffffff;
+  color: #343a40;
+}
+
+/* Header component overrides for light theme */
+body.light-theme .app-header {
+  background-color: #ffffff !important;
+  color: #343a40 !important;
+  border-bottom: 1px solid #e9ecef !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.light-theme .app-header .logo-text {
+  color: #3a7bd5 !important;
+}
+
+body.light-theme .app-header .nav-link,
+body.light-theme .app-header .nav-link i {
+  color: #495057 !important;
+}
+
+body.light-theme .app-header .nav-link:hover {
+  background-color: rgba(58, 123, 213, 0.08) !important;
+  color: #3a7bd5 !important;
+}
+
+body.light-theme .app-header .theme-toggle-btn,
+body.light-theme .app-header .theme-toggle-btn i,
+body.light-theme .app-header .user-button,
+body.light-theme .app-header .user-name,
+body.light-theme .app-header .user-role {
+  color: #343a40 !important;
+}
+
+body.light-theme .app-header .theme-toggle-btn:hover,
+body.light-theme .app-header .user-button:hover {
+  background-color: rgba(58, 123, 213, 0.08) !important;
+}
+
+body.light-theme .app-header .dropdown-panel {
+  background-color: #ffffff !important;
+  border: 1px solid #e9ecef !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-theme .app-header .dropdown-item {
+  color: #343a40 !important;
+}
+
+body.light-theme .app-header .dropdown-item:hover {
+  background-color: rgba(58, 123, 213, 0.08) !important;
+  color: #3a7bd5 !important;
+}
+
+body.light-theme .app-header .dropdown-divider {
+  background-color: #e9ecef !important;
+}
+
+/* Status badges - keep white text for consistency */
+body.light-theme .status-badge,
+body.light-theme .status-badge * {
+  color: #ffffff !important;
+}
+
+body.dark-theme .status-badge,
+body.dark-theme .status-badge * {
+  color: #ffffff !important;
+}
+
+/* Trip ticket action buttons - light theme visibility */
+body.light-theme .trip-ticket-container .action-buttons button {
+  color: #343a40 !important;
+  border-color: rgba(73, 80, 87, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08) !important;
+}
+
+body.light-theme .trip-ticket-container .action-buttons button i {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+body.light-theme .trip-ticket-container .action-buttons button:hover,
+body.light-theme .trip-ticket-container .action-buttons button:focus {
+  background-color: rgba(58, 123, 213, 0.12) !important;
+  border-color: rgba(58, 123, 213, 0.35) !important;
+  color: #1c5eba !important;
+}
+
+/* ============================================================================
+   DARK THEME
+   ============================================================================ */
+
+/* Define CSS variables at :root level for maximum specificity */
+:root:has(body.dark-theme),
+body.dark-theme {
+  /* CSS Custom Properties */
+  --primary-color: #5f9eff !important;
+  --primary-light: #80b0ff !important;
+  --primary-dark: #3a7bd5 !important;
+  --accent-color: #8b83ff !important;
+  --success-color: #2ecc71 !important;
+  --warning-color: #f39c12 !important;
+  --danger-color: #e74c3c !important;
+  --info-color: #3498db !important;
+
+  /* Neutral palette - inverted for dark theme */
+  --neutral-900: #f8f9fa !important;
+  --neutral-800: #e9ecef !important;
+  --neutral-700: #dee2e6 !important;
+  --neutral-600: #ced4da !important;
+  --neutral-500: #adb5bd !important;
+  --neutral-400: #6c757d !important;
+  --neutral-300: #495057 !important;
+  --neutral-200: #343a40 !important;
+  --neutral-100: #212529 !important;
+  --white: #121417 !important;
+
+  /* Text color variable - critical for Windows compatibility */
+  --text-color: #e9ecef !important;
+  --text-color-dark: #121417 !important;
+  --text-color-light: #e9ecef !important;
+  --text-color-secondary: #dee2e6 !important;
+
+  /* Icon colors */
+  --icon-color: #e9ecef;
+  --icon-hover-color: #80b0ff;
+  --icon-active-color: #5f9eff;
+
+  /* Form colors */
+  --input-bg: #2a2d35;
+  --input-text: #e9ecef;
+  --input-border: #495057;
+  --input-placeholder: #adb5bd;
+  --input-focus-border: #5f9eff;
+  --input-focus-shadow: rgba(95, 158, 255, 0.3);
+
+  /* Shadows - more subtle for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+  /* Body colors - direct assignment */
+  background-color: #212529;
+  color: #e9ecef;
+}
+
+/* Text elements - explicit color assignment for dark theme */
+body.dark-theme,
+body.dark-theme p,
+body.dark-theme span:not(.p-button-label):not(.p-badge),
+body.dark-theme div:not(.p-button):not(.badge),
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme li,
+body.dark-theme td,
+body.dark-theme th,
+body.dark-theme label {
+  color: #e9ecef !important;
+}
+
+/* Ultra-specific override for Windows - force light text color */
+html body.dark-theme *:not(.p-button-label):not(.p-badge):not(.badge):not(button):not(.btn) {
+  color: #e9ecef !important;
+}
+
+/* Icons - explicit color for dark theme */
+body.dark-theme .ph,
+body.dark-theme i.ph {
+  color: #e9ecef;
+}
+
+/* Icons in interactive elements inherit parent color */
+body.dark-theme button .ph,
+body.dark-theme a .ph,
+body.dark-theme .btn .ph {
+  color: inherit;
+}
+
+/* PrimeNG component text */
+body.dark-theme .p-component {
+  color: #e9ecef;
+}
+
+/* Tables */
+body.dark-theme .p-datatable {
+  background-color: #343a40;
+  color: #e9ecef;
+}
+
+body.dark-theme .p-datatable .p-datatable-thead > tr > th {
+  background-color: #495057;
+  color: #e9ecef;
+  border-color: #495057;
+}
+
+body.dark-theme .p-datatable .p-datatable-tbody > tr {
+  background-color: #343a40;
+  color: #e9ecef;
+  border-color: #495057;
+}
+
+body.dark-theme .p-datatable .p-datatable-tbody > tr:hover {
+  background-color: #495057;
+}
+
+body.dark-theme .p-datatable .p-datatable-tbody > tr > td {
+  color: #e9ecef;
+  border-color: #495057;
+}
+
+/* Ensure all text inside table cells is light */
+body.dark-theme .p-datatable .p-datatable-tbody > tr > td,
+body.dark-theme .p-datatable .p-datatable-tbody > tr > td * {
+  color: #e9ecef;
+}
+
+/* Calendar */
+body.dark-theme .p-datepicker {
+  background-color: #2a2d35;
+  color: #e9ecef;
+  border-color: #495057;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-header {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-bottom-color: #495057;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-title,
+body.dark-theme .p-datepicker .p-datepicker-title span {
+  color: #e9ecef;
+}
+
+/* Dialogs */
+body.dark-theme .p-dialog {
+  background-color: #2a2d35;
+  color: #e9ecef;
+}
+
+body.dark-theme .p-dialog .p-dialog-header {
+  background-color: #343a40;
+  color: #f8f9fa;
+  border-bottom-color: #495057;
+}
+
+body.dark-theme .p-dialog .p-dialog-content {
+  background-color: #2a2d35;
+  color: #e9ecef;
+}
+
+/* Autocomplete overlays - enforce dark theme */
+body.dark-theme .p-overlay,
+body.dark-theme .p-autocomplete-panel,
+body.dark-theme .p-autocomplete-items,
+body.dark-theme .p-autocomplete-panel .p-autocomplete-items {
+  background-color: #343a40 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-autocomplete-item {
+  background-color: transparent !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-autocomplete-item.p-highlight,
+body.dark-theme .p-autocomplete-item.p-highlight.p-focus {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .p-autocomplete-panel .p-autocomplete-empty-message,
+body.dark-theme .p-overlay * {
+  color: #e9ecef !important;
+}
+
+/* Toast notifications - dark theme */
+body.dark-theme .p-toast .p-toast-message {
+  background-color: #343a40 !important;
+  color: #e9ecef !important;
+  border-left-color: #5f9eff !important;
+}
+
+body.dark-theme .p-toast .p-toast-message.p-toast-message-success {
+  border-left-color: #2ecc71 !important;
+}
+
+body.dark-theme .p-toast .p-toast-message.p-toast-message-error {
+  border-left-color: #e74c3c !important;
+}
+
+body.dark-theme .p-toast .p-toast-message.p-toast-message-warn {
+  border-left-color: #f39c12 !important;
+}
+
+body.dark-theme .p-toast .p-toast-message.p-toast-message-info {
+  border-left-color: #3498db !important;
+}
+
+body.dark-theme .p-toast .p-toast-message .p-toast-message-content,
+body.dark-theme .p-toast .p-toast-message .p-toast-summary,
+body.dark-theme .p-toast .p-toast-message .p-toast-detail,
+body.dark-theme .p-toast .p-toast-message .p-toast-icon,
+body.dark-theme .p-toast .p-toast-message .p-toast-icon-close {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-toast .p-toast-message .p-toast-icon-close:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ride status dialog - dark theme adjustments */
+body.dark-theme .ride-status-dialog,
+body.dark-theme .ride-status-dialog * {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .ride-status-dialog .ride-status-content,
+body.dark-theme .ride-status-dialog .ride-status-layout,
+body.dark-theme .ride-status-dialog .map-section,
+body.dark-theme .ride-status-dialog .details-section {
+  background-color: transparent !important;
+}
+
+body.dark-theme .ride-status-dialog .map-section .map-header h4 {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .ride-status-dialog .map-section .map-layer-toggle .btn {
+  background: rgba(42, 45, 53, 0.95) !important;
+  border: 1px solid #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .ride-status-dialog .map-section .map-layer-toggle .btn.btn-primary {
+  background: #5f9eff !important;
+  border-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .ride-status-dialog .map-section .coord-readout {
+  background: rgba(26, 29, 36, 0.95) !important;
+  border: 1px solid rgba(233, 236, 239, 0.2) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-theme .ride-status-dialog .detail-card {
+  background: #2a2d35 !important;
+  border: 1px solid #495057 !important;
+  color: #e9ecef !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28) !important;
+}
+
+body.dark-theme .ride-status-dialog .detail-card .detail-header {
+  background: #343a40 !important;
+  border-bottom: 1px solid #495057 !important;
+}
+
+body.dark-theme .ride-status-dialog .detail-card .detail-header i {
+  color: #80b0ff !important;
+}
+
+body.dark-theme .ride-status-dialog .detail-card .detail-content {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .ride-status-dialog .status-detail,
+body.dark-theme .ride-status-dialog .request-time,
+body.dark-theme .ride-status-dialog .metric-row .metric-label,
+body.dark-theme .ride-status-dialog .vehicle-details .vehicle-color,
+body.dark-theme .ride-status-dialog .vehicle-details .vehicle-license,
+body.dark-theme .ride-status-dialog .driver-details .driver-contact,
+body.dark-theme .ride-status-dialog .driver-details .regulatory-info {
+  color: #ced4da !important;
+}
+
+body.dark-theme .ride-status-dialog .metric-row {
+  border-bottom: 1px solid #495057 !important;
+}
+
+body.dark-theme .ride-status-dialog .metric-row .metric-value {
+  color: #80b0ff !important;
+}
+
+body.dark-theme .ride-status-dialog .vehicle-image,
+body.dark-theme .ride-status-dialog .driver-image {
+  background: #1f2329 !important;
+}
+
+body.dark-theme .ride-status-dialog .tracking-iframe-container {
+  border: 1px solid #495057 !important;
+}
+
+body.dark-theme .ride-status-dialog .tracking-iframe-container iframe {
+  background: #1f2329 !important;
+}
+
+body.dark-theme .ride-status-dialog .loading-state,
+body.dark-theme .ride-status-dialog .error-state {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .ride-status-dialog .error-state p {
+  color: #dee2e6 !important;
+}
+
+/* Header component overrides for dark theme */
+body.dark-theme .app-header {
+  background-color: #2c3e50 !important;
+  color: #ecf0f1 !important;
+  border-bottom: 1px solid #1f2a36 !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+body.dark-theme .app-header .logo-text,
+body.dark-theme .app-header .nav-link,
+body.dark-theme .app-header .nav-link i,
+body.dark-theme .app-header .theme-toggle-btn,
+body.dark-theme .app-header .theme-toggle-btn i,
+body.dark-theme .app-header .user-button,
+body.dark-theme .app-header .user-name,
+body.dark-theme .app-header .user-role,
+body.dark-theme .app-header .dropdown-item {
+  color: #ecf0f1 !important;
+}
+
+body.dark-theme .app-header .nav-link:hover,
+body.dark-theme .app-header .user-button:hover,
+body.dark-theme .app-header .theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .app-header .dropdown-panel {
+  background-color: #34495e !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .app-header .dropdown-divider {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Form inputs */
+body.dark-theme .form-control,
+body.dark-theme .p-inputtext {
+  background-color: #2a2d35;
+  color: #e9ecef;
+  border-color: #495057;
+}
+
+/* Native select elements (timezone, time filters) */
+body.dark-theme select,
+body.dark-theme input[type="time"],
+body.dark-theme input[type="date"],
+body.dark-theme input[type="datetime-local"] {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme ::placeholder {
+  color: #adb5bd;
+  opacity: 1;
+}
+
+/* Buttons */
+body.dark-theme .btn-secondary {
+  background-color: #495057;
+  color: #f8f9fa;
+}
+
+body.dark-theme .btn-secondary:hover {
+  background-color: #6c757d;
+}
+
+/* ============================================================================
+   CROSS-BROWSER COMPATIBILITY FIXES
+   ============================================================================ */
+
+/* Ensure autofill doesn't break dark mode */
+body.dark-theme input:-webkit-autofill,
+body.dark-theme input:-webkit-autofill:hover,
+body.dark-theme input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #2a2d35 inset;
+  -webkit-text-fill-color: #e9ecef;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Fix for confirmation dialogs */
+body.dark-theme .p-confirm-dialog .p-dialog-title {
+  color: #ffffff;
+}
+
+body.dark-theme .p-confirm-dialog .p-dialog-content {
+  background-color: #2a2d35;
+  color: #e9ecef;
+}
+
+body.dark-theme .p-confirm-dialog-message {
+  color: #e9ecef;
+}
+
+/* Pagination */
+body.dark-theme .p-paginator {
+  background-color: #343a40;
+  border-color: #495057;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page {
+  color: #dee2e6;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #5f9eff;
+  color: #ffffff;
+}
+
+/* Dropdowns and Multi-select - explicit light theme styling */
+body.light-theme .p-dropdown,
+body.light-theme .p-multiselect {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.light-theme .p-dropdown .p-dropdown-label,
+body.light-theme .p-dropdown .p-placeholder,
+body.light-theme .p-multiselect .p-multiselect-label,
+body.light-theme .p-multiselect .p-placeholder {
+  color: #212529 !important;
+}
+
+body.light-theme .p-dropdown-panel,
+body.light-theme .p-multiselect-panel {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.light-theme .p-dropdown-panel *,
+body.light-theme .p-multiselect-panel * {
+  color: #212529 !important;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-item,
+body.light-theme .p-multiselect-panel .p-multiselect-item {
+  color: #212529 !important;
+  background-color: transparent !important;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-item:hover,
+body.light-theme .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-item.p-highlight,
+body.light-theme .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: #3a7bd5 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .p-multiselect-panel .p-multiselect-header {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+body.light-theme .p-multiselect .p-multiselect-token {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+  border: 1px solid #cfe2ff !important;
+}
+
+body.light-theme .p-multiselect .p-multiselect-token .p-multiselect-token-icon {
+  color: #1c5eba !important;
+}
+
+/* Dropdowns */
+body.dark-theme .p-dropdown-panel {
+  background-color: #343a40;
+  border-color: #495057;
+  color: #e9ecef;
+}
+
+/* Multi-select - WHITE background for readability in dark mode */
+body.dark-theme .p-multiselect {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #495057 !important;
+  /* Override CSS variables at component level */
+  --input-bg: #ffffff !important;
+  --input-text: #212529 !important;
+  --input-border: #495057 !important;
+}
+
+body.dark-theme .p-multiselect .p-multiselect-label,
+body.dark-theme .p-multiselect .p-multiselect-label-container,
+body.dark-theme .p-multiselect .p-placeholder {
+  color: #212529 !important;
+}
+
+body.dark-theme .p-multiselect .p-multiselect-trigger {
+  color: #212529 !important;
+}
+
+body.dark-theme .p-multiselect-panel {
+  background-color: #343a40 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-header {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-items {
+  background-color: #343a40 !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: #e9ecef;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+  background-color: #495057;
+}
+
+/* Report components - fix for Windows media query issue */
+body.dark-theme .reports-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .view-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .page-header {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .page-header .page-title {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .page-header .header-icon i {
+  color: #dee2e6 !important;
+}
+
+body.dark-theme .report-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .report-header {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .report-title {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .filter-panel {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .filter-label {
+  color: #ced4da !important;
+}
+
+body.dark-theme .report-data {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .report-section {
+  background-color: #343a40 !important;
+  border: 1px solid #495057 !important;
+}
+
+body.dark-theme .section-header {
+  background-color: #5f9eff !important;
+}
+
+body.dark-theme .section-title .btn {
+  color: #ffffff !important;
+}
+
+body.dark-theme .report-table td {
+  border-bottom-color: #495057 !important;
+}
+
+body.dark-theme .report-label {
+  color: #ced4da !important;
+}
+
+/* Common component containers */
+body.dark-theme .admin-container,
+body.dark-theme .page-container,
+body.dark-theme .content-area {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .form-container,
+body.dark-theme .card-container {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+/* Pagination components - fix for Windows media query issue */
+body.dark-theme .p-paginator {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background-color: #495057 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-current {
+  color: #ced4da !important;
+}
+
+body.dark-theme .p-paginator .p-dropdown {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-first,
+body.dark-theme .p-paginator .p-paginator-prev,
+body.dark-theme .p-paginator .p-paginator-next,
+body.dark-theme .p-paginator .p-paginator-last {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-first:hover,
+body.dark-theme .p-paginator .p-paginator-prev:hover,
+body.dark-theme .p-paginator .p-paginator-next:hover,
+body.dark-theme .p-paginator .p-paginator-last:hover {
+  background-color: #495057 !important;
+}
+
+/* Dialog footer button spacing */
+.p-dialog-footer-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.p-dialog-footer-buttons .p-button {
+  margin-left: 0;
+}
+
+/* Message component dark mode fixes */
+body.dark-theme .p-message {
+  background-color: #1e3a8a !important;
+  border-color: #3b82f6 !important;
+  color: #dbeafe !important;
+}
+
+body.dark-theme .p-message.p-message-info {
+  background-color: #1e3a8a !important;
+  border-color: #3b82f6 !important;
+}
+
+body.dark-theme .p-message .p-message-wrapper {
+  color: #dbeafe !important;
+}
+
+body.dark-theme .p-message .p-message-icon {
+  color: #60a5fa !important;
+}
+
+body.dark-theme .p-message .p-message-text {
+  color: #dbeafe !important;
+}
+
+/* =============================================
+   Upload Dialog (Trip Ticket) – Dark/Light Mode
+   ============================================= */
+/* Base: make sure upload dialog uses readable contrast in both themes */
+.upload-dialog-content .upload-instructions h2,
+.upload-dialog-content .upload-instructions h4,
+.upload-dialog-content .upload-instructions li,
+.upload-dialog-content .upload-instructions p,
+.upload-dialog-content .upload-instructions span {
+  color: var(--text-color) !important;
+}
+
+/* File drop zone */
+body.light-theme .upload-dialog-content .file-drop-zone {
+  background: #f8f9fa !important;
+  border: 1.5px solid #ced4da !important;
+}
+
+body.dark-theme .upload-dialog-content .file-drop-zone {
+  background: #23272e !important;
+  border: 1.5px solid #444 !important;
+}
+
+/* Hint text and icons inside drop zone */
+.upload-dialog-content .drop-zone-content p,
+.upload-dialog-content .drop-zone-content span,
+.upload-dialog-content .drop-zone-content i {
+  color: var(--text-color) !important;
+}
+
+/* Selected file row should not wrap the clear button under the card */
+.upload-dialog-content .selected-file {
+  flex-wrap: nowrap !important;
+}
+
+/* Selected file card */
+body.light-theme .upload-dialog-content .selected-file .file-details {
+  background: #ffffff !important;
+  border: 1px solid #e9ecef !important;
+}
+body.dark-theme .upload-dialog-content .selected-file .file-details {
+  background: #18191a !important;
+  border: 1px solid #333 !important;
+}
+.upload-dialog-content .selected-file .file-name,
+.upload-dialog-content .selected-file .file-size {
+  color: var(--text-color) !important;
+}
+
+/* Clear-file "X" button */
+body.light-theme .upload-dialog-content .selected-file .btn-icon {
+  background: #f1f3f5 !important;
+  border: 1px solid #e0e0e0 !important;
+}
+body.dark-theme .upload-dialog-content .selected-file .btn-icon {
+  background: #2a2d35 !important;
+  border: 1px solid #3a3a3a !important;
+}
+.upload-dialog-content .selected-file .btn-icon i {
+  color: var(--text-color) !important;
+}
+.upload-dialog-content .selected-file .btn-icon:hover {
+  filter: brightness(1.08);
+}
+
+/* Success and error alerts inside the dialog (Bootstrap .alert classes) */
+/* Light theme can use defaults, but ensure text inherits */
+.upload-dialog-content .alert * { color: inherit; }
+
+/* Dark theme – accessible contrast palettes */
+body.dark-theme .upload-dialog-content .alert-success {
+  background-color: #1b3d2a !important; /* deep green */
+  border-color: #2e7d32 !important;
+  color: #e6ffed !important;
+}
+body.dark-theme .upload-dialog-content .alert-danger,
+body.dark-theme .upload-dialog-content .alert-error {
+  background-color: #4a1f1f !important; /* deep red */
+  border-color: #a03a3a !important;
+  color: #ffe6e6 !important;
+}
+body.dark-theme .upload-dialog-content .alert-warning {
+  background-color: #4a3b1a !important; /* amber */
+  border-color: #b8860b !important;
+  color: #fff4d6 !important;
+}
+body.dark-theme .upload-dialog-content .alert i {
+  color: inherit !important;
+}
+
+/* Dialog footer buttons area in upload dialog – keep readable */
+.upload-dialog-content .dialog-footer {
+  background: transparent !important;
+  color: var(--text-color) !important;
+}
+
+/* =============================================
+   Login Component – Dark/Light Mode Fixes
+   ============================================= */
+
+/* Login container and box */
+body.light-theme .login-container {
+  background-color: #f5f7fa !important;
+}
+body.dark-theme .login-container {
+  background-color: #1a1a1a !important;
+}
+
+body.light-theme .login-box {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+body.dark-theme .login-box {
+  background-color: #2a2a2a !important;
+  color: #e1e1e1 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Login box headings */
+body.light-theme .login-box h2,
+body.light-theme .login-box h3 {
+  color: #333333 !important;
+}
+body.dark-theme .login-box h2,
+body.dark-theme .login-box h3 {
+  color: #e1e1e1 !important;
+}
+
+/* Divider "or" text - override inline styles */
+body.light-theme .divider span {
+  background: #ffffff !important;
+  color: #666666 !important;
+}
+body.dark-theme .divider span {
+  background: #2a2a2a !important;
+  color: #adb5bd !important;
+}
+
+/* Form controls */
+body.light-theme .login-box .form-control {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  border-color: #dee2e6 !important;
+}
+body.dark-theme .login-box .form-control {
+  background-color: #343a40 !important;
+  color: #e1e1e1 !important;
+  border-color: #495057 !important;
+}
+
+/* Input group addons */
+body.light-theme .login-box .input-group-addon {
+  background-color: #f1f3f5 !important;
+  border-color: #dee2e6 !important;
+  color: #333333 !important;
+}
+body.dark-theme .login-box .input-group-addon {
+  background-color: #495057 !important;
+  border-color: #6c757d !important;
+  color: #e1e1e1 !important;
+}
+
+/* Phone preview - override inline styles */
+body.light-theme .phone-preview {
+  background: #f8f9fa !important;
+  color: #6c757d !important;
+}
+body.dark-theme .phone-preview {
+  background: #343a40 !important;
+  color: #adb5bd !important;
+}
+
+/* Alert messages - ensure readable contrast */
+body.light-theme .login-box .alert {
+  color: inherit !important;
+}
+body.dark-theme .login-box .alert-info {
+  background-color: #1e3a5f !important;
+  border-color: #3b82f6 !important;
+  color: #dbeafe !important;
+}
+body.dark-theme .login-box .alert-warning {
+  background-color: #4a3b1a !important;
+  border-color: #b8860b !important;
+  color: #fff4d6 !important;
+}
+body.dark-theme .login-box .alert-danger {
+  background-color: #4a1f1f !important;
+  border-color: #a03a3a !important;
+  color: #ffe6e6 !important;
+}
+body.dark-theme .login-box .alert-success {
+  background-color: #1b3d2a !important;
+  border-color: #2e7d32 !important;
+  color: #e6ffed !important;
+}
+
+/* Debug panel - override inline styles */
+body.light-theme .debug-logs {
+  background: #f8f9fa !important;
+  color: #333333 !important;
+}
+body.dark-theme .debug-logs {
+  background: #343a40 !important;
+  color: #e1e1e1 !important;
+}
+
+/* Debug panel "No debug logs" text */
+body.light-theme .debug-logs div {
+  color: #666666 !important;
+}
+body.dark-theme .debug-logs div {
+  color: #adb5bd !important;
+}
+
+/* All text elements in login box */
+body.light-theme .login-box p,
+body.light-theme .login-box small,
+body.light-theme .login-box a,
+body.light-theme .login-box label {
+  color: #333333 !important;
+}
+body.dark-theme .login-box p,
+body.dark-theme .login-box small,
+body.dark-theme .login-box a,
+body.dark-theme .login-box label {
+  color: #e1e1e1 !important;
+}
+
+/* Links - maintain some contrast */
+body.light-theme .login-box a {
+  color: #007bff !important;
+}
+body.dark-theme .login-box a {
+  color: #5f9eff !important;
+}
+
+/* Placeholders */
+body.light-theme .login-box ::placeholder {
+  color: #6c757d !important;
+}
+body.dark-theme .login-box ::placeholder {
+  color: #adb5bd !important;
+}
+
+/* Text danger (validation messages) */
+body.light-theme .login-box .text-danger {
+  color: #dc3545 !important;
+}
+body.dark-theme .login-box .text-danger {
+  color: #ff6b6b !important;
+}
+
+/* Select dropdowns in phone input */
+body.light-theme .login-box select.form-control {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+  border-color: #dee2e6 !important;
+}
+body.dark-theme .login-box select.form-control {
+  background-color: #343a40 !important;
+  color: #e1e1e1 !important;
+  border-color: #495057 !important;
+}
+
+/* Additional login component classes */
+.divider-text {
+  padding: 0 15px !important;
+}
+body.light-theme .divider-text {
+  background: #ffffff !important;
+  color: #666666 !important;
+}
+body.dark-theme .divider-text {
+  background: #2a2a2a !important;
+  color: #adb5bd !important;
+}
+
+.divider-line {
+  margin-top: -12px !important;
+}
+body.light-theme .divider-line {
+  border-color: #dddddd !important;
+}
+body.dark-theme .divider-line {
+  border-color: #495057 !important;
+}
+
+.recaptcha-placeholder {
+  margin: 20px 0 !important;
+}
+
+.phone-input-group {
+  margin-bottom: 15px !important;
+}
+
+.verification-input {
+  margin-bottom: 15px !important;
+}
+
+.disclaimer-text {
+  margin-top: 15px !important;
+  font-size: 12px !important;
+}
+body.light-theme .disclaimer-text {
+  color: #666666 !important;
+}
+body.dark-theme .disclaimer-text {
+  color: #adb5bd !important;
+}
+
+.resend-text {
+  margin-top: 15px !important;
+}
+
+.debug-panel {
+  margin-top: 20px !important;
+  padding-top: 15px !important;
+}
+body.light-theme .debug-panel {
+  border-top: 2px solid #dddddd !important;
+}
+body.dark-theme .debug-panel {
+  border-top: 2px solid #495057 !important;
+}
+
+.debug-button {
+  margin-right: 10px !important;
+}
+
+.debug-logs {
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  padding: 10px !important;
+  margin-top: 10px !important;
+  border-radius: 4px !important;
+  font-family: monospace !important;
+  font-size: 12px !important;
+}
+
+.no-logs-message {
+  text-align: center !important;
+}
+body.light-theme .no-logs-message {
+  color: #666666 !important;
+}
+body.dark-theme .no-logs-message {
+  color: #adb5bd !important;
+}
+
+.log-entry {
+  margin-bottom: 2px !important;
+  word-break: break-all !important;
+}
+
+.message-container {
+  margin-top: 15px !important;
+}
+
+.nested-message {
+  margin-top: 10px !important;
+}
+
+/* Checkbox component dark mode fixes */
+body.dark-theme .p-checkbox {
+  --checkbox-bg: #2a2d35 !important;
+  --checkbox-border-color: #495057 !important;
+  --checkbox-checked-bg: #5f9eff !important;
+  --checkbox-checked-border-color: #5f9eff !important;
+  --checkbox-focus-shadow: 0 0 0 2px rgba(95, 158, 255, 0.2) !important;
+}
+
+body.dark-theme .p-checkbox .p-checkbox-box {
+  background-color: #2a2d35 !important;
+  border-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-checkbox .p-checkbox-box.p-highlight {
+  background-color: #5f9eff !important;
+  border-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .p-checkbox .p-checkbox-box:hover {
+  border-color: #6c757d !important;
+}
+
+body.dark-theme .p-checkbox .p-checkbox-box.p-highlight:hover {
+  background-color: #4d8cff !important;
+  border-color: #4d8cff !important;
+}
+
+body.dark-theme .p-checkbox .p-checkbox-box:focus {
+  box-shadow: 0 0 0 2px rgba(95, 158, 255, 0.2) !important;
+}
+
+body.dark-theme .checkbox-label {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .no-show-field label {
+  color: #e9ecef !important;
+}
+
+/* ============================================================================
+   SEND TO UBER DIALOG - LIGHT MODE FIXES
+   ============================================================================ */
+
+/* Light theme - ensure dialog has light backgrounds even when system is dark */
+body.light-theme .uber-dialog,
+body.light-theme .uber-dialog-body,
+body.light-theme .options-list {
+  background: #ffffff !important;
+  color: #212529 !important;
+}
+
+body.light-theme .uber-option {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff) !important;
+  border-color: #dee2e6 !important;
+  color: #212529 !important;
+}
+
+body.light-theme .uber-option.selected {
+  background: #e3f2fd !important;
+  border-color: #3a7bd5 !important;
+  box-shadow: 0 0 0 1px #3a7bd5 !important;
+}
+
+body.light-theme .uber-option .icon-col i {
+  color: #495057 !important;
+}
+
+body.light-theme .uber-option .capacity {
+  background: #f8f9fa !important;
+  color: #495057 !important;
+}
+
+body.light-theme .empty-state {
+  background: #ffffff !important;
+  border-color: #dee2e6 !important;
+  color: #6c757d !important;
+}
+
+body.light-theme .error-details {
+  background: #fff5f5 !important;
+  border-color: #fee !important;
+  color: #dc3545 !important;
+}
+
+/* Dark theme - ensure proper dark styling */
+body.dark-theme .uber-dialog,
+body.dark-theme .uber-dialog-body,
+body.dark-theme .options-list {
+  background: #18191a !important;
+  color: #f1f1f1 !important;
+}
+
+body.dark-theme .error-details {
+  background: #2a2a2a !important;
+  border-color: #404040 !important;
+  color: red !important;
+}
+
+body.dark-theme .uber-option {
+  background: linear-gradient(135deg, #222, #1a1a1a) !important;
+  border-color: #2d2d2d !important;
+  color: #f1f1f1 !important;
+}
+
+body.dark-theme .uber-option.selected {
+  background: #232c3d !important;
+  border-color: #3a7bd5 !important;
+  box-shadow: 0 0 0 1px #3a7bd5 !important;
+}
+
+body.dark-theme .uber-option .icon-col i {
+  color: #ccc !important;
+}
+
+body.dark-theme .uber-option .capacity {
+  background: #333 !important;
+  color: #bbb !important;
+}
+
+body.dark-theme .empty-state {
+  background: #222 !important;
+  border-color: #333 !important;
+  color: #bbb !important;
+}
+
+/* ============================================================================
+   RIDE STATUS BADGE - CONTRAST FIXES
+   ============================================================================ */
+
+/* Ensure status badges are always readable with white text on colored backgrounds */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--border-radius-full, 50px);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #ffffff !important;
+}
+
+
+
+
+body.light-theme .status-badge.status-success,
+body.dark-theme .status-badge.status-success {
+  background-color: #2e7d32 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .status-badge.status-info,
+body.dark-theme .status-badge.status-info {
+  background-color: #1976d2 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .status-badge.status-danger,
+body.dark-theme .status-badge.status-danger {
+  background-color: #d32f2f !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .status-badge.status-secondary,
+body.dark-theme .status-badge.status-secondary {
+  background-color: #616161 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .status-badge.status-warning,
+body.dark-theme .status-badge.status-warning {
+  background-color: #f57c00 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .status-badge.status-processing,
+body.dark-theme .status-badge.status-processing {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+
+
+/* ============================================================================
+   QUICK SUMMARY DROPDOWN - CROSS-PLATFORM FIXES
+   ============================================================================ */
+
+/* Quick Summary dropdown - light theme */
+body.light-theme .dropdown-content {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border: 1px solid #dee2e6 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-theme .dropdown-content div {
+  color: #212529 !important;
+}
+
+body.light-theme .dropdown-content strong {
+  color: #3a7bd5 !important;
+}
+
+/* Quick Summary dropdown - dark theme */
+body.dark-theme .dropdown-content {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border: 1px solid #495057 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-theme .dropdown-content div {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .dropdown-content strong {
+  color: #80b0ff !important;
+}
+
+/* Dropdown base styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  position: absolute;
+  z-index: 1000;
+  padding: 1rem;
+  border-radius: 6px;
+  min-width: 200px;
+  margin-top: 0.5rem;
+}
+
+.dropdown-content div {
+  padding: 0.25rem 0;
+  font-size: 14px;
+}
+
+/* Light theme pagination */
+body.light-theme .p-paginator {
+  background-color: #ffffff;
+  border-color: #e9ecef;
+}
+
+body.light-theme .p-paginator .p-paginator-pages .p-paginator-page {
+  color: #343a40;
+}
+
+body.light-theme .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #3a7bd5;
+  color: #ffffff;
+}
+
+/* Light theme dropdowns */
+body.light-theme .p-dropdown-panel {
+  background-color: #ffffff;
+  border-color: #ced4da;
+  color: #121417;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
+  color: #343a40;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-items .p-dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* ============================================================================
+   CRITICAL OVERRIDE FOR WINDOWS DARK MODE
+   ============================================================================ */
+
+/* Override :root --text-color when dark theme is active */
+html:has(body.dark-theme) {
+  --text-color: #e9ecef !important;
+  --text-color-secondary: #dee2e6 !important;
+}
+
+/* Fallback for browsers that don't support :has() */
+html body.dark-theme {
+  --text-color: #e9ecef !important;
+  --text-color-secondary: #dee2e6 !important;
+}
+
+/* Nuclear option - force all text to be light in dark mode */
+body.dark-theme * {
+  --text-color: #e9ecef !important;
+}
+
+/* ============================================================================
+   EDIT USER SCREEN - FOOTER VISIBILITY FIX
+   ============================================================================ */
+
+/* Ensure form actions are always visible and not covered by footer */
+.admin-module .form-view .form-container {
+  padding-bottom: 120px !important; /* Extra space for footer */
+  margin-bottom: 2rem !important;
+}
+
+.admin-module .form-view .form-actions {
+  position: relative !important;
+  z-index: 10 !important;
+  background-color: inherit;
+  padding: 1.5rem 0;
+  margin-top: 2rem;
+  border-top: 1px solid var(--neutral-200);
+}
+
+body.dark-theme .admin-module .form-view .form-actions {
+  border-top-color: #495057 !important;
+}
+
+/* Ensure scrolling works properly */
+.admin-module .form-view {
+  overflow-y: auto !important;
+  max-height: calc(100vh - 120px) !important;
+}
+
+/* Mobile specific - ensure buttons stay visible */
+@media (max-height: 800px) {
+  .admin-module .form-view .form-container {
+    padding-bottom: 150px !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .admin-module .form-view .form-container {
+    padding-bottom: 180px !important;
+  }
+}
+
+/* Ride Status > Rider Tracking button (Show/Hide Tracking) - dark mode visibility */
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary {
+  color: #e9ecef !important;               /* readable label */
+  border-color: #5f9eff !important;        /* primary accent border */
+  background-color: transparent !important;/* keep outline look */
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.3)) !important;
+}
+
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary .ph {
+  color: inherit !important;               /* icon matches label */
+}
+
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary:hover,
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary:focus {
+  background-color: rgba(95, 158, 255, 0.12) !important; /* subtle primary tint */
+  border-color: #80b0ff !important;
+  color: #ffffff !important;
+}
+
+/* Disabled state just in case this button is conditionally disabled */
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary:disabled,
+body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary.disabled {
+  color: #adb5bd !important;
+  border-color: #495057 !important;
+  background-color: rgba(52, 58, 64, 0.6) !important;
+  box-shadow: none !important;
+}
+

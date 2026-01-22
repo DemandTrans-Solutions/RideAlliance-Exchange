@@ -1,0 +1,408 @@
+<!-- Firebase 2FA Authentication Container -->
+<div class="login-container">
+  <div class="login-header">
+    <div class="logo">
+      <p class="style">{{ 'APP.TITLE' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="login-content">
+    <div class="login-box">
+      <h2>{{ 'LOGIN.SIGN_IN' | translate }} - Secure Login</h2>
+
+      <!-- Loading spinner -->
+      <div class="cssload-loader" *ngIf="loading$">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <!-- Persistent (hidden) reCAPTCHA containers so Firebase can initialize without DOM disappearance -->
+  <!-- Offscreen persistent reCAPTCHA containers (avoid display:none so grecaptcha can attach) -->
+  <div id="recaptcha-container-verification" style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true"></div>
+  <div id="recaptcha-container-enrollment" style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true"></div>
+  <div id="recaptcha-container-forced" style="position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;" aria-hidden="true"></div>
+      <!-- When loading, only show the spinner above. All interactive sections are hidden while processing -->
+      <div *ngIf="!loading$">
+
+        <!-- Step 1: Email/Password Authentication -->
+        <!-- Step 1: Authentication Options -->
+        <div class="auth-options" *ngIf="phase === 'initial' && authStep === 'email-password'">
+
+        <!-- Google Sign-In Button -->
+        <button
+          type="button"
+          class="btn btn-danger btn-lg btn-block btn-round google-signin-button"
+          [disabled]="loading$"
+          (click)="signInWithGoogle()"
+          style="margin-bottom: 20px; background-color: #db4437; border-color: #db4437;"
+        >
+          <i class="fab fa-google" style="margin-right: 8px;"></i>
+          Sign in with Google
+        </button>
+
+        <div class="divider" style="text-align: center; margin: 20px 0;">
+          <span class="divider-text">or</span>
+          <hr class="divider-line">
+        </div>
+
+        <!-- Email/Password Form -->
+        <form
+          [formGroup]="firebaseLoginForm"
+          (ngSubmit)="onFirstFactorSubmit()"
+          class="login-form"
+        >
+          <div class="input-group">
+            <span class="input-group-addon">
+              <i class="ph ph-user"></i>
+            </span>
+            <input
+              type="email"
+              pInputText
+              class="form-control"
+              id="email"
+              name="email"
+              formControlName="email"
+              [placeholder]="'LOGIN.EMAIL_PLACEHOLDER' | translate"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon">
+              <i class="ph ph-lock"></i>
+            </span>
+            <input
+              type="password"
+              pInputText
+              class="form-control"
+              id="password"
+              name="password"
+              formControlName="password"
+              [placeholder]="'LOGIN.PASSWORD_PLACEHOLDER' | translate"
+              required
+            />
+          </div>
+
+          <div
+            class="login-validation-message"
+            *ngIf="firebaseLoginForm.controls['password'].invalid && (firebaseLoginForm.controls['password'].dirty || firebaseLoginForm.controls['password'].touched)"
+          >
+            <small class="text-danger" *ngIf="firebaseLoginForm.controls['password'].hasError('required')">
+              {{ 'LOGIN.PASSWORD_REQUIRED' | translate }}
+            </small>
+            <small
+              class="text-danger"
+              *ngIf="firebaseLoginForm.controls['password'].hasError('minlength')"
+            >
+              {{ 'LOGIN.PASSWORD_LENGTH' | translate }}
+            </small>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg btn-block btn-round login-button"
+            [disabled]="!firebaseLoginForm.valid || loading$"
+          >
+            {{ 'LOGIN.BUTTON' | translate }}
+          </button>
+          </form>
+        </div>
+
+        <!-- Step 2: Multi-Factor Authentication (SMS) -->
+        <div class="mfa-container" *ngIf="authStep === 'mfa-verification'">
+        <h3>Two-Factor Authentication Required</h3>
+        <p>We've sent a verification code to your registered phone number.</p>
+
+  <!-- reCAPTCHA container (will be populated by Firebase) -->
+  <div class="recaptcha-placeholder"></div>
+
+        <!-- SMS Code Input -->
+        <div class="input-group" *ngIf="verificationId">
+          <span class="input-group-addon">
+            <i class="ph ph-phone"></i>
+          </span>
+          <input
+            type="text"
+            pInputText
+            class="form-control"
+            id="smsCode"
+            name="smsCode"
+            [(ngModel)]="smsVerificationCode"
+            placeholder="Enter 6-digit verification code"
+            maxlength="6"
+            required
+          />
+        </div>
+        <br />
+        <button
+          type="button"
+          class="btn btn-primary btn-lg btn-block btn-round"
+          [disabled]="!smsVerificationCode || smsVerificationCode.length !== 6 || loading$"
+          (click)="onMfaVerificationSubmit()"
+          *ngIf="verificationId"
+        >
+          Verify Code
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-secondary btn-lg btn-block btn-round"
+          [disabled]="loading$"
+          (click)="sendMfaCode()"
+          *ngIf="!verificationId"
+        >
+          Send Verification Code
+        </button>
+
+        <p class="text-center" style="margin-top: 15px;">
+          <a href="#" (click)="goBackToLogin()">← Back to Login</a>
+        </p>
+        </div>
+
+        <!-- Step 3: Mandatory MFA Enrollment (for users without MFA) -->
+        <div class="mfa-enrollment-container" *ngIf="phase === 'mfa-enrollment'">
+        <h3>🔐 Multi-Factor Authentication Required</h3>
+        <div class="alert alert-info">
+          <strong>Security Update Required:</strong> All users must now use 2-factor authentication.
+          Please provide your phone number to receive verification codes.
+        </div>
+
+        <!-- Phone Number Input (Country Code + Number) -->
+        <div class="input-group phone-input-group">
+          <span class="input-group-addon">
+            <i class="ph ph-phone"></i>
+          </span>
+          <!-- Country Code -->
+          <select
+            class="form-control"
+            [(ngModel)]="countryCode"
+            name="countryCode"
+          >
+            <option value="+1">+1 (US)</option>
+            <option value="+44">+44 (UK)</option>
+            <option value="+33">+33 (FR)</option>
+            <option value="+49">+49 (DE)</option>
+            <option value="+81">+81 (JP)</option>
+            <option value="+86">+86 (CN)</option>
+          </select>
+          <!-- Phone Number -->
+          <input
+            type="tel"
+            pInputText
+            class="form-control"
+            id="phoneNumber"
+            name="phoneNumber"
+            [(ngModel)]="phoneNumber"
+            placeholder="Enter phone number (e.g., 1234567890)"
+            pattern="[0-9]*"
+            maxlength="15"
+            required
+          />
+        </div>
+
+        <!-- Preview of full number -->
+        <div class="phone-preview" *ngIf="phoneNumber">
+          Full number: {{ countryCode }}{{ phoneNumber }}
+        </div>
+
+  <!-- reCAPTCHA container -->
+  <div class="recaptcha-placeholder"></div>
+
+        <!-- Verification Code Input (shown after SMS is sent) -->
+        <div class="input-group verification-input" *ngIf="verificationId">
+          <span class="input-group-addon">
+            <i class="ph ph-shield-check"></i>
+          </span>
+          <input
+            type="text"
+            pInputText
+            class="form-control"
+            id="verificationCode"
+            name="verificationCode"
+            [(ngModel)]="verificationCode"
+            placeholder="Enter 6-digit verification code"
+            maxlength="6"
+            required
+          />
+        </div>
+
+        <!-- Send SMS Button -->
+        <button
+          type="button"
+          class="btn btn-primary btn-lg btn-block btn-round"
+          [disabled]="!phoneNumber || !countryCode || loading$"
+          (click)="startMfaEnrollment()"
+          *ngIf="!verificationId"
+        >
+          Send Verification Code
+        </button>
+
+        <!-- Complete Enrollment Button -->
+        <button
+          type="button"
+          class="btn btn-success btn-lg btn-block btn-round"
+          [disabled]="!verificationCode || verificationCode.length !== 6 || loading$"
+          (click)="completeMfaEnrollment()"
+          *ngIf="verificationId"
+        >
+          Complete MFA Setup
+        </button>
+
+        <p class="text-center disclaimer-text">
+          This is a one-time setup. Your phone number will be used only for security verification.
+        </p>
+        </div>
+
+        <!-- Step 4: Mandatory MFA Verification (for users with MFA enrolled) -->
+        <div class="mfa-forced-verification-container" *ngIf="phase === 'mfa-verification'">
+        <h3>🔐 Multi-Factor Authentication</h3>
+        <p>Please verify your identity with the code sent to your registered phone number.</p>
+
+  <!-- reCAPTCHA container -->
+  <div class="recaptcha-placeholder"></div>
+
+        <!-- Verification Code Input -->
+        <div class="input-group verification-input" *ngIf="verificationId">
+          <span class="input-group-addon">
+            <i class="ph ph-shield-check"></i>
+          </span>
+          <input
+            type="text"
+            pInputText
+            class="form-control"
+            id="forcedVerificationCode"
+            name="forcedVerificationCode"
+            [(ngModel)]="verificationCode"
+            placeholder="Enter 6-digit verification code"
+            maxlength="6"
+            required
+          />
+        </div>
+
+        <!-- Verify Button -->
+        <button
+          type="button"
+          class="btn btn-success btn-lg btn-block btn-round"
+          [disabled]="!verificationCode || verificationCode.length !== 6 || loading$"
+          (click)="completeForcedMfaVerification()"
+          *ngIf="verificationId"
+        >
+          Verify & Sign In
+        </button>
+
+        <p class="text-center resend-text">
+          Didn't receive a code? <a href="#" (click)="startForcedMfaVerification()">Resend</a>
+        </p>
+        </div>
+
+        <!-- Forgot Password Link (only show on initial login step) -->
+        <p class="text-center" *ngIf="phase === 'initial' && authStep === 'email-password'">
+          <a [routerLink]="['/forgotPassword']">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+        </p>
+
+  <!-- Debug Logging Panel -->
+  <div *ngIf="showDebugPanel" class="debug-panel" style="margin-top: 20px; border-top: 2px solid #ddd; padding-top: 15px;">
+          <div class="text-center">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              (click)="toggleDebugLogs()"
+              style="margin-right: 10px;">
+              {{ showDebugLogs ? 'Hide' : 'Show' }} Debug Logs
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-warning"
+              (click)="clearDebugLogs()"
+              *ngIf="debugLogs.length > 0">
+              Clear Logs
+            </button>
+          </div>
+
+          <div class="debug-logs" *ngIf="showDebugLogs"
+               style="max-height: 300px; overflow-y: auto; background: #f8f9fa; padding: 10px; margin-top: 10px; border-radius: 4px; font-family: monospace; font-size: 12px;">
+            <div *ngIf="debugLogs.length === 0" class="no-logs-message">
+              No debug logs available
+            </div>
+            <div *ngFor="let log of debugLogs" class="log-entry">
+              {{ log }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Error Messages (shown even when not loading) -->
+      <div class="alert alert-danger message-container" *ngIf="errorMessage && !emailVerificationRequired">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Email Verification Required -->
+      <div class="alert alert-warning message-container" *ngIf="emailVerificationRequired">
+        <h4>Email Verification Required</h4>
+        <p>{{ errorMessage }}</p>
+        <div *ngIf="successMessage" class="alert alert-success nested-message">
+          {{ successMessage }}
+        </div>
+        <hr>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="sendVerificationEmail()"
+          [disabled]="loading$"
+        >
+          <i class="ph ph-paper-plane-tilt" style="margin-right: 8px;"></i>
+          Send New Verification Email
+        </button>
+      </div>
+
+      <!-- Success Messages -->
+      <div class="alert alert-success message-container" *ngIf="successMessage && !emailVerificationRequired">
+        {{ successMessage }}
+      </div>
+
+      <!-- Access Request Message (for unauthorized users) -->
+      <div class="alert alert-warning message-container" *ngIf="showAccessRequestMessage">
+        <h4>Access Required</h4>
+        <p>You are not authorized to access this application. Please contact an administrator at
+        <strong>admin&#64;example.com</strong> to request access.</p>
+      </div>
+
+      <!-- Forgot Password Link (only show on initial login step)
+      <p class="text-center" *ngIf="phase === 'initial' && authStep === 'email-password'">
+        <a [routerLink]="['/forgotPassword']">{{ 'LOGIN.FORGOT_PASSWORD' | translate }}</a>
+      </p>
+-->
+  <!-- Debug Logging Panel -->
+  <div *ngIf="showDebugPanel" class="debug-panel" style="margin-top: 20px; border-top: 2px solid #ddd; padding-top: 15px;">
+        <div class="text-center">
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            (click)="toggleDebugLogs()"
+            style="margin-right: 10px;">
+            {{ showDebugLogs ? 'Hide' : 'Show' }} Debug Logs
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-warning"
+            (click)="clearDebugLogs()"
+            *ngIf="debugLogs.length > 0">
+            Clear Logs
+          </button>
+        </div>
+
+        <div class="debug-logs" *ngIf="showDebugLogs">
+          <div *ngIf="debugLogs.length === 0" style="color: #666; text-align: center;">
+            No debug logs available
+          </div>
+          <div *ngFor="let log of debugLogs" style="margin-bottom: 2px; word-break: break-all;">
+            {{ log }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

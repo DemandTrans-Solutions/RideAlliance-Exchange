@@ -1,0 +1,83 @@
+// Import shared styles with corrected path
+@import '../styles/index';
+
+/* Modern Footer Component Styles - 2025 Edition */
+.app-footer {
+  background-color: var(--white);
+  border-top: 1px solid var(--neutral-200);
+  padding: var(--space-lg);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.footer-container {
+  width: 100%;
+  padding: 0 var(--space-xl);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+}
+
+.footer-copyright {
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.footer-link {
+  color: var(--neutral-600);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--primary-color);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-links {
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .app-footer {
+    background-color: var(--neutral-200);
+    border-top: 1px solid var(--neutral-300);
+  }
+
+  .footer-copyright {
+    color: var(--neutral-700);
+  }
+
+  .footer-link {
+    color: var(--neutral-700);
+
+    &:hover {
+      color: var(--primary-light);
+    }
+  }
+}

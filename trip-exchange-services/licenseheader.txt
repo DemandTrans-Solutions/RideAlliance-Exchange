@@ -1,0 +1,8 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}License to Clearing House Project
+${licensePrefix}To be used for Clearing House  project only 
+<#if licenseLast??>
+${licenseLast}
+</#if>

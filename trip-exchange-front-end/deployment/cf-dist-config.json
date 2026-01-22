@@ -1,0 +1,57 @@
+{
+  "CallerReference": "deploy-1751043568",
+  "Comment": "Distribution for trip-exchange-demos.demandtrans.com",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3Origin",
+        "DomainName": "trip-exchange-demos.demandtrans.com.s3.amazonaws.com",
+        "S3OriginConfig": {
+          "OriginAccessIdentity": "origin-access-identity/cloudfront/E1E0F9DCJ8QCR6"
+        }
+      }
+    ]
+  },
+  "DefaultRootObject": "index.html",
+  "Aliases": {
+    "Quantity": 1,
+    "Items": ["trip-exchange-demos.demandtrans.com"]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3Origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 2,
+      "Items": ["GET", "HEAD"],
+      "CachedMethods": { "Quantity": 2, "Items": ["GET", "HEAD"] }
+    },
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": { "Forward": "none" }
+    },
+    "TrustedSigners": { "Enabled": false, "Quantity": 0 },
+    "Compress": true,
+    "DefaultTTL": 86400,
+    "MinTTL": 0,
+    "MaxTTL": 31536000
+  },
+  "CustomErrorResponses": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "ErrorCode": 404,
+        "ResponsePagePath": "/index.html",
+        "ResponseCode": "200",
+        "ErrorCachingMinTTL": 300
+      }
+    ]
+  },
+  "ViewerCertificate": {
+    "ACMCertificateArn": "arn:aws:acm:us-east-1:750446117464:certificate/9af529fa-f5b3-49c7-ad74-04eda8f0d7f5",
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1.2_2021"
+  },
+  "Enabled": true,
+  "PriceClass": "PriceClass_100"
+}

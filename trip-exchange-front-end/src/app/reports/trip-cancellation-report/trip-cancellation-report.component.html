@@ -1,0 +1,253 @@
+<div class="report-container">
+  <header class="report-header">
+    <h2 class="report-title">{{ 'REPORTS.CANCELLED_TRIPS_REPORT' | translate }}</h2>
+    <div class="export-buttons">
+      <button class="btn btn-secondary" (click)="exportToExcel()" aria-label="{{ 'REPORTS.EXPORT_EXCEL_ARIA' | translate }}">
+        <i class="ph ph-file-xls" aria-hidden="true"></i>
+        {{ 'REPORTS.EXPORT_EXCEL' | translate }}
+      </button>
+      <button class="btn btn-secondary" (click)="exportToCSV()" aria-label="{{ 'REPORTS.EXPORT_CSV_ARIA' | translate }}">
+        <i class="ph ph-file-csv" aria-hidden="true"></i>
+        {{ 'REPORTS.EXPORT_CSV' | translate }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Instructions: brief summary and how-to for this report -->
+  <div class="instruction-panel" role="region" aria-label="{{ 'REPORTS.CANCELLED_TRIPS_REPORT_INSTRUCTIONS_ARIA' | translate }}">
+    <div class="instruction-content">
+      <i class="ph ph-info" aria-hidden="true" aria-hidden="true"></i>
+      <div class="instruction-copy">
+        <!--<h3 class="instruction-title">{{ 'REPORTS.CANCELLED_TRIPS_REPORT' | translate }}</h3>-->
+        <p class="instruction-text">{{ 'REPORTS.CANCELLED_TRIPS_REPORT_DESC' | translate }}</p>
+        <p class="instruction-run">
+          <strong>{{ 'REPORTS.HOW_TO_RUN_LABEL' | translate }}:</strong>
+          {{ 'REPORTS.CANCELLED_TRIPS_REPORT_RUN' | translate }}
+          <span class="btn btn-primary btn-inline">{{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT' | translate }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-panel">
+    <div class="filter-container">
+      <div class="filter-row">
+        <!-- Provider selection (admin only) -->
+        <div *ngIf="loggerRole === 'ROLE_ADMIN'" class="filter-group">
+          <label class="filter-label">
+            {{ 'COMMON.PROVIDER' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-dropdown
+              [options]="providersList"
+              [(ngModel)]="providerPartnersId"
+              optionLabel="providerName"
+              optionValue="providerId"
+              placeholder="{{ 'COMMON.PLEASE_SELECT' | translate }}"
+              [required]="true"
+              styleClass="w-full"
+            >
+            </p-dropdown>
+          </div>
+        </div>
+
+        <!-- From Date -->
+        <div class="filter-group">
+          <label class="filter-label">
+            {{ 'COMMON.FROM_DATE' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="fromDate"
+              [showTime]="true"
+              [hourFormat]="hourFormat"
+              dateFormat="mm/dd/yy"
+              (ngModelChange)="dateChange()"
+              [required]="true"
+              [style]="{'width':'100%'}"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <!-- To Date -->
+        <div class="filter-group">
+          <label class="filter-label">
+            {{ 'COMMON.TO_DATE' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="toDate"
+              [showTime]="true"
+              [hourFormat]="hourFormat"
+              dateFormat="mm/dd/yy"
+              (ngModelChange)="maxDate()"
+              [required]="true"
+              [style]="{'width':'100%'}"
+            >
+            </p-calendar>
+            <div *ngIf="minRange" class="error-message">
+              {{ 'REPORTS.TO_DATE_GREATER_THAN_FROM' | translate }}
+            </div>
+          </div>
+        </div>
+
+
+        <div class="filter-group filter-actions">
+          <button
+            class="btn btn-primary"
+            [disabled]="!maxRange"
+            (click)="filter()"
+            aria-label="{{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT_ARIA' | translate }}"
+          >
+            <i class="ph ph-funnel" aria-hidden="true"></i>
+            {{ 'NEW_TRIP_TICKET_REPORT.FILTER_REPORT' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Show Tickets filters -->
+      <div class="filter-row">
+        <div class="filter-group filter-group-wide">
+          <label class="filter-label">{{ 'REPORTS.SELECT_TICKET_TYPES' | translate }}</label>
+          <div class="filter-control">
+            <p-multiSelect
+              [options]="ShowTickets"
+              [(ngModel)]="showTicket"
+              placeholder="{{ 'REPORTS.SELECT_TICKET_TYPES' | translate }}"
+              (onChange)="checkShowTicket($event.value)"
+              [style]="{'width':'100%'}"
+            >
+            </p-multiSelect>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div class="report-loading" *ngIf="loading">
+    <div class="loading-spinner">
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+    </div>
+    <span class="loading-text">{{ 'COMMON.LOADING' | translate }}</span>
+  </div>
+
+  <!-- Results table -->
+  <div class="report-table-container">
+    <div class="table-search">
+      <div class="search-control">
+        <i class="ph ph-magnifying-glass search-icon" aria-hidden="true"></i>
+        <input
+          #gb
+          type="text"
+          class="search-input"
+          placeholder="{{ 'COMMON.SEARCH' | translate }}"
+          aria-label="{{ 'COMMON.SEARCH' | translate }}"
+        />
+      </div>
+    </div>
+
+    <p-table
+      #dt
+      [value]="ticketList"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10,25,50]"
+      [globalFilterFields]="['_customerName', 'claimantProviders', 'pickup', 'dropoff']"
+      styleClass="p-datatable-sm responsive-table"
+      [rowHover]="true"
+      [loading]="loading"
+      [scrollable]="true"
+      scrollHeight="flex"
+    >
+
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="submittedDateTime">
+            {{ 'REPORTS.SUBMITTED_DATETIME' | translate }}
+            <p-sortIcon field="submittedDateTime"></p-sortIcon>
+          </th>
+          <th pSortableColumn="_customerName">
+            {{ 'REPORTS.CUSTOMER_NAME' | translate }}
+            <p-sortIcon field="_customerName"></p-sortIcon>
+          </th>
+          <th pSortableColumn="claimantProviders">
+            {{ 'REPORTS.CLAIMANT_PROVIDER' | translate }}
+            <p-sortIcon field="claimantProviders"></p-sortIcon>
+          </th>
+          <th pSortableColumn="pickupDateTime">
+            {{ 'REPORTS.PICKUP_DATETIME' | translate }}
+            <p-sortIcon field="pickupDateTime"></p-sortIcon>
+          </th>
+          <th pSortableColumn="dropoffDateTime">
+            {{ 'REPORTS.DROPOFF_DATETIME' | translate }}
+            <p-sortIcon field="dropoffDateTime"></p-sortIcon>
+          </th>
+          <th pSortableColumn="pickup">
+            {{ 'REPORTS.PICKUP_ADDRESS' | translate }} <p-sortIcon field="pickup"></p-sortIcon>
+          </th>
+          <th pSortableColumn="dropoff">
+            {{ 'REPORTS.DROPOFF_ADDRESS' | translate }} <p-sortIcon field="dropoff"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-ticket>
+        <tr>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.SUBMITTED_DATETIME' | translate }}</span>
+            {{ ticket.submittedDateTime }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.CUSTOMER_NAME' | translate }}</span>
+            {{ ticket._customerName }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.CLAIMANT_PROVIDER' | translate }}</span>
+            {{ ticket.claimantProviders }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.PICKUP_DATETIME' | translate }}</span>
+            {{ ticket.pickupDateTime }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.DROPOFF_DATETIME' | translate }}</span>
+            {{ ticket.dropoffDateTime }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.PICKUP_ADDRESS' | translate }}</span>
+            {{ ticket.pickup }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'REPORTS.DROPOFF_ADDRESS' | translate }}</span>
+            {{ ticket.dropoff }}
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="empty-message">
+            <div class="empty-state">
+              <i class="ph ph-magnifying-glass fa-3x" aria-hidden="true"></i>
+              <p>{{ 'COMMON.NO_RECORDS_FOUND' | translate }}</p>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <div class="report-footer">
+      <div class="report-summary">
+        <span class="report-total">
+          {{ 'REPORTS.TOTAL_RESULTS' | translate }}
+          <strong>{{ticketList?.length || 0}}</strong>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

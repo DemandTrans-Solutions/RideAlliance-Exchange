@@ -1,0 +1,102 @@
+// Import shared styles - fix path to correctly point to the styles directory
+@import '../shared/styles/index';
+
+// component css goes here
+.left {
+  padding-left: 1000px;
+}
+
+.textArea {
+  height: 60px;
+}
+
+.test1 {
+  padding-right: 100px;
+}
+
+/* Modern Profile Component Styles - 2025 Edition */
+
+.profile-container {
+  margin-top: 80px; /* Add top margin to avoid header overlap */
+  padding: var(--space-lg);
+  animation: fadeIn var(--transition-normal) ease-out forwards;
+}
+
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-card {
+  width: 100%;
+  max-width: 600px;
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  .card-header {
+    padding: var(--space-lg);
+    background-color: var(--white);
+    border-bottom: 1px solid var(--neutral-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h2 {
+      margin: 0;
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--neutral-800);
+    }
+  }
+
+  .card-body {
+    padding: var(--space-xl);
+  }
+}
+
+.form-content {
+  .form-group {
+    margin-bottom: var(--space-lg);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .api-textarea {
+    min-height: 100px;
+    font-family: 'Courier New', monospace;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Ensure disabled input text is visible in both light and dark modes */
+  input:disabled,
+  textarea:disabled {
+    color: var(--neutral-700);
+    background-color: var(--neutral-100);
+    opacity: 0.9;
+  }
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .profile-card {
+    background-color: var(--neutral-200);
+
+    .card-header {
+      background-color: var(--neutral-200);
+      border-bottom: 1px solid var(--neutral-300);
+    }
+  }
+
+  .form-content {
+    input:disabled,
+    textarea:disabled {
+      color: var(--neutral-800);
+      background-color: var(--neutral-300);
+      opacity: 0.9;
+    }
+  }
+}

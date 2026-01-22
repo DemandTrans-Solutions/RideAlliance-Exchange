@@ -1,0 +1,881 @@
+/* Media Query Override for Manual Theme Selection */
+/*
+ * This file ensures that when a manual theme is selected (via body.dark-theme or body.light-theme),
+ * it takes precedence over system preference media queries.
+ *
+ * The key insight: CSS specificity means body.dark-theme rules will override
+ * @media (prefers-color-scheme: dark) rules when both are present.
+ *
+ * This file should be loaded LAST to ensure maximum specificity.
+ */
+
+/* Disable media query dark mode when light theme is explicitly chosen */
+@media (prefers-color-scheme: dark) {
+  body.light-theme,
+  body.light-theme *:not(.p-button-label):not(.p-badge):not(.badge) {
+    /* Override any dark mode colors with light theme colors */
+    --primary-color: #3a7bd5;
+    --primary-light: #5f9eff;
+    --primary-dark: #1c5eba;
+    --neutral-900: #121417;
+    --neutral-800: #212529;
+    --neutral-700: #343a40;
+    --neutral-600: #495057;
+    --neutral-500: #6c757d;
+    --neutral-400: #adb5bd;
+    --neutral-300: #ced4da;
+    --neutral-200: #e9ecef;
+    --neutral-100: #f8f9fa;
+    --white: #ffffff;
+    --input-bg: #ffffff;
+    --input-text: #121417;
+    --input-border: #ced4da;
+    --text-color: #343a40 !important;
+    --text-color-secondary: #6c757d !important;
+  }
+}
+
+/* ==========================================================================
+   RIDER TRACKING BUTTON - OS PREFERENCE CONFLICT HANDLERS
+   ========================================================================== */
+
+/* When system is light but app is dark, keep dark button styling */
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary {
+    color: #e9ecef !important;
+    border-color: #5f9eff !important;
+    background-color: transparent !important;
+  }
+  body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary:hover,
+  body.dark-theme .p-dialog .detail-card .detail-content .btn.btn-outline-primary:focus {
+    background-color: rgba(95, 158, 255, 0.12) !important;
+    border-color: #80b0ff !important;
+    color: #ffffff !important;
+  }
+}
+
+/* Disable media query light mode when dark theme is explicitly chosen */
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  body.dark-theme,
+  body.dark-theme *:not(.p-button-label):not(.p-badge):not(.badge) {
+    /* Override any light mode colors with dark theme colors */
+    --primary-color: #5f9eff;
+    --primary-light: #80b0ff;
+    --primary-dark: #3a7bd5;
+    --neutral-900: #f8f9fa;
+    --neutral-800: #e9ecef;
+    --neutral-700: #dee2e6;
+    --neutral-600: #ced4da;
+    --neutral-500: #adb5bd;
+    --neutral-400: #6c757d;
+    --neutral-300: #495057;
+    --neutral-200: #343a40;
+    --neutral-100: #212529;
+    --white: #121417;
+    --input-bg: #2a2d35;
+    --input-text: #e9ecef;
+    --input-border: #495057;
+    --text-color: #e9ecef !important;
+    --text-color-secondary: #dee2e6 !important;
+  }
+}
+
+/* Additional override to ensure --text-color is set correctly across all scenarios */
+@media (prefers-color-scheme: dark) {
+  :root:has(body.light-theme),
+  html:has(body.light-theme) {
+    --text-color: #343a40 !important;
+  }
+}
+
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  :root:has(body.dark-theme),
+  html:has(body.dark-theme) {
+    --text-color: #e9ecef !important;
+  }
+}
+
+/* Fallback for browsers that don't support :has() */
+body.dark-theme {
+  --text-color: #e9ecef !important;
+  --text-color-secondary: #dee2e6 !important;
+}
+
+body.light-theme {
+  --text-color: #343a40 !important;
+  --text-color-secondary: #6c757d !important;
+}
+
+/* Trip Ticket grid - ensure manual theme overrides win on all platforms */
+@media (prefers-color-scheme: dark) {
+  body.light-theme .app-header,
+  body.light-theme .app-header .dropdown-panel {
+    background-color: #ffffff !important;
+    color: #343a40 !important;
+  }
+
+  body.light-theme .app-header .nav-link,
+  body.light-theme .app-header .nav-link i,
+  body.light-theme .app-header .user-button,
+  body.light-theme .app-header .theme-toggle-btn,
+  body.light-theme .app-header .dropdown-item {
+    color: #343a40 !important;
+  }
+
+  body.light-theme .p-overlay,
+  body.light-theme .p-autocomplete-panel,
+  body.light-theme .p-autocomplete-items,
+  body.light-theme .p-autocomplete-panel .p-autocomplete-items {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+  }
+
+  body.light-theme .p-autocomplete-item {
+    color: #212529 !important;
+  }
+
+  body.light-theme .p-toast .p-toast-message {
+    background-color: #ffffff !important;
+    color: #343a40 !important;
+  }
+
+  body.light-theme .ride-status-dialog,
+  body.light-theme .ride-status-dialog * {
+    color: #212529 !important;
+  }
+
+  body.light-theme .ride-status-dialog .detail-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  body.light-theme .ride-status-dialog .detail-card .detail-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+  }
+
+  body.light-theme .ride-status-dialog .detail-card .detail-content {
+    color: #212529 !important;
+  }
+
+  body.light-theme .ride-status-dialog .map-section .map-layer-toggle .btn {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: #212529 !important;
+  }
+
+  body.light-theme .trip-ticket-container,
+  body.light-theme .trip-ticket-container .filter-panel,
+  body.light-theme .trip-ticket-container .filter-dropdown,
+  body.light-theme .trip-ticket-container .filter-actions,
+  body.light-theme .trip-ticket-container .content-area,
+  body.light-theme .trip-ticket-container .scrollable-container,
+  body.light-theme .trip-ticket-container .p-datatable,
+  body.light-theme .trip-ticket-container .p-datatable .p-datatable-header,
+  body.light-theme .trip-ticket-container .p-datatable .p-datatable-thead > tr > th,
+  body.light-theme .trip-ticket-container .p-datatable .p-datatable-tbody > tr,
+  body.light-theme .trip-ticket-container .p-datatable .p-datatable-tbody > tr > td,
+  body.light-theme .trip-ticket-container .p-paginator {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #e9ecef !important;
+  }
+
+  body.light-theme .trip-ticket-container .p-datatable .p-datatable-thead > tr > th,
+  body.light-theme .trip-ticket-container .filter-section-title,
+  body.light-theme .trip-ticket-container .filter-panel h3 {
+    color: #343a40 !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body.dark-theme .app-header,
+  body.dark-theme .app-header .dropdown-panel {
+    background-color: #2c3e50 !important;
+    color: #ecf0f1 !important;
+  }
+
+  body.dark-theme .app-header .nav-link,
+  body.dark-theme .app-header .nav-link i,
+  body.dark-theme .app-header .user-button,
+  body.dark-theme .app-header .theme-toggle-btn,
+  body.dark-theme .app-header .dropdown-item {
+    color: #ecf0f1 !important;
+  }
+
+  body.dark-theme .p-overlay,
+  body.dark-theme .p-autocomplete-panel,
+  body.dark-theme .p-autocomplete-items,
+  body.dark-theme .p-autocomplete-panel .p-autocomplete-items {
+    background-color: #343a40 !important;
+    color: #e9ecef !important;
+    border-color: #495057 !important;
+  }
+
+  body.dark-theme .p-autocomplete-item,
+  body.dark-theme .p-autocomplete-panel .p-autocomplete-empty-message,
+  body.dark-theme .p-overlay * {
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .p-toast .p-toast-message {
+    background-color: #343a40 !important;
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .ride-status-dialog,
+  body.dark-theme .ride-status-dialog * {
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .ride-status-dialog .detail-card {
+    background-color: #2a2d35 !important;
+    border: 1px solid #495057 !important;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  body.dark-theme .ride-status-dialog .detail-card .detail-header {
+    background-color: #343a40 !important;
+    border-bottom: 1px solid #495057 !important;
+  }
+
+  body.dark-theme .ride-status-dialog .detail-card .detail-content {
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .ride-status-dialog .map-section .map-layer-toggle .btn {
+    background-color: rgba(42, 45, 53, 0.95) !important;
+    border: 1px solid #495057 !important;
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .trip-ticket-container,
+  body.dark-theme .trip-ticket-container .filter-panel,
+  body.dark-theme .trip-ticket-container .filter-dropdown,
+  body.dark-theme .trip-ticket-container .filter-actions,
+  body.dark-theme .trip-ticket-container .content-area,
+  body.dark-theme .trip-ticket-container .scrollable-container,
+  body.dark-theme .trip-ticket-container .p-datatable,
+  body.dark-theme .trip-ticket-container .p-datatable .p-datatable-header,
+  body.dark-theme .trip-ticket-container .p-datatable .p-datatable-thead > tr > th,
+  body.dark-theme .trip-ticket-container .p-datatable .p-datatable-tbody > tr,
+  body.dark-theme .trip-ticket-container .p-datatable .p-datatable-tbody > tr > td,
+  body.dark-theme .trip-ticket-container .p-paginator {
+    background-color: #343a40 !important;
+    color: #e9ecef !important;
+    border-color: #495057 !important;
+  }
+
+  body.dark-theme .trip-ticket-container .p-datatable .p-datatable-thead > tr > th,
+  body.dark-theme .trip-ticket-container .filter-section-title,
+  body.dark-theme .trip-ticket-container .filter-panel h3 {
+    color: #e9ecef !important;
+  }
+}
+
+/* ============================================================================
+   PRIMENG COMPONENT FIXES - WINDOWS COMPATIBILITY
+   ============================================================================ */
+
+/* Multi-select dropdowns - Dark background in dark mode */
+body.dark-theme .p-multiselect {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-multiselect .p-multiselect-label,
+body.dark-theme .p-multiselect .p-multiselect-label-container,
+body.dark-theme .p-multiselect .p-placeholder {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect .p-multiselect-trigger {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel {
+  background-color: #343a40 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-header {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-items {
+  background-color: #343a40 !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+/* Regular dropdowns - dark background in dark mode */
+body.dark-theme .p-dropdown {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-dropdown .p-dropdown-label,
+body.dark-theme .p-dropdown .p-placeholder {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-dropdown .p-dropdown-trigger {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-dropdown-panel {
+  background-color: #343a40 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-items {
+  background-color: #343a40 !important;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-item {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-item:hover {
+  background-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-dropdown-panel .p-dropdown-item.p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+/* ============================================================================
+   NATIVE SELECT ELEMENTS - WINDOWS FIX
+   ============================================================================ */
+
+/* Native select, date, time inputs - override media query defaults */
+body.dark-theme select,
+body.dark-theme input[type="time"],
+body.dark-theme input[type="date"],
+body.dark-theme input[type="datetime-local"] {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+/* Ensure these work even with media query (prefers-color-scheme: dark) */
+@media (prefers-color-scheme: dark) {
+  body.light-theme select,
+  body.light-theme input[type="time"],
+  body.light-theme input[type="date"],
+  body.light-theme input[type="datetime-local"] {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body.dark-theme select,
+  body.dark-theme input[type="time"],
+  body.dark-theme input[type="date"],
+  body.dark-theme input[type="datetime-local"] {
+    background-color: #2a2d35 !important;
+    color: #e9ecef !important;
+    border-color: #495057 !important;
+  }
+}
+
+/* ============================================================================
+   REPORT COMPONENTS - WINDOWS FIX
+   ============================================================================ */
+
+/* Reports page container components */
+body.dark-theme .reports-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .view-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .page-header {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .page-header .page-title {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .page-header .header-icon i {
+  color: #dee2e6 !important;
+}
+
+/* Report container and sections - override media query */
+body.dark-theme .report-container {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .report-header {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .report-title {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .filter-panel {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .filter-label {
+  color: #ced4da !important;
+}
+
+body.dark-theme .report-data {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .report-section {
+  background-color: #343a40 !important;
+  border: 1px solid #495057 !important;
+}
+
+body.dark-theme .section-header {
+  background-color: #5f9eff !important;
+}
+
+body.dark-theme .section-title .btn {
+  color: #ffffff !important;
+}
+
+body.dark-theme .report-table td {
+  border-bottom-color: #495057 !important;
+}
+
+body.dark-theme .report-label {
+  color: #ced4da !important;
+}
+
+/* Common component containers */
+body.dark-theme .admin-container,
+body.dark-theme .page-container,
+body.dark-theme .content-area {
+  background-color: #212529 !important;
+}
+
+body.dark-theme .form-container,
+body.dark-theme .card-container {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+}
+
+/* Pagination components - override media query */
+body.dark-theme .p-paginator {
+  background-color: #343a40 !important;
+  border-color: #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page {
+  color: #e9ecef !important;
+  background-color: transparent !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page:hover {
+  background-color: #495057 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-current {
+  color: #ced4da !important;
+}
+
+body.dark-theme .p-paginator .p-dropdown {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  border-color: #495057 !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-first,
+body.dark-theme .p-paginator .p-paginator-prev,
+body.dark-theme .p-paginator .p-paginator-next,
+body.dark-theme .p-paginator .p-paginator-last {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-paginator .p-paginator-first:hover,
+body.dark-theme .p-paginator .p-paginator-prev:hover,
+body.dark-theme .p-paginator .p-paginator-next:hover,
+body.dark-theme .p-paginator .p-paginator-last:hover {
+  background-color: #495057 !important;
+}
+
+/* Handle media query conflicts */
+@media (prefers-color-scheme: dark) {
+  body.light-theme .reports-container,
+  body.light-theme .view-container,
+  body.light-theme .page-header,
+  body.light-theme .report-container,
+  body.light-theme .report-header,
+  body.light-theme .report-data,
+  body.light-theme .report-section,
+  body.light-theme .admin-container,
+  body.light-theme .page-container,
+  body.light-theme .content-area,
+  body.light-theme .form-container,
+  body.light-theme .card-container {
+    background-color: #ffffff !important;
+  }
+
+  body.light-theme .p-paginator {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+  }
+
+  /* Force light-theme colors when the OS requests dark mode */
+  body.light-theme .p-datatable,
+  body.light-theme .p-datatable .p-datatable-wrapper,
+  body.light-theme .p-datatable .p-datatable-thead > tr > th,
+  body.light-theme .p-datatable .p-datatable-tbody > tr,
+  body.light-theme .p-datatable .p-datatable-tbody > tr > td,
+  body.light-theme .p-datatable .p-paginator,
+  body.light-theme .p-datatable .p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #dee2e6 !important;
+  }
+
+  body.light-theme .p-datatable .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background-color: #3a7bd5 !important;
+    color: #ffffff !important;
+    border-color: #3a7bd5 !important;
+  }
+
+  body.light-theme .p-datatable .p-datatable-thead > tr > th {
+    background-color: #f8f9fa !important;
+  }
+
+  body.light-theme .p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #f1f3f5 !important;
+  }
+
+  body.light-theme .p-multiselect,
+  body.light-theme .p-dropdown {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+  }
+
+  body.light-theme .p-multiselect .p-multiselect-label,
+  body.light-theme .p-multiselect .p-placeholder,
+  body.light-theme .p-dropdown .p-dropdown-label,
+  body.light-theme .p-dropdown .p-placeholder {
+    color: #212529 !important;
+  }
+
+  body.light-theme .p-multiselect .p-multiselect-token {
+    background-color: #edf2ff !important;
+    color: #1c5eba !important;
+    border: 1px solid #cfe2ff !important;
+  }
+
+  body.light-theme .p-multiselect .p-multiselect-token .p-multiselect-token-icon,
+  body.light-theme .p-multiselect .p-multiselect-token .p-multiselect-token-label {
+    color: #1c5eba !important;
+  }
+
+  body.light-theme .p-multiselect-panel,
+  body.light-theme .p-dropdown-panel {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1)) !important;
+  }
+
+  body.light-theme .p-multiselect-panel .p-multiselect-header,
+  body.light-theme .p-dropdown-panel .p-dropdown-header,
+  body.light-theme .p-dropdown-panel .p-dropdown-items {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+  }
+
+  body.light-theme .p-multiselect-panel .p-multiselect-header .p-checkbox .p-checkbox-box,
+  body.light-theme .p-dropdown-panel .p-dropdown-header .p-checkbox .p-checkbox-box {
+    background-color: #ffffff !important;
+    border-color: #adb5bd !important;
+  }
+
+  body.light-theme .p-checkbox .p-checkbox-box,
+  body.light-theme .p-checkbox .p-checkbox-box .p-checkbox-icon {
+    background-color: #ffffff !important;
+    color: #3a7bd5 !important;
+    border-color: #adb5bd !important;
+  }
+
+  body.light-theme .p-checkbox .p-checkbox-box.p-highlight {
+    background-color: #3a7bd5 !important;
+    border-color: #3a7bd5 !important;
+  }
+
+  body.light-theme .p-checkbox .p-checkbox-box.p-highlight .p-checkbox-icon {
+    color: #ffffff !important;
+  }
+
+  body.light-theme .p-multiselect-panel .p-multiselect-item,
+  body.light-theme .p-dropdown-panel .p-dropdown-item {
+    color: #212529 !important;
+    background-color: transparent !important;
+  }
+
+  body.light-theme .p-multiselect-panel .p-multiselect-item:hover,
+  body.light-theme .p-dropdown-panel .p-dropdown-item:hover {
+    background-color: #edf2ff !important;
+    color: #212529 !important;
+  }
+
+  body.light-theme .p-multiselect-panel .p-multiselect-item.p-highlight,
+  body.light-theme .p-dropdown-panel .p-dropdown-item.p-highlight {
+    background-color: #3a7bd5 !important;
+    color: #ffffff !important;
+  }
+
+  body.light-theme .p-datepicker,
+  body.light-theme .p-datepicker .p-datepicker-header,
+  body.light-theme .p-datepicker .p-datepicker-title,
+  body.light-theme .p-datepicker .p-datepicker-title span,
+  body.light-theme .p-calendar .p-inputtext {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+  }
+
+  body.light-theme .p-datepicker table td,
+  body.light-theme .p-datepicker table td > span {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+  }
+
+  body.light-theme .p-datepicker table td.p-datepicker-today > span {
+    background-color: rgba(58, 123, 213, 0.1) !important;
+    color: #1c5eba !important;
+  }
+
+  body.light-theme .p-datepicker table td.p-highlight > span,
+  body.light-theme .p-datepicker table td span:hover {
+    background-color: #3a7bd5 !important;
+    color: #ffffff !important;
+  }
+
+  body.light-theme .p-calendar-panel,
+  body.light-theme .p-calendar-panel .p-datepicker-header,
+  body.light-theme .p-calendar-panel .p-datepicker-calendar td,
+  body.light-theme .p-calendar-panel .p-datepicker-calendar td span {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border-color: #ced4da !important;
+  }
+
+  body.light-theme .p-calendar-panel .p-datepicker-calendar td.p-highlight span,
+  body.light-theme .p-calendar-panel .p-datepicker-calendar td span:hover {
+    background-color: #3a7bd5 !important;
+    color: #ffffff !important;
+  }
+
+  body.light-theme .p-calendar-panel .p-datepicker-calendar td.p-datepicker-today span {
+    background-color: rgba(58, 123, 213, 0.1) !important;
+    color: #1c5eba !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  body.dark-theme .reports-container,
+  body.dark-theme .view-container,
+  body.dark-theme .report-container,
+  body.dark-theme .report-data,
+  body.dark-theme .admin-container,
+  body.dark-theme .page-container,
+  body.dark-theme .content-area {
+    background-color: #212529 !important;
+  }
+
+  body.dark-theme .page-header,
+  body.dark-theme .report-header,
+  body.dark-theme .report-section,
+  body.dark-theme .form-container,
+  body.dark-theme .card-container {
+    background-color: #343a40 !important;
+  }
+
+  body.dark-theme .p-paginator {
+    background-color: #343a40 !important;
+    color: #e9ecef !important;
+  }
+}
+
+/* ============================================================================
+   SEND TO UBER DIALOG - MEDIA QUERY CONFLICT HANDLERS
+   ============================================================================ */
+
+/* When system is dark but app is light */
+@media (prefers-color-scheme: dark) {
+  body.light-theme .uber-dialog,
+  body.light-theme .uber-dialog-body,
+  body.light-theme .options-list {
+    background: #ffffff !important;
+    color: #212529 !important;
+  }
+
+  body.light-theme .uber-option {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff) !important;
+    border-color: #dee2e6 !important;
+    color: #212529 !important;
+  }
+
+  body.light-theme .uber-option.selected {
+    background: #e3f2fd !important;
+    border-color: #3a7bd5 !important;
+  }
+
+  body.light-theme .error-details {
+    background: #fff5f5 !important;
+    border-color: #fee !important;
+    color: #dc3545 !important;
+  }
+}
+
+/* When system is light but app is dark */
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  body.dark-theme .uber-dialog,
+  body.dark-theme .uber-dialog-body,
+  body.dark-theme .options-list {
+    background: #18191a !important;
+    color: #f1f1f1 !important;
+  }
+
+  body.dark-theme .uber-option {
+    background: linear-gradient(135deg, #222, #1a1a1a) !important;
+    border-color: #2d2d2d !important;
+    color: #f1f1f1 !important;
+  }
+
+  body.dark-theme .uber-option.selected {
+    background: #232c3d !important;
+    border-color: #3a7bd5 !important;
+  }
+
+  body.dark-theme .error-details {
+    background: #2a2a2a !important;
+    border-color: #404040 !important;
+    color: red !important;
+  }
+}
+
+/* ============================================================================
+   RIDE STATUS BADGE - MEDIA QUERY CONFLICT HANDLERS
+   ============================================================================ */
+
+/* Ensure badges work across all system preference combinations */
+@media (prefers-color-scheme: dark) {
+  body.light-theme .status-badge,
+  body.light-theme .status-badge * {
+    color: #ffffff !important;
+  }
+
+  body.light-theme .status-badge.status-success {
+    background-color: #2e7d32 !important;
+  }
+
+  body.light-theme .status-badge.status-info {
+    background-color: #1976d2 !important;
+  }
+
+  body.light-theme .status-badge.status-danger {
+    background-color: #d32f2f !important;
+  }
+}
+
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  body.dark-theme .status-badge,
+  body.dark-theme .status-badge * {
+    color: #ffffff !important;
+  }
+
+  body.dark-theme .status-badge.status-success {
+    background-color: #2e7d32 !important;
+  }
+
+  body.dark-theme .status-badge.status-info {
+    background-color: #1976d2 !important;
+  }
+
+  body.dark-theme .status-badge.status-danger {
+    background-color: #d32f2f !important;
+  }
+}
+
+/* ============================================================================
+   QUICK SUMMARY DROPDOWN - MEDIA QUERY CONFLICT HANDLERS
+   ============================================================================ */
+
+/* When system is dark but app is light */
+@media (prefers-color-scheme: dark) {
+  body.light-theme .dropdown-content {
+    background-color: #ffffff !important;
+    color: #212529 !important;
+    border: 1px solid #dee2e6 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  body.light-theme .dropdown-content div {
+    color: #212529 !important;
+  }
+
+  body.light-theme .dropdown-content strong {
+    color: #3a7bd5 !important;
+  }
+}
+
+/* When system is light but app is dark */
+@media (prefers-color-scheme: light), not all and (prefers-color-scheme: dark) {
+  body.dark-theme .dropdown-content {
+    background-color: #2a2d35 !important;
+    color: #e9ecef !important;
+    border: 1px solid #495057 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  body.dark-theme .dropdown-content div {
+    color: #e9ecef !important;
+  }
+
+  body.dark-theme .dropdown-content strong {
+    color: #80b0ff !important;
+  }
+}

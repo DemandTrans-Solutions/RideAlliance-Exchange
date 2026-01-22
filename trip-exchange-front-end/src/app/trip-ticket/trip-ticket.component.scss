@@ -1,0 +1,2268 @@
+@media (prefers-color-scheme: dark) {
+  // Uber dialog dark mode fixes
+  .uber-dialog,
+  .uber-dialog-body,
+  .options-list {
+    background: #18191a !important;
+    color: #f1f1f1 !important;
+  }
+
+
+  .uber-checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .uber-checkbox-row input[type="checkbox"] { margin: 0; align-self: center; vertical-align: middle; transform: translateY(1px); }
+  .uber-checkbox-row label { margin: 0; line-height: 1; }
+
+
+  .error-details {
+      background: #2a2a2a !important;
+      border-color: #404040 !important;
+      color: red !important;
+   }
+
+  .uber-option {
+    background: linear-gradient(135deg, #222, #1a1a1a) !important;
+    border-color: #2d2d2d !important;
+    color: #f1f1f1 !important;
+  }
+  .uber-option.selected {
+    background: #232c3d !important;
+    border-color: var(--primary-color, #3a7bd5) !important;
+    box-shadow: 0 0 0 1px var(--primary-color, #3a7bd5) !important;
+  }
+  .uber-option .icon-col i {
+    color: #ccc !important;
+  }
+  .uber-option .capacity {
+    background: #333 !important;
+    color: #bbb !important;
+  }
+  .empty-state {
+    background: #222 !important;
+    border-color: #333 !important;
+    color: #bbb !important;
+  }
+
+  // Ride status dialog dark mode fixes
+  .ride-status-dialog {
+    background: #18191a !important;
+    color: #f1f1f1 !important;
+/* Strongest dark-mode override for Ride Status coord labels/values */
+@media (prefers-color-scheme: dark) {
+  :host ::ng-deep .ride-status-dialog .coord-readout .label,
+  :host ::ng-deep .ride-status-dialog .coord-readout .value,
+  :host ::ng-deep .ride-status-dialog .coord-readout span,
+  :host ::ng-deep .ride-status-dialog .coord-readout i {
+    color: #fff !important;
+    color-scheme: dark !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 4px #000 !important;
+  }
+}
+  }
+
+  .ride-status-content {
+    background: #18191a !important;
+    color: #f1f1f1 !important;
+  }
+
+  .coord-readout {
+    background: rgba(0,0,0,0.9) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+
+    i, span {
+      color: #ffffff !important;
+    }
+  }
+
+  .detail-card {
+    background: #2a2a2a !important;
+    border-color: #404040 !important;
+    color: #f1f1f1 !important;
+
+    .detail-header {
+      background: #3a3a3a !important;
+      border-color: #404040 !important;
+      color: #f1f1f1 !important;
+
+      h5 {
+        color: #ffffff !important;
+      }
+    }
+
+    .detail-content {
+      color: #e0e0e0 !important;
+    }
+  }
+
+  .metric-row {
+    .metric-label {
+      color: #ffffff !important;
+    }
+
+    .metric-value {
+      color: #64b5f6 !important;
+    }
+  }
+
+  .status-badge {
+    &.status-success {
+      background: #2e7d32 !important;
+      color: #ffffff !important;
+    }
+
+    &.status-info {
+      background: #1976d2 !important;
+      color: #ffffff !important;
+    }
+
+    &.status-danger {
+      background: #d32f2f !important;
+      color: #ffffff !important;
+    }
+
+    &.status-secondary {
+      background: #616161 !important;
+      color: #ffffff !important;
+    }
+  }
+}
+
+// Improve contrast for PrimeNG dropdowns inside dialogs (e.g., Edit Ticket status dropdown)
+@media (prefers-color-scheme: dark) {
+  :host ::ng-deep p-dialog .p-dropdown {
+    background: #242629 !important;
+    border: 1px solid #3b3f44 !important;
+    color: #ffffff !important;
+    border-radius: 6px !important;
+  }
+
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-label {
+    color: #ffffff !important;
+    background: transparent !important;
+    padding: 0.5rem 0.75rem !important;
+    font-weight: 500 !important;
+  }
+
+  /* Improve visibility of the selected label (prevent clipping/truncation) */
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-label {
+    display: inline-block !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    vertical-align: middle !important;
+  }
+
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-trigger {
+    color: #ffffff !important;
+  }
+
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-clear {
+    color: #ffffff !important;
+    opacity: 0.9 !important;
+  }
+
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-label,
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-trigger {
+    text-shadow: 0 1px 0 rgba(0,0,0,0.6) !important;
+  }
+
+  :host ::ng-deep p-dialog .p-dropdown .p-dropdown-panel {
+    background: #1f2123 !important;
+    color: #eaeaea !important;
+    border: 1px solid #33363a !important;
+  }
+
+  /* Ensure the dropdown control uses available horizontal space inside dialogs */
+  :host ::ng-deep p-dialog .p-inputgroup .p-dropdown,
+  :host ::ng-deep p-dialog .p-dropdown {
+    width: 100% !important;
+    min-width: 220px !important; /* small baseline so 'Available' is visible */
+    box-sizing: border-box !important;
+  }
+}
+
+/* Apply the same width/visibility rules for light mode / default theme so behavior is consistent */
+:host ::ng-deep p-dialog .p-dropdown .p-dropdown-label {
+  display: inline-block !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: middle !important;
+}
+
+:host ::ng-deep p-dialog .p-inputgroup .p-dropdown,
+:host ::ng-deep p-dialog .p-dropdown {
+  width: 100% !important;
+  min-width: 220px !important;
+  box-sizing: border-box !important;
+}
+
+/* Make disabled controls in the Edit Ticket dialog visually distinct (lighter text) */
+:host ::ng-deep p-dialog {
+  .p-field :is(input[disabled], textarea[disabled], .p-dropdown[disabled], .p-inputnumber[disabled]) {
+    color: var(--neutral-500) !important; /* lighter text color */
+    opacity: 0.9 !important;
+  }
+  .p-field :is(label[for]) {
+    opacity: 0.85;
+  }
+}
+
+// Stronger dark-mode overrides for the Ride Status coord readout
+@media (prefers-color-scheme: dark) {
+  .ride-status-dialog .map-section .coord-readout,
+  .ride-status-dialog .coord-readout,
+  .map-section .coord-readout {
+    background: rgba(0,0,0,0.95) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6) !important;
+    padding: 12px !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .ride-status-dialog .map-section .coord-readout i,
+  .ride-status-dialog .map-section .coord-readout span,
+  .ride-status-dialog .coord-readout i,
+  .ride-status-dialog .coord-readout span {
+    color: #ffffff !important;
+    opacity: 1 !important;
+  }
+
+  /* Ensure any icon fonts inside the readout inherit white and are not dimmed */
+  .ride-status-dialog .coord-readout i.fa,
+  .ride-status-dialog .coord-readout i.fas,
+  .ride-status-dialog .coord-readout i.pi {
+    color: #ffffff !important;
+  }
+}
+
+/* Ensure ride-status markers render above tiles and have explicit contrast in dark mode */
+:host ::ng-deep {
+  .leaflet-marker-pane .leaflet-marker-icon {
+    z-index: 700 !important;
+    will-change: transform;
+  }
+
+  /* Ensure SVG markers keep their explicit fill/stroke and aren't dimmed by global rules */
+  .uber-pickup-marker svg circle,
+  .uber-dropoff-marker svg rect,
+  .uber-dropoff-marker svg circle,
+  .vehicle-marker svg circle {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    shape-rendering: geometricPrecision;
+    vector-effect: non-scaling-stroke;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .uber-pickup-marker svg circle:first-child,
+    .uber-dropoff-marker svg rect {
+      stroke: #e6e6e6 !important;
+      fill: #111 !important;
+      fill-opacity: 0.95 !important;
+    }
+
+    .uber-pickup-marker svg circle:last-child {
+      /* inner pickup dot accent */
+      fill: #4CAF50  !important;
+    }
+
+    .uber-dropoff-marker svg circle {
+      fill: #FF5722 !important;
+    }
+  }
+}
+
+// Import shared styles with corrected path
+@import '../shared/styles/index';
+
+
+
+// Targeted fix: prevent horizontal overflow only for filter-panel content and sections
+.filter-panel .filter-content,
+.filter-panel .filter-section {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  width: 100%;
+}
+
+// Prevent horizontal overflow for all direct children of filter-panel
+.filter-panel > * {
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+// Prevent horizontal overflow for all descendants of filter-panel
+.filter-panel * {
+  max-width: 100%;
+  overflow-x: hidden !important;
+  box-sizing: border-box;
+}
+
+// Dark mode specific styles
+@media (prefers-color-scheme: dark) {
+  .ph {
+    color: var(--neutral-100); // Light color for dark mode
+  }
+
+  // Ensure icons in buttons and interactive elements inherit their parent's color
+  button .ph,
+  a .ph,
+  .btn .ph,
+  .interactive .ph {
+    color: inherit;
+  }
+}
+
+// Light mode specific styles
+@media (prefers-color-scheme: light) {
+  .ph {
+    color: var(--neutral-700); // Dark color for light mode
+  }
+
+  // Ensure icons in buttons and interactive elements inherit their parent's color
+  button .ph,
+  a .ph,
+  .btn .ph,
+  .interactive .ph {
+    color: inherit;
+  }
+}
+
+// Main container styles
+.trip-ticket-container {
+  display: flex;
+  height: calc(100vh - 80px);
+  overflow: hidden;
+  width: 100%;
+  position: relative; /* Ensure proper containment */
+}
+
+// Scope loading overlay to the p-table only
+:host ::ng-deep p-table {
+  position: relative;
+
+  .p-datatable-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+}
+
+.filter-panel {
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 90px;
+  z-index: 1;
+  flex: 0 0 350px;
+  border-right: 1px solid var(--neutral-300);
+
+  h3 {
+    width: 100%;
+    color: var(--neutral-800);
+    margin-top: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+
+    i {
+      color: var(--primary-color);
+      font-size: var(--font-size-xl);
+      background-color: transparent;
+    }
+  }
+
+  .filter-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 60px;
+  height: auto;
+  width: 100%;
+  z-index: 1051;
+
+    .filter-section {
+  margin-bottom: var(--space-md);
+  width: 100%;
+
+      &:last-child {
+        margin-bottom: 60px;
+      }
+
+      // Icon button styles
+      button {
+        i {
+          font-size: var(--font-size-md);
+          transition: transform 0.2s ease;
+        }
+
+        &:hover i {
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+
+  .filter-actions {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    width: auto;
+    z-index: 1000;
+    padding: 15px 30px;
+    background-color: inherit;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+
+    button {
+      flex: 0 1 auto;
+      min-width: 100px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+
+      i {
+        color: #fff;
+        background-color: transparent;
+        font-size: var(--font-size-md);
+      }
+    }
+  }
+}
+
+
+
+// Empty state icon
+.empty-message {
+  i {
+    font-size: var(--font-size-xl);
+    color: var(--neutral-500);
+    margin-bottom: var(--space-sm);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .filter-actions {
+    background-color: var(--neutral-200);
+  }
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px);
+  max-height: calc(100vh - 150px);
+  overflow: hidden; /* Prevent content-area from scrolling */
+  position: relative; /* Ensure proper containment */
+
+  /* Ensure p-table doesn't force scrollable-container to have scrollbars */
+  ::ng-deep .p-datatable-wrapper {
+    overflow-y: visible !important; /* Override any other overflow settings */
+  }
+}
+
+/* Define scrollable container only once, and ensure it's properly contained */
+.content-area .scrollable-container {
+  width: 100%;
+  max-width: 100%;
+  padding: var(--space-md);
+  flex: 1;
+  overflow-y: auto; /* Only the scrollable container should scroll */
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  height: calc(100vh - 180px); /* Set a specific height instead of 100% */
+  max-height: calc(100vh - 180px); /* Also set max-height */
+  position: relative; /* Changed from absolute to relative for better containment */
+}
+
+/* Remove duplicate standalone scrollable-container styles */
+
+/* Style for full width detail view */
+.full-width-detail,
+.full-width {
+  width: 100%;
+  max-width: 100%;
+}
+
+.full-width {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Ensure container in detail view fills width properly */
+.scrollable-container .container {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Make sure the panels in detail view also take full width */
+.scrollable-container .panel-group {
+  width: 100%;
+}
+
+.height-div {
+  display: none;
+}
+
+.center {
+  padding: 20px;
+  margin-bottom: 60px;
+}
+
+.bottonspace {
+  margin: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.panel-heading {
+  width: 100%;
+  max-width: 100%;
+  background-color: steelblue;
+  height: 40px;
+  border-radius: 10px 10px 0px 0px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.Heading {
+  color: orange;
+}
+
+.panel-title {
+  color: white;
+  width: 100%;
+  max-width: 100%;
+}
+
+.panel-body-dropdown {
+  padding: 5px;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.right-btn {
+  padding-left: 85%;
+}
+
+.view {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+
+  &:not(.fa-solid) {
+    font-family: var(--font-family-base);
+  }
+
+  &.fa-solid {
+    font-family: 'Phosphor';
+  }
+}
+
+.input-group,
+.input-group-lg {
+  width: 320px;
+  height: calc(100vh - 40px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+table {
+  width: 100%;
+}
+
+th,
+td {
+  padding: 0px;
+  text-align: left;
+  border-bottom: none;
+  border-top: none;
+}
+
+.ui-paginator-element {
+  padding: 0 5px 0 5px;
+}
+
+.datatable-search-box {
+  max-width: 100%;
+  padding: 0 15px 0 15px;
+  height: 35px;
+  font-size: 14px;
+  color: black;
+}
+
+.input-group-addon {
+  height: 35px;
+  padding: 5px 5px;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+i {
+  margin: 5px;
+  font-size: 15px;
+}
+
+i.fa,
+i.fa-solid,
+i.fas,
+.fa,
+.fa-solid,
+.fas {
+  background-color: transparent;
+}
+
+.active {
+  color: #34a853;
+}
+
+.deactive {
+  color: #ea4335;
+}
+
+.table-td-padding {
+  padding: 5px;
+}
+
+.table-flip-scroll {
+  .cf:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+  }
+
+  * html .cf {
+    zoom: 1;
+  }
+
+  *:first-child + html .cf {
+    zoom: 1;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  p-column,
+  td {
+    margin: 0;
+    vertical-align: top;
+  }
+
+  p-column {
+    text-align: left;
+  }
+
+  table {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  thead {
+    display: block;
+    float: left;
+  }
+
+  tbody {
+    display: block;
+    width: auto;
+    position: relative;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  thead tr {
+    display: block;
+  }
+
+  .table > thead > tr > p-column:first-child {
+    border-top: 1px solid #ddd;
+  }
+
+  p-column {
+    display: block;
+    text-align: right;
+  }
+
+  tbody tr {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  td {
+    display: block;
+    min-height: 1.25em;
+    text-align: left;
+  }
+
+  p-column {
+    border-bottom: 0;
+    border-left: 0;
+  }
+
+  td {
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  tbody tr {
+    border-left: 1px solid #babcbf;
+  }
+
+  p-column:last-child,
+  td:last-child {
+    border-bottom: 1px solid #babcbf;
+  }
+}
+
+p.longText {
+  background-color: #e8e8e8;
+  width: 100%;
+  word-break: break-word;
+}
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 100%;
+  max-width: 100%;
+
+  &:before,
+  &:after {
+    content: ' ';
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+}
+
+.dropbtn {
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+  &:hover {
+    .dropdown-content {
+      display: block;
+    }
+  }
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  padding: 8px 0;
+  border-radius: 4px;
+  z-index: 1000;
+
+  a,
+  div {
+    color: black;
+    padding: 7px 12px;
+    text-align: left;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+  }
+
+  a:hover {
+    background-color: #f1f1f1;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .dropdown-content {
+    background-color: var(--neutral-200);
+    border: 1px solid var(--neutral-300);
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.4);
+
+    a,
+    div {
+      color: var(--neutral-800);
+    }
+
+    a:hover {
+      background-color: var(--neutral-300);
+    }
+
+    strong {
+      color: var(--primary-color);
+    }
+  }
+}
+
+.btn-information {
+  color: #fff;
+  background-color: #2ec1cc;
+  border-color: #29adb7;
+  font-size: 11px;
+  padding-bottom: 2px;
+}
+
+.tab {
+  color: white;
+}
+
+.style {
+  color: steelblue;
+  padding-left: 1000px;
+}
+
+.form-control {
+  height: 33px;
+}
+
+.text-Border {
+  border-color: lightgray;
+  color: dimgray;
+}
+
+.ui-checkbox {
+  padding-top: 10px;
+  margin: 0 50px 30px 50px;
+}
+
+.span {
+  color: dimgray;
+}
+
+::-webkit-input-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder,
+:-moz-placeholder {
+  color: DimGray;
+}
+
+.ui-inputtext {
+  margin: 0;
+  outline: medium none;
+  padding-left: 1em;
+  height: 35px;
+}
+
+label,
+input {
+  display: block;
+}
+
+label {
+  margin-bottom: 10px;
+}
+
+.betweenSpace {
+  margin-bottom: 10px;
+}
+
+.betweenSpace1 {
+  margin-bottom: 3px;
+}
+
+.fixed-size {
+  table-layout: fixed;
+  word-wrap: break-word;
+}
+
+.styleFor {
+  width: 45%;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  .portrait-orientation {
+    .panel-heading {
+      background-color: steelblue;
+      height: 40px;
+      width: 57%;
+      border-radius: 10px 10px 0px 0px;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    .panel-title {
+      color: white;
+      width: 57%;
+      padding-top: 4px;
+    }
+
+    .panel-body-dropdown {
+      padding: 5px;
+      width: 57%;
+    }
+  }
+
+  .landscape-orientation {
+    .panel-heading {
+      background-color: steelblue;
+      height: 40px;
+      width: 69%;
+      border-radius: 10px 10px 0px 0px;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
+
+    .panel-title {
+      color: white;
+      width: 69%;
+      padding-top: 4px;
+    }
+
+    .panel-body-dropdown {
+      padding: 5px;
+      width: 69%;
+    }
+  }
+}
+
+#map {
+  width: 410px;
+  height: 300px;
+}
+
+.icons {
+  font-size: 25px;
+}
+
+.disabledbutton {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.lineSpace {
+  line-height: 40px;
+}
+
+.textColor {
+  color: black;
+}
+
+.cssForExpiredTicket {
+  color: #ea4335;
+  background-color: #ffebe6;
+}
+
+.cssForRescindedTicket {
+  color: darkorange;
+  background-color: #fff4e6;
+}
+
+/* Current time display styling */
+.time-display {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  &-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: steelblue;
+    margin-right: 15px;
+  }
+
+  &-clock {
+    font-size: 16px;
+    color: #333;
+    margin-right: 15px;
+  }
+
+  &-timezone {
+    display: flex;
+    align-items: center;
+
+    select {
+      margin-left: 10px;
+      padding: 4px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  }
+}
+
+#myDiv {
+  min-height: calc(100vh - 120px);
+  padding-bottom: 60px;
+  position: relative;
+}
+
+.filter-buttons-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  z-index: 100;
+
+  button {
+    min-width: 80px;
+  }
+}
+
+.panel {
+  position: relative;
+  height: calc(100vh - 180px);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Trip notes styling */
+.trip-notes {
+  &-container {
+    margin: 15px 0;
+    padding: 10px;
+    border-left: 4px solid var(--primary-color, #3a7bd5);
+    background-color: rgba(58, 123, 213, 0.05);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Uber Integration Styles */
+  .uber-dialog {
+    .uber-dialog-body { display:flex; flex-direction:column; gap:1rem; }
+  }
+  .uber-config { display:flex; flex-wrap:wrap; gap:1.5rem; }
+  .uber-config .config-left { flex:1 1 380px; min-width:320px; }
+  .uber-config .config-right { flex:1 1 240px; min-width:220px; }
+  .map-wrapper { position:relative; background:#111; border:1px solid var(--neutral-300); border-radius:8px; overflow:hidden; }
+  .map-toolbar { display:flex; justify-content:space-between; align-items:center; padding:6px 10px; background:linear-gradient(90deg,#222,#333); color:#fff; font-size:13px; }
+  .map-layer-toggle button { margin-left:6px; }
+  .coord-readout { position:absolute; bottom:6px; left:8px; background:rgba(0,0,0,.65); color:#fff; padding:4px 8px; font-size:12px; border-radius:4px; display:flex; align-items:center; gap:4px; }
+  .uber-options { display:flex; flex-direction:column; gap:.75rem; max-height:60vh; }
+  .options-header { display:flex; align-items:center; gap:1rem; }
+  .options-header h4 { margin:0; font-size:1.1rem; }
+  .options-list { overflow-y:auto; border:1px solid var(--neutral-300); border-radius:8px; background:#1e1e1e; padding:.5rem; display:flex; flex-direction:column; gap:.5rem; }
+  .uber-option { display:grid; grid-template-columns:40px 1fr auto 30px; gap:.75rem; padding:.65rem .8rem; border:1px solid #2d2d2d; border-radius:8px; cursor:pointer; background:linear-gradient(135deg,#222,#1a1a1a); transition:background .2s,border-color .2s; position:relative; }
+  .uber-option:hover { background:#262626; }
+  .uber-option.selected { border-color:var(--primary-color,#3a7bd5); box-shadow:0 0 0 1px var(--primary-color,#3a7bd5); }
+  .uber-option .icon-col i { font-size:26px; color:#ccc; }
+  .uber-option .details-col { display:flex; flex-direction:column; gap:2px; }
+  .uber-option .name-line { display:flex; align-items:center; gap:.5rem; font-weight:600; color:#f1f1f1; }
+  .uber-option .capacity { font-size:12px; background:#333; padding:2px 6px; border-radius:12px; display:inline-flex; align-items:center; gap:4px; color:#bbb; }
+  .uber-option .meta-line { font-size:12px; color:#aaa; display:flex; gap:.5rem; flex-wrap:wrap; }
+  .uber-option .meta-line .surge { color:#ff9800; }
+  .uber-option .price-col { text-align:right; display:flex; flex-direction:column; justify-content:center; }
+  .uber-option .price { font-weight:600; color:#fff; }
+  .uber-option .orig-price { font-size:11px; color:#888; text-decoration:line-through; }
+  .uber-option .select-indicator { position:absolute; top:6px; right:6px; color:var(--primary-color,#3a7bd5); }
+  .options-footer { display:flex; justify-content:flex-end; }
+  .empty-state { padding:1rem; background:#222; border:1px solid #333; border-radius:8px; text-align:center; color:#bbb; }
+  .uber-confirm { text-align:center; padding:2rem 1rem; }
+  .uber-confirm .success-icon i { font-size:58px; color:var(--primary-color,#3a7bd5); }
+  @media (prefers-color-scheme: light) {
+    .options-list { background:#fff; }
+    .uber-option { background:#fafafa; border-color:#ddd; }
+    .uber-option:hover { background:#f0f0f0; }
+    .uber-option.selected { background:#e8f2ff; }
+    .uber-option .icon-col i { color:#555; }
+    .uber-option .capacity { background:#eee; color:#555; }
+    .empty-state { background:#fafafa; border-color:#ddd; color:#666; }
+  }
+  @media (max-width: 780px) {
+    .uber-config { flex-direction:column; }
+  }
+
+  &-label {
+    font-weight: 700;
+    margin-right: 5px;
+    font-size: 15px;
+    color: var(--primary-color, #3a7bd5);
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &-content {
+    display: block;
+    background-color: transparent;
+    color: inherit;
+    padding: 8px;
+    word-break: break-word;
+    margin-top: 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 30px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .trip-notes-container {
+    background-color: rgba(58, 123, 213, 0.15);
+    border-color: var(--primary-color, #3a7bd5);
+  }
+
+  .trip-notes-content {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .trip-notes-container {
+    background-color: rgba(58, 123, 213, 0.05);
+    border-color: var(--primary-color, #3a7bd5);
+  }
+
+  .trip-notes-content {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Search box with icon styling
+.p-input-icon-left {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  max-width: 400px;
+
+  i {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: var(--space-md);
+    color: var(--neutral-500);
+    margin: 0;
+    z-index: 1;
+    font-size: var(--font-size-md);
+  }
+
+  input {
+    padding-left: calc(var(--space-md) * 2 + 1em);
+    width: 100%;
+  }
+}
+
+// Calendar panel styles
+:host ::ng-deep {
+  .p-calendar-panel {
+    position: absolute;
+    z-index: var(--z-popover);
+    overflow: visible;
+    max-height: none;
+  }
+
+  .p-component-overlay,
+  .p-dropdown-panel,
+  .p-multiselect-panel {
+    z-index: var(--z-popover);
+  }
+
+  .p-multiselect-panel .p-multiselect-header {
+    padding: var(--space-sm);
+    border-bottom: 1px solid var(--neutral-300);
+
+    .p-multiselect-filter-container {
+      width: 100%;
+
+      input {
+        width: 100%;
+        padding-right: 2rem;
+      }
+
+      .p-multiselect-filter-icon {
+        right: 0.5rem;
+        color: var(--neutral-500);
+      }
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :host ::ng-deep .p-multiselect-panel .p-multiselect-header {
+    background-color: var(--neutral-200);
+    border-color: var(--neutral-300);
+
+    .p-multiselect-filter-container {
+      input {
+        background-color: var(--input-bg);
+        color: var(--input-text);
+        border-color: var(--input-border);
+      }
+
+      .p-multiselect-filter-icon {
+        color: var(--neutral-500);
+      }
+    }
+  }
+}
+
+// Layout Container
+.trip-ticket-container {
+  /* Note: earlier in the file we set display: flex - ensuring we keep just one layout approach */
+  /* Use flex instead of grid for better containment of scrolling elements */
+  display: flex;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  max-width: 100%;
+  margin-top: 80px;
+  animation: fadeIn var(--transition-normal) ease-out forwards;
+
+  /* Make the filter-panel fixed width and content-area fill remaining space */
+  .filter-panel {
+    flex: 0 0 350px; /* Fixed width, don't grow, don't shrink */
+  }
+
+  .content-area {
+    flex: 1; /* Take remaining space */
+  }
+
+  @media (max-width: 767px) {
+    flex-direction: column; /* Stack elements on mobile */
+
+    .filter-panel {
+      flex: 0 0 auto; /* Auto-height on mobile */
+      width: 100%;
+    }
+  }
+}
+
+// Filter Dropdown
+.filter-dropdown {
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-lg);
+  margin-top: var(--space-md);
+  border: 1px solid var(--neutral-200);
+
+  .row {
+    margin-bottom: var(--space-md);
+  }
+
+  label {
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+  }
+}
+
+// Data Table Styling Enhancements
+:host ::ng-deep .p-datatable {
+  font-size: 16px;
+  /* Remove height constraints - let scrollable-container handle sizing */
+
+  .p-datatable-header {
+    background-color: var(--neutral-100);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+  }
+
+  .p-datatable-thead > tr > th {
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    font-weight: 600;
+    padding: var(--space-md);
+    border-color: var(--neutral-200);
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .p-datatable-tbody > tr {
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--neutral-100);
+    }
+
+    > td {
+      padding: var(--space-md);
+      border-color: var(--neutral-200);
+      font-size: 16px;
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--border-radius-full);
+        font-size: 0.95rem;
+        font-weight: 600;
+
+        &.status-active {
+          background-color: rgba(13, 156, 212, 0.5);
+          color: var(--success-color);
+        }
+
+        &.status-approved {
+          background-color: rgba(179, 13, 212, 0.5);
+          color: var(--success-color);
+        }
+
+        &.status-pending {
+          background-color: rgba(255, 193, 7, 0.5);
+          color: var(--warning-color);
+        }
+
+        &.status-cancelled {
+          background-color: rgba(249, 20, 4, 0.5);
+          color: var(--danger-color);
+        }
+
+        &.status-noshow {
+          background-color: rgba(255, 157, 0, 0.5);
+          color: var(--warning-color);
+        }
+
+        &.status-completed {
+          background-color: rgba(28, 121, 9, 0.5);
+          color: var(--success-color);
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        white-space: nowrap; /* Prevent icons from wrapping to new lines */
+
+        /* Ensure the column doesn't grow too tall when many buttons are present */
+        max-width: 100%;
+
+        button {
+          --btn-size: 36px;
+          width: var(--btn-size);
+          height: var(--btn-size);
+          border-radius: 8px; /* slightly rounded rectangles are modern and touch-friendly */
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+          background-color: transparent;
+          border: 1px solid transparent;
+          color: var(--text-color, #222);
+          padding: 0;
+          cursor: pointer;
+
+          i {
+            font-size: 16px;
+            line-height: 1;
+          }
+
+          &:hover,
+          &:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(32,33,36,0.12);
+            background-color: var(--neutral-100);
+            color: var(--primary-color);
+            outline: none;
+          }
+
+          &:active {
+            transform: translateY(0);
+            box-shadow: none;
+          }
+
+          /* Provide an accessible focus ring for keyboard users */
+          &:focus-visible {
+            box-shadow: 0 0 0 3px rgba(58,123,213,0.18);
+            border-color: rgba(58,123,213,0.24);
+          }
+        }
+
+        /* If there are more buttons than fit, collapse into a small overflow menu on small screens */
+        @media (max-width: 860px) {
+          gap: 6px;
+
+          button {
+            --btn-size: 32px;
+            width: var(--btn-size);
+            height: var(--btn-size);
+          }
+        }
+
+        /* On very small displays, show a compact menu button instead of many icons */
+        @media (max-width: 520px) {
+          /* hide individual icon buttons and show a more menu */
+          button:not(.btn-overflow) { display: none !important; }
+
+          .btn-overflow {
+            display: inline-flex !important;
+            --btn-size: 40px;
+            width: var(--btn-size);
+            height: var(--btn-size);
+            border-radius: 8px;
+            background: var(--neutral-100);
+            color: var(--text-color, #222);
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+
+      /* Overflow menu styling for compact action list on small screens */
+      .action-overflow {
+        position: relative;
+
+        .btn-overflow {
+          background: transparent;
+          border: 1px solid transparent;
+          padding: 0;
+          display: none; /* shown only on small screens via media query above */
+        }
+
+        .overflow-menu {
+          position: absolute;
+          right: 0;
+          top: calc(100% + 8px);
+          background: var(--white, #fff);
+          border: 1px solid var(--neutral-200, #e6e6e6);
+          box-shadow: 0 6px 24px rgba(23, 24, 24, 0.12);
+          border-radius: 8px;
+          z-index: 1200;
+          min-width: 200px;
+          padding: 8px 0;
+
+          ul { list-style: none; margin: 0; padding: 0; }
+
+          li {
+            padding: 0 12px;
+
+            button {
+              width: 100%;
+              text-align: left;
+              padding: 8px 4px;
+              background: transparent;
+              border: none;
+              color: var(--text-color, #222);
+              display: inline-flex;
+              align-items: center;
+              gap: 10px;
+              font-size: 0.95rem;
+
+              i { font-size: 16px; }
+
+              &:hover { background: var(--neutral-100, #f5f5f5); }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .p-paginator {
+    background-color: var(--neutral-100);
+    border-top: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+    font-size: 15px;
+
+    .p-paginator-pages .p-paginator-page.p-highlight {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  }
+
+  // Loading spinner
+  &-loading-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+:host ::ng-deep spinnericon.p-element.p-icon-wrapper {
+  width: 60px;
+  height: 60px;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideIn var(--transition-normal) ease-out forwards;
+}
+
+// Responsive designs
+@media (max-width: 767px) {
+  .filter-panel {
+    position: relative;
+    top: 0;
+    margin-bottom: var(--space-md);
+  }
+
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  :host ::ng-deep .p-datatable {
+    .p-datatable-thead > tr > th:not(:first-child) {
+      display: none;
+    }
+
+    .p-datatable-tbody > tr > td {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      border-bottom: 0;
+
+      &:before {
+        content: attr(data-label);
+        font-weight: 600;
+        width: 40%;
+        display: inline-block;
+      }
+
+      &:last-child {
+        border-bottom: 1px solid var(--neutral-200);
+      }
+    }
+  }
+}
+
+// Dark mode specific overrides
+@media (prefers-color-scheme: dark) {
+  .filter-panel,
+  .content-area,
+  .filter-dropdown {
+    background-color: var(--neutral-200);
+  }
+
+  .filter-panel {
+    background-color: var(--neutral-200);
+
+    i,
+    .fa,
+    .fa-solid,
+    .fas {
+      color: var(--primary-color);
+      background-color: transparent;
+    }
+
+    .filter-actions {
+      background-color: var(--neutral-200);
+      border-top: 1px solid var(--neutral-300);
+    }
+  }
+
+  i.fa,
+  i.fa-solid,
+  i.fas,
+  button i.fa,
+  button i.fa-solid,
+  button i.fas,
+  .filter-section-title i,
+  .timezone-selector i {
+    background-color: transparent;
+    color: inherit;
+  }
+
+  /* And filter section titles */
+  .filter-section-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  /* For consistency in Operating Hours section */
+  .col-sm-6 .form-label {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Make sure advanced filter labels are consistent */
+  .form-group label {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+
+
+  button i.fa,
+  button i.fa-solid,
+  button i.fas {
+    color: inherit;
+  }
+
+  .timezone-selector {
+    background-color: var(--neutral-300);
+
+    select {
+      color: var(--primary-light);
+
+      option {
+        background-color: var(--neutral-200);
+        color: var(--neutral-800);
+      }
+    }
+  }
+
+  :host ::ng-deep .p-datatable {
+    .p-datatable-header,
+    .p-datatable-thead > tr > th,
+    .p-paginator {
+      background-color: var(--neutral-300);
+    }
+
+    .p-datatable-tbody > tr > td .action-buttons button {
+      background-color: var(--neutral-300);
+      color: var(--neutral-700);
+
+      &:hover {
+        background-color: var(--primary-color);
+        color: white;
+      }
+    }
+  }
+}
+
+// Search button icon
+button.btn-primary i.fa-magnifying-glass,
+button.btn-primary i.fa-search {
+  color: white;
+  background-color: transparent;
+}
+
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox-input {
+  margin-right: 0.5rem;
+}
+
+.checkbox-label {
+  margin-bottom: 0;  // Removes default bottom margin that might cause alignment issues
+  font-size: 1.2rem; /* Increase the font size */
+  font-weight: 500; /* Make the font slightly bolder */
+}
+
+// Pagination control styles
+.pagination-control {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  margin-right: var(--space-md);
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--neutral-700);
+      user-select: none;
+
+      i {
+        color: var(--primary-color);
+        font-size: 1rem;
+      }
+    }
+
+    .checkbox-input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--primary-color);
+      cursor: pointer;
+    }
+  }
+
+  .pagination-info {
+    font-size: 0.75rem;
+    color: var(--neutral-500);
+    margin-left: 1.5rem;
+    font-style: italic;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .pagination-control {
+    .checkbox-container .checkbox-label {
+      color: var(--neutral-300);
+
+      i {
+        color: var(--primary-color);
+      }
+    }
+
+    .pagination-info {
+      color: var(--neutral-400);
+    }
+  }
+}
+
+/* Add these styles to increase the placeholder font size in filters */
+:host ::ng-deep {
+  /* Increase font size for p-multiSelect placeholder text */
+  .p-multiselect .p-multiselect-label {
+    font-size: 1.1rem;
+  }
+
+  /* Increase font size for dropdown options as well for consistency */
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item {
+    font-size: 1.1rem;
+  }
+
+  /* Style for other input placeholders */
+  input::placeholder,
+  textarea::placeholder,
+  .p-calendar input::placeholder {
+    font-size: 1.1rem;
+  }
+
+  /* Style for p-calendar input */
+  .p-calendar input {
+    font-size: 1.1rem;
+  }
+
+  /* Style for p-autoComplete input */
+  .p-autocomplete input {
+    font-size: 1.1rem;
+  }
+}
+
+// Edit dialog styles
+:host ::ng-deep .p-dialog {
+  .p-dialog-header {
+    background-color: var(--neutral-100);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+  }
+
+  .p-dialog-content {
+    padding: var(--space-lg);
+
+    .p-field {
+      margin-bottom: var(--space-md);
+
+      label {
+        display: block;
+        margin-bottom: var(--space-xs);
+        font-weight: 600;
+        color: var(--neutral-700);
+      }
+
+      .p-inputgroup {
+        display: flex;
+        gap: var(--space-sm);
+
+        input, textarea {
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  .p-dialog-footer {
+    border-top: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+  }
+}
+
+/* Ride Status Dialog Styles */
+.ride-status-dialog {
+  .ride-status-content {
+    padding: 0;
+  }
+
+  .ride-status-layout {
+    display: flex;
+    gap: 20px;
+    min-height: 500px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .map-section {
+    flex: 1 1 50%;
+    min-width: 400px;
+
+    @media (max-width: 768px) {
+      min-width: 100%;
+    }
+
+    .map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+
+      h4 {
+        margin: 0;
+        color: var(--text-color, #222);
+        font-size: 1.1em;
+        font-weight: 600;
+      }
+
+            .map-layer-toggle {
+        display: flex;
+        gap: 4px;
+
+        .btn {
+          padding: 6px 12px;
+          font-size: 12px;
+          font-weight: 600;
+          border-radius: 4px;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.9);
+          color: #333;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: rgba(255, 255, 255, 1);
+            color: #000;
+          }
+
+          &.btn-primary {
+            background: var(--primary-color, #3a7bd5);
+            color: white;
+            border-color: var(--primary-color, #3a7bd5);
+
+            &:hover {
+              background: var(--primary-color-dark, #2563eb);
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    .coord-readout {
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #111;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.1);
+
+      /* Ensure inner icons/text are high contrast */
+      i, span {
+        color: #111 !important;
+        font-weight: 600;
+      }
+
+      div {
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .details-section {
+    flex: 1 1 50%;
+    padding-left: 20px;
+    overflow-y: auto;
+    max-height: 500px;
+
+    @media (max-width: 768px) {
+      padding-left: 0;
+      padding-top: 20px;
+    }
+  }
+
+  .detail-card {
+    background: var(--surface-card, #fff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+
+    .detail-header {
+      background: var(--neutral-50, #f8f9fa);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color, #e0e0e0);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      i {
+        color: var(--primary-color, #3a7bd5);
+        font-size: 1.2em;
+      }
+
+      h5 {
+        margin: 0;
+        font-size: 1.1em;
+        font-weight: 600;
+
+      }
+    }
+
+    .detail-content {
+      padding: 16px;
+
+    }
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+
+    &.status-success {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    &.status-info {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    &.status-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    &.status-secondary {
+      background: var(--neutral-200, #e9ecef);
+      color: var(--neutral-700, #495057);
+    }
+  }
+
+  .status-detail {
+    color: var(--text-color-secondary, #666);
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+
+  .request-time {
+    font-size: 0.9em;
+    color: var(--text-color-secondary, #666);
+  }
+
+  .metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-color, #f0f0f0);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .metric-label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-color, #222);
+    }
+
+    .metric-value {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary-color, #3a7bd5);
+    }
+  }
+
+  .vehicle-info,
+  .driver-info {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .vehicle-image,
+  .driver-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--neutral-100, #f5f5f5);
+  }
+
+  .vehicle-details,
+  .driver-details {
+    flex: 1;
+
+    .vehicle-name,
+    .driver-name {
+      font-weight: 600;
+      font-size: 1.1em;
+      color: var(--text-color, #222);
+      margin-bottom: 4px;
+    }
+
+    .vehicle-color,
+    .vehicle-license,
+    .driver-contact,
+    .regulatory-info {
+      font-size: 0.9em;
+      color: var(--text-color-secondary, #666);
+      margin-bottom: 2px;
+
+      i {
+        margin-right: 4px;
+        width: 16px;
+        color: var(--primary-color, #3a7bd5);
+      }
+    }
+
+    .driver-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+
+      i {
+        font-size: 16px;
+
+        &.filled {
+          color: #ffc107;
+        }
+
+        &.empty {
+          color: var(--neutral-300, #dee2e6);
+        }
+      }
+    }
+  }
+
+  .tracking-iframe-container {
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 4px;
+    overflow: hidden;
+
+    iframe {
+      display: block;
+      width: 100%;
+      background: var(--neutral-50, #f8f9fa);
+    }
+  }
+
+  /* Modern tracking link container */
+  .tracking-link-container {
+    margin-top: 12px;
+  }
+
+  .tracking-info-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--neutral-50, #f8f9fa) 0%, var(--neutral-100, #f1f3f5) 100%);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--primary-color, #3a7bd5);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .tracking-icon {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--background-color, #fff);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .tracking-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      h6 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-color, #212529);
+      }
+
+      .tracking-description {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-secondary, #6c757d);
+        line-height: 1.5;
+      }
+
+      .tracking-button {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        i {
+          font-size: 1.2em;
+        }
+
+        &:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(58, 123, 213, 0.3);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .tracking-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.85rem;
+        color: var(--text-muted, #adb5bd);
+        margin-top: 4px;
+
+        i {
+          font-size: 1em;
+        }
+      }
+    }
+  }
+
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .tracking-info-card {
+      background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+      border-color: #404040;
+
+      &:hover {
+        border-color: var(--primary-color, #3a7bd5);
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+      }
+
+      .tracking-icon {
+        background: #333;
+      }
+
+      .tracking-content {
+        h6 {
+          color: #f1f1f1;
+        }
+
+        .tracking-description {
+          color: #adb5bd;
+        }
+
+        .tracking-hint {
+          color: #6c757d;
+        }
+      }
+    }
+  }
+}
+
+

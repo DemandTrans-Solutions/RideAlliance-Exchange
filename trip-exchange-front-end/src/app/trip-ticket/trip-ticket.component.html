@@ -1,0 +1,3082 @@
+<!-- Modern Trip Ticket Component - 2025 Edition -->
+<div class="trip-ticket-container animate-fade-in">
+  <!-- Filter Panel -->
+  <div class="filter-panel">
+    <h3>
+      <i class="ph ph-funnel"></i> {{ 'TRIP_TICKET.FILTERS_TITLE' | translate }}
+    </h3>
+
+    <!-- Timezone Selector -->
+    <!-- Timezone Selector -->
+    <div class="timezone-selector" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="ph ph-clock"></i>
+        <label for="timezone-select" style="margin-bottom: 0; font-weight: 500;">Timezone:</label>
+        <select id="timezone-select" [(ngModel)]="selectedTimezone" (change)="updateTimezone()">
+          <option *ngFor="let tz of availableTimezones" [value]="tz.value">{{tz.label}}</option>
+        </select>
+      </div>
+      <span class="current-time" style="margin-top: 2px;">{{getCurrentTimeInSelectedTimezone()}}</span>
+    </div>
+
+    <div class="filter-content">
+      <!-- Saved Filters -->
+      <div class="filter-section">
+        <div class="filter-section-title">{{ 'TRIP_TICKET.SAVED_FILTERS' | translate }}</div>
+        <select
+          class="form-control"
+          [(ngModel)]="filterId"
+          (change)="selectFilterByName(ticketFilter,advancedFilter,tripTime)"
+        >
+          <option value="" class="defaultcolor">
+            {{ 'TRIP_TICKET.SELECT_SAVED_FILTER' | translate }}
+          </option>
+          <option *ngFor="let filter of filterList" [value]="filter.filterId">
+            {{filter.filterName}}
+          </option>
+        </select>
+        <!-- Save Filter UI -->
+        <div class="save-filter-block" style="margin-top: 10px;">
+          <div *ngIf="!savefilters">
+            <button type="button" class="btn btn-secondary btn-sm bottonspace" (click)="saveFilter()">
+              <i class="ph ph-caret-right"></i> {{ 'TRIP_TICKET.SAVE_CURRENT_FILTERS' | translate }}
+            </button>
+          </div>
+          <div *ngIf="savefilters">
+            <button type="button" class="btn btn-secondary btn-sm bottonspace" (click)="saveFilterClose()">
+              <i class="ph ph-caret-down"></i> {{ 'TRIP_TICKET.SAVE_CURRENT_FILTERS' | translate }}
+            </button>
+            <div class="save-filter-form" style="margin-top: 10px;">
+              <input type="text" class="form-control" id="filterName" name="filterName"
+                [(ngModel)]="ticketFilter.filterName" required maxlength="30"
+                pattern="[A-Za-z0-9\ ]{1,100}"
+                [placeholder]="'TRIP_TICKET.FILTER_NAME_PLACEHOLDER' | translate"
+                (ngModelChange)="filterNameSave()" />
+              <button type="button" class="btn btn-primary bottonspace" style="margin-top: 8px;"
+
+                (click)="saveFilterName(ticketFilter,advancedFilter,tripTime)">
+                <i class="ph ph-floppy-disk"></i> {{ 'TRIP_TICKET.SAVE' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Filters -->
+      <div class="filter-section">
+        <div class="filter-section-title">{{ 'TRIP_TICKET.BASIC_FILTERS' | translate }}</div>
+
+
+      <!-- Service Area Filter -->
+      <div class="mb-sm">
+        <div class="checkbox-container">
+          <input type="checkbox" class="checkbox-input" name="tripOutofSA" value="true"
+            [(ngModel)]="ticketFilter.isServiceFilterApply"
+            (ngModelChange)="checkForOutsideService(ticketFilter.isServiceFilterApply)"
+            id="showTripsOutsideServiceArea">
+          <label class="checkbox-label" for="showTripsOutsideServiceArea">
+            {{ 'TRIP_TICKET.OUTSIDE_SERVICE_AREA' | translate }}
+          </label>
+        </div>
+      </div>
+
+
+        <!-- Geographic Filter -->
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="geographic"
+            [(ngModel)]="geographicFilter"
+            [placeholder]="'TRIP_TICKET.GEOGRAPHIC' | translate"
+            (onChange)="checkGeographicFilter(geographicFilter)"
+            [disabled]="!isServiceFilter"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+
+
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="TicketStatus"
+            [(ngModel)]="ticketFilter.ticketFilterstatus"
+            [placeholder]="'TRIP_TICKET.TICKET_STATUS' | translate"
+            (onChange)="ticketFilterStatusChange($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+        <div class="mb-sm">
+        <!-- this used to the ClaimingProivder, but that does not show the users own provider in list-->
+          <p-multiSelect
+            [options]="OriginatingProvider"
+            [(ngModel)]="ticketFilter.claimingProviderName"
+            [placeholder]="'TRIP_TICKET.CLAIMING_PROVIDER' | translate"
+            (onChange)="claimingProviderNameChange($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="OriginatingProvider"
+            [(ngModel)]="ticketFilter.originatingProviderName"
+            [placeholder]="'TRIP_TICKET.ORIGINATING_PROVIDER' | translate"
+            (onChange)="coriginatingProviderNameChange($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+
+
+        <!-- Medical Centers Filter -->
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="hospitalArea"
+            [(ngModel)]="hospitalService"
+            [placeholder]="'TRIP_TICKET.MEDICAL_CENTERS' | translate"
+            (onChange)="onCheckHospitalServiceFilter($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+        <!-- Funding Source Filter -->
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="FundingSource"
+            [(ngModel)]="fundingSourceFilter"
+            [placeholder]="'TRIP_TICKET.FUNDING_SOURCE' | translate"
+            (onChange)="onCheckFundFilter($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+        <!-- Eligibility Filter -->
+        <div class="mb-sm">
+          <p-multiSelect
+            [options]="eligibility"
+            [(ngModel)]="eligibilityFilter"
+            [placeholder]="'TRIP_TICKET.ELIGIBILITY' | translate"
+            (onChange)="onCheckEligibilityFilter($event)"
+            [style]="{'width':'100%'}"
+            appendTo="body"
+          ></p-multiSelect>
+        </div>
+
+
+
+        <!-- Operating Hours Filter -->
+        <div class="mb-sm">
+          <label class="form-label">{{ 'TRIP_TICKET.OPERATING_HOURS' | translate }}</label>
+          <div class="row">
+            <div class="col-sm-6">
+              <label class="form-label">From:</label>
+              <input type="time" [(ngModel)]="reqPickUpStartTime" name="timeFrom" id="timeFrom" (ngModelChange)="onTimeFromChange($event)" />
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">To:</label>
+              <input type="time" [(ngModel)]="reqPickUpEndTime" name="timeTo" id="timeTo" (ngModelChange)="onTimeToChange($event)" />
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Date Range Selection -->
+        <div class="mb-sm">
+          <label class="form-label" *ngIf="fromDateTimeSpan"
+            >{{ 'TRIP_TICKET.FROM_DATE_TIME' | translate }}</label
+          >
+          <p-calendar
+            [(ngModel)]="tripTime.pickUpDateTime"
+            (onSelect)="changeFromDateTime($event)"
+            [showTime]="true"
+            [showIcon]="true"
+            hourFormat="12"
+            [placeholder]="'TRIP_TICKET.FROM_DATE_TIME_PLACEHOLDER' | translate"
+            [style]="{'width':'100%'}"
+            inputId="fromDateTime"
+            appendTo="body"
+          ></p-calendar>
+        </div>
+
+        <div class="mb-md">
+          <label class="form-label" *ngIf="toDateTimeSpan"
+            >{{ 'TRIP_TICKET.TO_DATE_TIME' | translate }}</label
+          >
+          <p-calendar
+            [(ngModel)]="tripTime.dropOffDateTime"
+            (onSelect)="changeToDateTime($event)"
+            [showTime]="true"
+            [showIcon]="true"
+            hourFormat="12"
+            [placeholder]="'TRIP_TICKET.TO_DATE_TIME_PLACEHOLDER' | translate"
+            [style]="{'width':'100%'}"
+            [minDate]="tripTime.pickUpDateTime || undefined"
+            inputId="toDateTime"
+            appendTo="body"
+          ></p-calendar>
+        </div>
+      </div>
+
+      <!-- Advanced Filters Section -->
+      <div class="filter-section">
+        <div class="filter-section-title">
+          <span>{{ 'TRIP_TICKET.ADVANCED_FILTERS' | translate }}</span>
+          <button (click)="advanceFilter()" class="btn-icon">
+            <i class="ph ph-{{dropdown ? 'caret-up' : 'caret-down'}}"></i>
+          </button>
+        </div>
+
+        <div *ngIf="dropdown" class="animate-fade-in">
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [placeholder]="'TRIP_TICKET.CUSTOMER_FIRST_NAME_PLACEHOLDER' | translate"
+              [(ngModel)]="advancedFilter.customer_first_name"
+              (ngModelChange)="changeCustomerFirstName(advancedFilter.customer_first_name, tripTime)"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [placeholder]="'TRIP_TICKET.CUSTOMER_LAST_NAME_PLACEHOLDER' | translate"
+              [(ngModel)]="advancedFilter.customer_last_name"
+              (ngModelChange)="changeCustomerLastName(advancedFilter.customer_last_name, tripTime)"
+            />
+          </div>
+
+
+          <div class="form-group">
+            <p-autoComplete
+              [(ngModel)]="selectedCustomerAddress"
+              (ngModelChange)="changeCustomerAddress($event, tripTime)"
+              field="address"
+              [suggestions]="filteredCustomersAddress"
+              (completeMethod)="filterCustomerAddress($event)"
+              [style]="{'width':'100%'}"
+              [inputStyle]="{'width':'100%'}"
+              [placeholder]="'TRIP_TICKET.CUSTOMER_ADDRESS_PLACEHOLDER' | translate"
+              [minLength]="3"
+              appendTo="body"
+            >
+              <ng-template let-address pTemplate="selectedItem">
+                {{address.address}}
+              </ng-template>
+            </p-autoComplete>
+          </div>
+
+          <div class="form-group">
+            <p-autoComplete
+              [(ngModel)]="selectedPickupAddress"
+              (ngModelChange)="changePickupAddress($event, tripTime)"
+              field="address"
+              [suggestions]="filteredPickupAddresses"
+              (completeMethod)="filterPickupAddress($event)"
+              [style]="{'width':'100%'}"
+              [inputStyle]="{'width':'100%'}"
+              [placeholder]="'TRIP_TICKET.PICKUP_ADDRESS_PLACEHOLDER' | translate"
+              [minLength]="3"
+              appendTo="body"
+            >
+              <ng-template let-address pTemplate="selectedItem">
+                {{address.address}}
+              </ng-template>
+            </p-autoComplete>
+          </div>
+
+          <div class="form-group">
+            <p-autoComplete
+              [(ngModel)]="selectedDropoffAddress"
+              (ngModelChange)="changeDropOffAddress($event, tripTime)"
+              field="address"
+              [suggestions]="filteredDropoffAddresses"
+              (completeMethod)="filterDropoffAddress($event)"
+              [style]="{'width':'100%'}"
+              [inputStyle]="{'width':'100%'}"
+              [placeholder]="'TRIP_TICKET.DROPOFF_ADDRESS_PLACEHOLDER' | translate"
+              [minLength]="3"
+              appendTo="body"
+            >
+              <ng-template let-address pTemplate="selectedItem">
+                {{address.address}}
+              </ng-template>
+            </p-autoComplete>
+          </div>
+
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              [placeholder]="'TRIP_TICKET.CUSTOMER_IDENTIFIERS_PLACEHOLDER' | translate"
+              [(ngModel)]="advancedFilter.customer_identifiers"
+              (ngModelChange)="changeCustomerIdentifiers(advancedFilter.customer_identifiers, tripTime)"
+            />
+          </div>
+
+<!--
+          <div class="form-group">
+            <label class="form-label">{{ 'TRIP_TICKET.SEATS_REQUIRED' | translate }}</label>
+            <div class="flex gap-md">
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'TRIP_TICKET.MIN_PLACEHOLDER' | translate"
+                [(ngModel)]="ticketFilter.seatsRequiredMin"
+                (ngModelChange)="changeSeatesRequiredMin(ticketFilter.seatsRequiredMin, tripTime)"
+                min="1"
+                max="99"
+              />
+              <input
+                type="number"
+                class="form-control"
+                [placeholder]="'TRIP_TICKET.MAX_PLACEHOLDER' | translate"
+                [(ngModel)]="ticketFilter.seatsRequiredMax"
+                (ngModelChange)="changeSeatesRequiredMax(ticketFilter.seatsRequiredMax, tripTime)"
+                min="1"
+                max="99"
+              />
+            </div>
+          </div>
+       -->
+       </div>
+      </div>
+    </div>
+
+    <!-- Filter Actions -->
+    <div class="filter-actions">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="clearFilter(ticketFilter,advancedFilter,tripTime)"
+
+      >
+        <i class="ph ph-eraser"></i> {{ 'TRIP_TICKET.CLEAR' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="searchByCurrentFilter(ticketFilter,advancedFilter,tripTime)"
+        [disabled]="!search"
+      >
+
+        <i class="ph ph-magnifying-glass"></i> {{ 'TRIP_TICKET.SEARCH' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="content-area">
+    <!-- This first scrollable-container should be hidden when showing details -->
+    <div class="scrollable-container" *ngIf="showGrid">
+      <!-- Content Header -->
+      <div class="content-header">
+        <h2>{{ 'TRIP_TICKET.TICKETS_TITLE' | translate }}</h2>
+
+        <div class="header-actions">
+          <div class="flex gap-sm">
+
+
+            <button *ngIf="selectedTicketsCount > 0"
+                    class="btn btn-success"
+                    (click)="exportSelectedTicketsAsCSV()"
+                    [disabled]="isExporting">
+              <i class="ph ph-file-csv" aria-hidden="true" style="margin-right:0.5rem"></i>
+              {{ isExporting ? 'Exporting...' : 'Export CSV Trip Data' }}
+            </button>
+
+            <button *ngIf="selectedTicketsCount > 0"
+                    class="btn btn-success"
+                    (click)="exportSelectedTicketsAsExcel()"
+                    [disabled]="isExporting">
+              <i class="ph ph-file-xls" aria-hidden="true" style="margin-right:0.5rem"></i>
+              {{ isExporting ? 'Exporting...' : 'Export Excel Trip Data' }}
+            </button>
+
+
+            <button class="btn btn-primary" (click)="openUploadDialog()">
+              <i class="ph ph-upload"></i> {{ 'TRIP_TICKET.UPLOAD_TICKETS' | translate }}
+            </button>
+
+            <div class="flex gap-sm" *ngIf="(loggedRole !== 'ROLE_READONLY')">
+              <div class="dropdown">
+                <button class="btn btn-primary" (click)="showSummaryDropdown = !showSummaryDropdown">
+                  <i class="ph ph-box-arrow-down"></i> {{ 'TRIP_TICKET.QUICK_SUMMARY' | translate }}
+                </button>
+                <div class="dropdown-content" *ngIf="showSummaryDropdown">
+                  <div>
+                    {{ 'TRIP_TICKET.TOTAL' | translate }}:
+                    <strong>{{summaryReport['totalTicketCount']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.APPROVED' | translate }}:
+                    <strong>{{summaryReport['approvedTicketCount']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.AVAILABLE' | translate }}:
+                    <strong>{{summaryReport['av']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.COMPLETED' | translate }}:
+                    <strong>{{summaryReport['availabeTicketCount']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.EXPIRED' | translate }}:
+                    <strong>{{summaryReport['expiredTicketCount']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.NEW_OFFERS' | translate }}:
+                    <strong>{{summaryReport['totalCliamsReceived']}}</strong>
+                  </div>
+                  <div>
+                    {{ 'TRIP_TICKET.NEW_REQUESTS' | translate }}:
+                    <strong>{{summaryReport['totalCliamsSubmitted']}}</strong>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="btn {{ showTicket ? 'btn-secondary' : 'btn-primary' }}"
+                (click)="showTicket ? showAllTickets() : showMyTickets()"
+              >
+                <i class="ph ph-{{ showTicket ? 'list' : 'funnel' }}"></i>
+                {{ showTicket ? ('TRIP_TICKET.SHOW_ALL_TICKETS' | translate) :
+                ('TRIP_TICKET.SHOW_MY_TICKETS' | translate) }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <p-table
+        #tripTicketTable
+        [value]="TicketsList || []"
+        [loading]="loading"
+        [rows]="rowsPerPage"
+        [paginator]="true"
+        [totalRecords]="totalRecords"
+        [lazy]="true"
+        [first]="first"
+        [sortField]="sortField"
+        [sortOrder]="sortOrder"
+        (onLazyLoad)="loadTicketsLazy($event)"
+        [globalFilterFields]="['_customerName', 'originator.providerName', 'requester_trip_id', '_requested_pickupDateTime', '_requested_dropOffDateTime', '_passenger', '_status', 'claimantProviders']"
+        [reorderableColumns]="true"
+        [sortMode]="'single'"
+        [rowHover]="true"
+        responsiveLayout="scroll"
+        [scrollable]="true"
+        scrollHeight="calc((100vh - 270px) * 0.95)"
+        [style]="{'min-width':'50rem'}"
+        styleClass="p-datatable-sm"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 40px">
+              <input type="checkbox"
+                     [(ngModel)]="selectAll"
+                     (change)="toggleSelectAll()"
+                     title="Select/Deselect All">
+            </th>
+            <th pSortableColumn="customer_first_name">
+              {{ 'TRIP_TICKET.CUSTOMER_NAME' | translate }}
+              <p-sortIcon field="customer_first_name"></p-sortIcon>
+            </th>
+            <th pSortableColumn="origin_provider_name">
+              {{ 'TRIP_TICKET.ORIGIN_PROVIDER' | translate }}
+              <p-sortIcon field="origin_provider_name"></p-sortIcon>
+            </th>
+            <th pSortableColumn="requested_pickup_date">
+              {{ 'TRIP_TICKET.PICKUP' | translate }}
+              <p-sortIcon field="requested_pickup_date"></p-sortIcon>
+            </th>
+            <th pSortableColumn="requested_dropoff_date">
+              {{ 'TRIP_TICKET.DROPOFF' | translate }}
+              <p-sortIcon field="requested_dropoff_date"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="customer_mobility_factors">
+              {{ 'TRIP_TICKET.MOBILITY_FACTORS' | translate }}
+              <p-sortIcon field="customer_mobility_factors"></p-sortIcon>
+            </th>
+            <th pSortableColumn="customer_seats_required">
+              {{ 'TRIP_TICKET.ATTENDANTS' | translate }} <p-sortIcon field="customer_seats_required"></p-sortIcon>
+            </th>
+
+            <th pSortableColumn="status">
+              {{ 'TRIP_TICKET.STATUS' | translate }} <p-sortIcon field="status"></p-sortIcon>
+            </th>
+            <th>
+              {{ 'TRIP_TICKET.CLAIMANT' | translate }}
+            </th>
+            <th *ngIf="loggedRole !== 'ROLE_READONLY'" style="width: 160px; text-align: center;">
+              {{ 'TRIP_TICKET.ACTIONS' | translate }}
+              <!-- <button
+                *ngIf="loggedRole === 'ROLE_PROVIDERADMIN'"
+                class="btn btn-sm btn-primary ml-2"
+                (click)="openUploadDialog()"
+                style="margin-left: 5px; vertical-align: top"
+              >
+                <i class="ph ph-upload"></i>
+              </button> -->
+            </th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-ticket>
+          <tr [ngClass]="lookupRowStyleClass(ticket)">
+            <td style="width: 40px">
+              <input type="checkbox"
+                     [(ngModel)]="ticket.selected"
+                     (change)="onTicketSelectionChange()"
+                     [disabled]="ticket._status === 'Expired'">
+            </td>
+            <td>
+              <a (click)="viewTicket(ticket)"> {{ticket._customerName}} </a>
+            </td>
+            <td>{{ticket.originator?.providerName || 'No Provider'}}</td>
+            <td>{{ticket._requested_pickupDateTime}}</td>
+            <td>{{ticket._requested_dropOffDateTime}}</td>
+            <td>{{ticket._mobility_device}}</td>
+            <td>{{ticket._attendants}}</td>
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="{
+                'status-active': ticket._status === 'Available',
+                'status-approved': ticket._status === 'Approved',
+                'status-pending': ticket._status === 'Pending' || ticket._status === 'Claim Pending',
+                'status-noshow': ticket._status === 'No Show',
+                'status-completed': ticket._status === 'Completed',
+                'status-cancelled': ticket._status === 'Expired' || ticket._status === 'Rescinded' || ticket._status === 'Cancelled',
+              }"
+              >
+                {{ticket._status}}
+              </span>
+            </td>
+            <td>{{ticket.claimantProviders}}</td>
+            <td *ngIf="loggedRole !== 'ROLE_READONLY'" class="action-buttons">
+              <ng-container *ngIf="canEditTicket(ticket)">
+                <button
+                  class="btn-icon"
+                  (click)="editTicket(ticket)"
+                  [title]="'TRIP_TICKET.EDIT_TICKET' | translate"
+                >
+                  <i class="ph ph-ticket"></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="canCancelTicket(ticket)">
+                <button
+                  class="btn-icon"
+                  (click)="cancelTicket(ticket)"
+                  [title]="'TRIP_TICKET.CANCEL_TICKET' | translate"
+                >
+                  <i class="ph ph-x-circle"></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="canClaimTicket(ticket) && loggedRole !== 'ROLE_READONLY'">
+                <button
+                  class="btn-icon"
+                  *ngIf="canClaimTicket(ticket)"
+                  (click)="showModalOfCreateClaimsFromGrid(ticket.id,ticket,'createClaim')"
+                  [title]="'TRIP_TICKET.CREATE_CLAIM' | translate"
+                >
+                  <i class="ph ph-file-plus"></i>
+
+                </button>
+                <button
+                  *ngIf="canEditClaim(ticket)"
+                  class="btn-icon"
+                  (click)="showModalOfCreateClaimsFromGrid(ticket.id,ticket,'update')"
+                  [title]="'TRIP_TICKET.EDIT_CLAIM' | translate"
+                >
+                  <i class="ph ph-file-pencil"></i>
+                </button>
+                <button
+                  *ngIf="canRescindTicket(ticket)"
+                  class="btn-icon"
+                  (click)="changeStatusToRescindFromGrid(ticket)"
+                  [title]="'TRIP_TICKET.RESCIND' | translate"
+                >
+                  <i class="ph ph-x"></i>
+                </button>
+                <button
+                  *ngIf="canApproveClaim(ticket)"
+                  class="btn-icon"
+                  (click)="changeStatusToApprovedFromGrid(ticket)"
+                  [title]="'TRIP_TICKET.APPROVE' | translate"
+                >
+                  <i class="ph ph-thumbs-up"></i>
+                </button>
+                <button
+                  *ngIf="canDeclineClaim(ticket)"
+                  class="btn-icon"
+                  (click)="changeStatusToDeclineFromGrid(ticket)"
+                  [title]="'TRIP_TICKET.DECLINE' | translate"
+                >
+                  <i class="ph ph-thumbs-down"></i>
+                </button>
+              </ng-container>
+              <ng-container *ngIf="ticket._status === 'Approved'">
+
+                <button
+                  *ngIf="canEditClaim(ticket)"
+                  class="btn-icon"
+                  (click)="showModalOfCreateClaimsFromGrid(ticket.id,ticket,'update')"
+                  [title]="'TRIP_TICKET.EDIT_CLAIM' | translate"
+                >
+                  <i class="ph ph-file-pencil"></i>
+                </button>
+                <button
+                  class="btn-icon"
+                  *ngIf="canRescindTicket(ticket)"
+                  (click)="changeStatusToRescindFromGrid(ticket)"
+                  [title]="'TRIP_TICKET.RESCIND' | translate"
+                >
+                  <i class="ph ph-x"></i>
+                </button>
+              </ng-container>
+              <!-- Overflow menu for small screens: shows all available actions in a compact menu -->
+              <div class="action-overflow">
+                <button class="btn-overflow" type="button" (click)="$event.stopPropagation(); overflowMenuOpen = !overflowMenuOpen" aria-haspopup="true" aria-expanded="false" title="Actions">
+                  <i class="ph ph-dots-three-vertical"></i>
+                </button>
+                <div class="overflow-menu" *ngIf="overflowMenuOpen" (click)="$event.stopPropagation(); overflowMenuOpen = false">
+                  <ul>
+                    <li *ngIf="canEditTicket(ticket)"><button type="button" (click)="editTicket(ticket)"><i class="ph ph-ticket"></i> {{ 'TRIP_TICKET.EDIT_TICKET' | translate }}</button></li>
+                    <li *ngIf="canRescindTicket(ticket)"><button type="button" (click)="rescindTicket(ticket)"><i class="ph-x"></i> {{ 'TRIP_TICKET.RESCIND' | translate }}</button></li>
+                    <li *ngIf="canCancelTicket(ticket)"><button type="button" (click)="cancelTicket(ticket)"><i class="ph ph-x-circle"></i> {{ 'TRIP_TICKET.CANCEL_TICKET' | translate }}</button></li>
+                    <li *ngIf="canClaimTicket(ticket)"><button type="button" (click)="showModalOfCreateClaimsFromGrid(ticket.id,ticket,'createClaim')"><i class="ph ph-file-plus"></i> {{ 'TRIP_TICKET.CREATE_CLAIM' | translate }}</button></li>
+                    <li *ngIf="canEditClaim(ticket)"><button type="button" (click)="showModalOfCreateClaimsFromGrid(ticket.id,ticket,'update')"><i class="ph ph-file-pencil"></i> {{ 'TRIP_TICKET.EDIT_CLAIM' | translate }}</button></li>
+                    <!--
+                    <li *ngIf="canRescindClaim(ticket)" ><button type="button" (click)="changeStatusToRescindFromGrid(ticket)"><i class="ph ph-x"></i> {{ 'TRIP_TICKET.RESCIND' | translate }}</button></li>
+                    -->
+                    <li *ngIf="canApproveClaim(ticket)"><button type="button" (click)="changeStatusToApprovedFromGrid(ticket)"><i class="ph ph-thumbs-up"></i> {{ 'TRIP_TICKET.APPROVE' | translate }}</button></li>
+                    <li *ngIf="canDeclineClaim(ticket)"><button type="button" (click)="changeStatusToDeclineFromGrid(ticket)"><i class="ph ph-thumbs-down"></i> {{ 'TRIP_TICKET.DECLINE' | translate }}</button></li>
+
+                  </ul>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10">
+              <div>
+                <i class="ph ph-inbox"></i>
+                <p>{{ 'TRIP_TICKET.NO_TICKETS_FOUND' | translate }}</p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Ticket detail view from backup file, updated for Angular 18 -->
+    <div class="scrollable-container" *ngIf="!showGrid">
+      <!-- 2] Single Ticket Display Using Grid And Dropdown Panels -->
+      <div *ngIf="!activity" class="full-width-detail">
+        <!-- i) Display Ticket Information And Create Claim and Add Comment -->
+        <div class="row full-width">
+          <div class="col-md-7 col-sm-7">
+            <label class="text-primary size-h7"
+              >&nbsp;&nbsp;&nbsp; <u>Originator Trip Number {{Ticket.requester_trip_id}} - </u
+              ><u class="Heading">{{status}}</u><br />
+              &nbsp;&nbsp;&nbsp;&nbsp;<u>Originating Requestor - {{Ticket.originator?.providerName || 'No Provider'}} </u>
+            </label>
+          </div>
+          <div class="col-md-5 col-sm-5 text-right">
+            <button
+              class="btn btn-info"
+              [title]="'TRIP_TICKET.TRIP_ACTIVITY_DETAILS' | translate"
+              (click)="viewActivity(Ticket)"
+            >
+              {{ 'TRIP_TICKET.TRIP_ACTIVITY_DETAILS' | translate }}
+            </button>
+            <button
+              type="button"
+              id="btnPrevious"
+              class="btn btn-success bottonspace"
+              (click)="backToGrid()"
+            >
+              {{ 'TRIP_TICKET.BACK' | translate }}</button
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    &nbsp;&nbsp;&nbsp; <i class="ph ph-user"></i>
+                    <a (click)="toggleCollapse('collapse1', $event)" style="cursor: pointer"
+                      >&nbsp;{{ 'TRIP_TICKET.CUSTOMER_INFO' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown modern-panel" style="padding: 12px 14px;">
+                    <div class="info-grid" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; align-items: start;">
+                      <div class="field">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.FIRST_NAME' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_first_name || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_middle_name">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.MIDDLE_NAME' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_middle_name || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.LAST_NAME' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_last_name || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_nick_name">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.NICK_NAME' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_nick_name || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_email">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.EMAIL' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111); word-break:break-word;">
+                          {{Ticket.customer_email || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_home_phone">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.HOME_PHONE' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_home_phone || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_mobile_phone">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.MOBILE' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_mobile_phone || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_emergency_phone">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.EMERGENCY_PHONE' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_emergency_phone || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_emergency_contact_relationship">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.EMERGENCY_CONTACT_RELATIONSHIP' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_emergency_contact_relationship || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_address">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.ADDRESS' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_address?.commonName }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_mailing_billing_address">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.MAILING_BILLING_ADDRESS' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_mailing_billing_address || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_gender">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.GENDER' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_gender || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.DOB' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_dob || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_race">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.RACE' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_race || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_ethnicity">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.ETHNICITY' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_ethnicity || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_information_withheld !== null && Ticket.customer_information_withheld !== undefined">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.INFORMATION_WITHHELD' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_information_withheld ? 'Yes' : 'No' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_caregiver_name">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.CAREGIVER_NAME' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_caregiver_name || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_caregiver_contact_info">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.CAREGIVER_CONTACT_INFO' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_caregiver_contact_info || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.impairment_description">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.IMPAIRMENT' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.impairment_description || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" style="grid-column: span 2;" *ngIf="Ticket.customer_mobility_factors">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.MOBILITY_FACTORS' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_mobility_factors || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" style="grid-column: span 2;" *ngIf="Ticket.customer_care_info">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.CARE_INFO' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_care_info || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" style="grid-column: span 2;" *ngIf="Ticket.customer_funding_billing_information">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.FUNDING_BILLING_INFORMATION' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">
+                          {{Ticket.customer_funding_billing_information || '-' }}
+                        </div>
+                      </div>
+
+                      <div class="field" style="display:flex; align-items:center; gap:8px;" *ngIf="Ticket.customer_service_animals">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.SERVICE_ANIMALS' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111); display:flex; align-items:center; gap:8px;">
+                          <ng-container *ngIf="Ticket.customer_service_animals !== null && Ticket.customer_service_animals; else noAnimal">
+                            <img src="assets/images/Dog-26.png" alt="{{ 'TRIP_TICKET.SERVICE_ANIMALS' | translate }}" style="height:22px; width:auto;" />
+                            <i class="ph ph-check" aria-hidden="true" style="color:var(--success-color,#28a745);"></i>
+                          </ng-container>
+                          <ng-template #noAnimal>
+                            <span style="color:var(--text-secondary,#6b6f76)">-</span>
+                          </ng-template>
+                        </div>
+                      </div>
+
+                      <div class="field" *ngIf="Ticket.customer_disability">
+                        <div class="field-label">{{ 'TRIP_TICKET.DISABILITY' | translate }}</div>
+                        <div class="field-value">{{Ticket.customer_disability || '-' }}</div>
+                      </div>
+
+                      <div class="field" style="display:flex; align-items:center; gap:8px;" *ngIf="Ticket.customer_veteran !== null && Ticket.customer_veteran !== undefined">
+                        <div class="field-label" style="color:var(--text-secondary, #6b6f76); font-weight:600;">
+                          {{ 'TRIP_TICKET.VETERAN' | translate }}
+                        </div>
+                        <div class="field-value" style="margin-top:4px; color:var(--text-color, #111); display:flex; align-items:center; gap:8px;">
+                          <ng-container *ngIf="Ticket.customer_veteran; else notVeteran">
+                            <i class="ph ph-flag" aria-hidden="true" style="color:var(--primary-color,#007bff);"></i>
+                            <span>Yes</span>
+                          </ng-container>
+                          <ng-template #notVeteran>
+                            <span style="color:var(--text-secondary,#6b6f76)">No</span>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                    <style>
+                      /* Responsive: single column on narrow screens */
+                      @media (max-width: 640px) {
+                        .panel-body-dropdown.modern-panel .info-grid {
+                          grid-template-columns: 1fr !important;
+                        }
+                      }
+                    </style>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    &nbsp;&nbsp;&nbsp; <i class="ph ph-file-text"></i>
+                    <a (click)="toggleCollapse('collapse2', $event)" style="cursor: pointer"
+                      >&nbsp;{{ 'TRIP_TICKET.TRIP_DETAILS' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown modern-panel" style="padding:12px 14px;">
+                    <div class="trip-details-grid" style="display:grid; grid-template-columns: 1fr 220px 320px; gap:18px; align-items:start;">
+                      <!-- Left: structured label/value grid -->
+                      <div class="details-column">
+                        <div class="info-grid" style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px 20px;">
+                          <div class="field">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.PICKUP_DATETIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.requested_pickup_date}} {{Ticket.requested_pickup_time || ''}}</div>
+                          </div>
+                          <div class="field">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DROPOFF_DATETIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.requested_dropoff_date}} {{Ticket.requested_dropoff_time || ''}}</div>
+                          </div>
+
+                          <div class="field">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.PICKUP_ADDR' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.pickup_address?.commonName}}</div>
+                          </div>
+                          <div class="field">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DROPOFF_ADDR' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.drop_off_address?.commonName || '-'}}</div>
+                          </div>
+
+                          <div class="field" *ngIf="Ticket.boarding_time">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.BOARDING_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.boarding_time || '-'}}</div>
+                          </div>
+                          <div class="field" *ngIf="Ticket.deboarding_time">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DEBOARDING_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.deboarding_time || '-'}}</div>
+                          </div>
+
+                          <div class="field" *ngIf="Ticket.customer_seats_required">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.SEATS_REQUIRED' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.customer_seats_required || '-'}}</div>
+                          </div>
+                          <div class="field"*ngIf="Ticket.trip_funders">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.FUNDING_SOURCE' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color,#111);">{{Ticket.trip_funders || '-'}}</div>
+                          </div>
+
+                          <div class="field" style="grid-column: span 2;" *ngIf="Ticket.trip_notes">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.TRIP_NOTES' | translate }}</div>
+                            <div class="field-value" style="margin-top:6px; color:var(--text-color, #111); background: var(--neutral-100, transparent); padding:8px; border-radius:6px;">{{Ticket.trip_notes || '-'}}</div>
+                          </div>
+                        </div>
+
+                        <div class="info-grid" style="display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px 20px; margin-top:8px;">
+
+                          <div class="field" *ngIf="Ticket?.trip_result?.actualPickupArriveTime">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.PICKUP_ARRIVE_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{Ticket?.trip_result?.actualPickupArriveTime || '-'}}</div>
+                          </div>
+                          <div class="field" *ngIf="Ticket?.trip_result?.actualPickupDepartTime">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.PICKUP_DEPART_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{Ticket?.trip_result?.actualPickupDepartTime || '-'}}</div>
+                          </div>
+
+                          <div class="field" *ngIf="Ticket?.trip_result?.actualDropOffArriveTime">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DROPOFF_ARRIVE_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{Ticket?.trip_result?.actualDropOffArriveTime || '-'}}</div>
+                          </div>
+                          <div class="field" *ngIf="Ticket?.trip_result?.actualDropOffDepartTime">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DROPOFF_DEPART_TIME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{Ticket?.trip_result?.actualDropOffDepartTime || '-'}}</div>
+                          </div>
+
+                          <div class="field" *ngIf="Ticket?.trip_result?.driverId || Ticket?.trip_result?.driver_name">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.DRIVER_NAME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{ (Ticket?.trip_result?.driverId || Ticket?.trip_result?.driver_name) || '-'}}</div>
+                          </div>
+
+                          <div class="field" *ngIf="Ticket?.trip_result?.vehicleId || Ticket?.trip_result?.vehicle_name">
+                            <div class="field-label" style="color:var(--text-secondary,#6b6f76); font-weight:600;">{{ 'TRIP_TICKET.VEHICLE_NAME' | translate }}</div>
+                            <div class="field-value" style="margin-top:4px; color:var(--text-color, #111);">{{ (Ticket?.trip_result?.vehicleId || Ticket?.trip_result?.vehicle_name) || '-'}}</div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                      <!-- Middle: Actions column -->
+                      <div class="actions-column" style="display:flex; flex-direction:column; gap:12px; align-items:flex-start;">
+                        <button type="button" class="btn btn-info" aria-label="Show map" (click)="showMap()">
+                          <i class="ph ph-map-pin" style="margin-right:8px"></i>{{ 'TRIP_TICKET.SHOW_MAP' | translate }}
+                        </button>
+
+                        <button type="button" class="btn btn-primary" style="display:flex; align-items:center; gap:8px;" aria-label="Send to Uber" (click)="openUberDialog(Ticket)" *ngIf="showUberButton(Ticket)">
+                          <img src="assets/uber-logo.png" alt="Uber" style="height:18px; width:auto;" />
+                          <span>{{ 'TRIP_TICKET.SEND_TO_UBER' | translate }}</span>
+                        </button>
+
+                        <button type="button" class="btn btn-success" style="display:flex; align-items:center; gap:8px;" aria-label="Ride status" (click)="openRideStatusDialog(Ticket)" *ngIf="showRideStatusButton(Ticket)">
+                          <i class="ph ph-car" style="font-size:16px"></i>
+                          <span>{{ 'TRIP_TICKET.RIDE_STATUS' | translate }}</span>
+                        </button>
+
+                      </div>
+
+                      <!-- Right: Map preview column -->
+                      <div class="map-column">
+                        <div *ngIf="isShowMap" id="map" class="trip-map" leaflet [leafletOptions]="leafletOptions" (leafletMapReady)="onTripTicketMapReady($event)" style="height:260px; width:100%; border-radius:6px; overflow:hidden;"></div>
+
+                      </div>
+                    </div>
+
+                    <style>
+                      /* Responsive: collapse to single column under 900px */
+                      @media (max-width: 900px) {
+                        .trip-details-grid {
+                          grid-template-columns: 1fr !important;
+                        }
+                        .actions-column { flex-direction:row; gap:8px; }
+                        .actions-column .btn { flex:1 1 auto; }
+                        .map-column { order: 3; }
+                      }
+                    </style>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    &nbsp;&nbsp;&nbsp; <i class="ph ph-file-tablet"></i>
+                    <a (click)="toggleCollapse('collapse3', $event)" style="cursor: pointer"
+                      >&nbsp;{{ 'TRIP_TICKET.OTHER_INFO' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse3" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+                    {{ 'TRIP_TICKET.ESTIMATED_DISTANCE' | translate }}:
+                    {{Ticket.estimated_trip_distance}}<br />
+                    {{ 'TRIP_TICKET.TRIP_PURPOSE' | translate }}: {{Ticket.purpose}}<br />
+                    {{ 'TRIP_TICKET.EXPIRATION_DATE' | translate }}: {{Ticket.expiration_date}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <div class="col-md-10 col-sm-9">
+                    <h4 class="panel-title">
+                      <i class="ph ph-file-handshake"></i>
+                      <a
+                        (click)="toggleCollapse('collapse4', $event)"
+                        style="cursor: pointer"
+                        class="tab"
+                        >&nbsp;{{ 'TRIP_TICKET.CLAIMS' | translate }} [Originating Requestor - {{Ticket.originator?.providerName || 'No Provider'}}]</a
+                      >
+                    </h4>
+                  </div>
+
+                    <div *ngIf="canClaimTicket(Ticket)">
+                      <div class="col-md-1 col-sm-2" >
+                        <button
+                          class="btn btn-information"
+                          [title]="'TRIP_TICKET.CREATE_CLAIM' | translate"
+                          (click)="showModalOfCreateClaims(Ticket.id,Ticket,'create',Ticket, loggedProviderId)"
+                        >
+                          {{ 'TRIP_TICKET.CREATE_CLAIM' | translate }}
+                        </button>
+                      </div>
+                    </div>
+
+                </div>
+                <div id="collapse4" class="panel-collapse collapse in">
+                  <div class="row" >
+                    <br />
+                    <div class="col-md-5 col-sm-5" *ngIf="loggedRole === 'ROLE_ADMIN'">
+                      <div class="col-md-4 col-sm-4">
+                        <span
+                          >{{ 'TRIP_TICKET.SELECT_PROVIDER' | translate }}<span
+                            class="mandatory-input"
+                            >*</span
+                          ></span
+                        >
+                      </div>
+                      <div class="col-md-7 col-sm-7">
+                        <select
+                          [(ngModel)]="claimantName"
+                          id="claimant2"
+                          name="claimant2"
+                          [required]="true"
+                          #claimant2="ngModel"
+                          class="form-control"
+                          (change)="providerSelected(claimantName, Ticket)"
+                        >
+                          <option [ngValue]="null" disabled>{{ 'TRIP_TICKET.PLEASE_SELECT' | translate }}</option>
+                          <option
+                            *ngFor="let claimant of providerPartnerList"
+                            [ngValue]="claimant.providerId"
+                          >
+                            {{claimant.providerName}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngIf="loggedRole!=='ROLE_ADMIN'">
+                      <div class="col-md-1 col-sm-1">
+                        <button
+                          class="btn btn-info"
+                          [disabled]="!claimForProvider"
+                          [title]="'TRIP_TICKET.CREATE_CLAIM' | translate"
+                          (click)="showModalOfCreateClaims(Ticket.id,Ticket,'create',Ticket,claimantName)"
+                        >
+                          {{ 'TRIP_TICKET.CREATE_CLAIM' | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel-body-dropdown">
+                    <br />
+                    <p-table
+                      [value]="Ticket.trip_Claims || []"
+                      [scrollable]="true"
+                      scrollHeight="300px"
+                      [style]="{'min-width':'50rem'}"
+                      styleClass="p-datatable-sm"
+                      [sortMode]="'multiple'"
+                      [rows]="6"
+                      [paginator]="true"
+                      [globalFilterFields]="['claimant_provider_name','_proposed_pickup_time','proposed_fare','notes','status.type']"
+                      [reorderableColumns]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="claimant_provider_name" style="width: 20%">
+                            {{ 'TRIP_TICKET.CLAIMANT_PROVIDER_NAME' | translate }}
+                            <p-sortIcon field="claimant_provider_name"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="_proposed_pickup_time" style="width: 20%">
+                            {{ 'TRIP_TICKET.PICKUP_DATETIME' | translate }}
+                            <p-sortIcon field="_proposed_pickup_time"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="ackStatusString" style="width: 20%">
+                            {{ 'TRIP_TICKET.ACKNOWLEDGED' | translate }}
+                            <p-sortIcon field="ackStatusString"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="requester_fare" style="width: 10%">
+                            {{ 'TRIP_TICKET.SUBMITTING_PRICE' | translate }}
+                            <p-sortIcon field="requester_fare"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="proposed_fare" style="width: 10%">
+                            {{ 'TRIP_TICKET.FARE' | translate }}
+                            <p-sortIcon field="proposed_fare"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="notes" style="width: 25%">
+                            {{ 'TRIP_TICKET.NOTES' | translate }}
+                            <p-sortIcon field="notes"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="status.type" style="width: 10%">
+                            {{ 'TRIP_TICKET.STATUS' | translate }}
+                            <p-sortIcon field="status.type"></p-sortIcon>
+                          </th>
+                          <th style="width: 15%">{{ 'TRIP_TICKET.ACTIONS' | translate }}</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td style="width: 20%">{{row.claimant_provider_name || '-'}}</td>
+                          <td style="width: 20%">{{row._proposed_pickup_time || '-'}}</td>
+                          <td style="width: 20%">{{row.ackStatusString || 'No'}}</td>
+                          <td style="width: 10%">{{row.requester_fare | currency:'USD':'symbol'}}</td>
+                          <td style="width: 10%">{{row.proposed_fare | currency:'USD':'symbol'}}</td>
+                          <td style="width: 25%">{{row.notes || '-'}}</td>
+                          <td style="width: 10%">{{row.status?.type || '-'}}</td>
+                          <td class="action-buttons" >
+
+                            <ng-container *ngIf="loggedRole!=='ROLE_READONLY'">
+                              <button
+                                *ngIf="(row.status?.type === 'Pending' || (row.status?.type && row.status?.type.toLowerCase().includes('mismatched')))"
+                                class="btn-icon"
+                                [title]="'TRIP_TICKET.APPROVE' | translate"
+                                (click)="changeStatusToApproved(Ticket.id,row.id,row,Ticket)"
+                              >
+                                <i class="ph ph-thumbs-up"></i>
+                              </button>
+                              <button
+                                *ngIf="(row.status?.type === 'Pending'|| (row.status?.type && row.status?.type.toLowerCase().includes('mismatched')))"
+                                class="btn-icon"
+                                [title]="'TRIP_TICKET.DECLINE' | translate"
+                                (click)="changeStatusToDecline(Ticket.id,row.id,row,Ticket)"
+                              >
+                                <i class="ph ph-thumbs-down"></i>
+                              </button>
+                              <button
+                                *ngIf="canEditClaim(Ticket)"
+                                class="btn-icon"
+                                [title]="'TRIP_TICKET.EDIT_CLAIM' | translate"
+                                (click)="showModalOfCreateClaims(Ticket.id,row,'update',Ticket, loggedProviderId)"
+                              >
+                                <i class="ph ph-file-pencil"></i>
+                              </button>
+                              <button
+                                *ngIf="canRescindTicket(Ticket)"
+                                class="btn-icon"
+                                [title]="'TRIP_TICKET.RESCIND' | translate"
+                                (click)="changeStatusToRescind(Ticket.id,row.id,row,Ticket)"
+                              >
+                                <i class="ph ph-x"></i>
+                              </button>
+                            </ng-container>
+                          </td>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="8">
+                            <div class="empty-message">
+                              <i class="ph ph-info"></i>
+                              <p>{{ 'TRIP_TICKET.NO_CLAIMS' | translate }}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <div class="col-md-9 col-sm-9">
+                    <h4 class="panel-title">
+                      <i class="ph ph-list-checks"></i>
+                      <a
+                        (click)="toggleCollapse('collapse5', $event)"
+                        style="cursor: pointer"
+                        class="tab"
+                        >&nbsp;{{ 'TRIP_TICKET.COMMENTS' | translate }}</a
+                      >
+                    </h4>
+                  </div>
+                  <div class="col-md-3 col-sm-2 text-right">
+                    <div *ngIf="loggedRole !== 'ROLE_READONLY'">
+                      <button
+                        class="btn btn-information btn-block"
+                        [title]="'TRIP_TICKET.ADD_COMMENT' | translate"
+                        (click)="showCommentModal()"
+                      >
+                        {{ 'TRIP_TICKET.ADD_COMMENT' | translate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div id="collapse5" class="panel-collapse collapse in">
+                  <div class="row" *ngIf="loggedRole === 'ROLE_ADMIN'">
+                    <br />
+                    <div class="col-md-5 col-sm-5" *ngIf="loggedRole === 'ROLE_ADMIN'">
+                      <div class="col-md-4 col-sm-4">
+                        <span
+                          >{{ 'TRIP_TICKET.SELECT_PROVIDER' | translate }}<span
+                            class="mandatory-input"
+                            >*</span
+                          ></span
+                        >
+                      </div>
+                      <div class="col-md-7 col-sm-7">
+                        <select
+                          [(ngModel)]="claimantNameForComment"
+                          id="claimant"
+                          name="claimant"
+                          [required]="true"
+                          #claimant="ngModel"
+                          class="form-control"
+                          (ngModelChange)="providerSelectedForComment(claimantNameForComment,Ticket)"
+                        >
+                          <option [ngValue]="claimantNameForTicket">
+                            {{ 'TRIP_TICKET.PLEASE_SELECT' | translate }}
+                          </option>
+                          <option
+                            *ngFor="let claimant of providerListForComments"
+                            [ngValue]="claimant.providerId"
+                          >
+                            {{claimant.providerName}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngIf="loggedRole === 'ROLE_ADMIN'">
+                      <div class="col-md-1 col-sm-1">
+                        <button
+                          class="btn btn-info"
+                          [disabled]="!commentForProvider"
+                          [title]="'TRIP_TICKET.ADD_COMMENT' | translate"
+                          (click)="showCommentModal()"
+                        >
+                          {{ 'TRIP_TICKET.ADD_COMMENT' | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel-body-dropdown">
+                    <br />
+
+
+
+                    <p-table
+                      [value]="Ticket.trip_ticket_comments || []"
+                      styleClass="p-datatable-sm"
+                      [sortMode]="'multiple'"
+                      [rows]="6"
+                      [paginator]="true"
+                      [globalFilterFields]="['user_name', 'name_of_provider', 'dateTime', 'body']"
+                      [reorderableColumns]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="user_name">
+                            {{ 'TRIP_TICKET.PROVIDER_ADMIN_NAME' | translate }}
+                            <p-sortIcon field="user_name"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="name_of_provider">
+                            {{ 'TRIP_TICKET.PROVIDER_NAME' | translate }}
+                            <p-sortIcon field="name_of_provider"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="dateTime">
+                            {{ 'TRIP_TICKET.DATE_TIME' | translate }}
+                            <p-sortIcon field="created_at"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="body">
+                            {{ 'TRIP_TICKET.COMMENTS' | translate }}
+                            <p-sortIcon field="body"></p-sortIcon>
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td>{{row.user_name}}</td>
+                          <td>{{row.name_of_provider}}</td>
+                          <td>{{row.created_at}}</td>
+                          <td>{{row.body}}</td>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="4">
+                            <div class="empty-message">
+                              <i class="ph ph-info"></i>
+                              <p>{{ 'TRIP_TICKET.NO_PROVIDERS' | translate }}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-sm-11">
+            <div class="right-btn">
+              <button
+                type="button"
+                id="btnPrevious"
+                class="btn btn-success bottonspace"
+                (click)="backToGrid()"
+              >
+                {{ 'TRIP_TICKET.BACK' | translate }}</button
+              >&nbsp;
+            </div>
+          </div>
+        </div>
+        <div class="row">&nbsp;<br /><br /><br /><br /><br /></div>
+      </div>
+
+      <!-- Ticket Activity View -->
+      <div *ngIf="activity">
+        <br />
+        <div class="row">
+          <div class="col-md-8 col-sm-8">
+            <label class="col-sm-6 text-primary size-h7"
+              ><u>
+                {{ 'TRIP_TICKET.ORIGINATOR_TRIP_NUMBER' | translate }} {{Ticket.requester_trip_id}}
+              </u></label
+            >
+          </div>
+          <div class="col-md-4 col-sm-4 text-right">
+            <button
+              type="button"
+              id="btnPrevious"
+              class="btn btn-success bottonspace"
+              (click)="backToTicketView()"
+            >
+              {{ 'TRIP_TICKET.BACK' | translate }}</button
+            >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a (click)="toggleCollapse('collapse10', $event)" style="cursor: pointer"
+                      >&nbsp;&nbsp;&nbsp;{{ 'TRIP_TICKET.TICKET_CREATED' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse10" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+                    <p *ngFor="let tripTicket of tripTicketCreate || []">
+                      {{ 'TRIP_TICKET.TICKET_CREATED_ON' | translate }} {{tripTicket.date}}
+                      {{tripTicket.time}}.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    &nbsp;&nbsp;&nbsp;<i class="ph ph-file-handshake"></i>
+                    <a (click)="toggleCollapse('collapse11', $event)" style="cursor: pointer"
+                      >&nbsp;{{ 'TRIP_TICKET.CLAIMS' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse11" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+
+                    <p-table
+                      [value]="claims || []"
+                      styleClass="p-datatable-sm"
+                      [sortMode]="'multiple'"
+                      [rows]="6"
+                      [paginator]="true"
+                      [globalFilterFields]="['date', 'time', 'actionTakenBy', 'claimant_provider', 'status']"
+                      [reorderableColumns]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="date">
+                            {{ 'TRIP_TICKET.DATE' | translate }}
+                            <p-sortIcon field="date"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="time">
+                            {{ 'TRIP_TICKET.TIME' | translate }}
+                            <p-sortIcon field="time"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="action">
+                            {{ 'TRIP_TICKET.ACTION_TAKEN' | translate }}
+                            <p-sortIcon field="action"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="actionTakenBy">
+                            {{ 'TRIP_TICKET.ACTION_TAKEN_BY' | translate }}
+                            <p-sortIcon field="actionTakenBy"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="claimant_provider">
+                            {{ 'TRIP_TICKET.CLAIMANT_PROVIDER_NAME' | translate }}
+                            <p-sortIcon field="claimant_provider"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="status">
+                            {{ 'TRIP_TICKET.STATUS' | translate }}
+                            <p-sortIcon field="status"></p-sortIcon>
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td>{{row.date}}</td>
+                          <td>{{row.time}}</td>
+                          <td>{{row.action}}</td>
+                          <td>{{row.actionTakenBy}}</td>
+                          <td>{{row.claimant_provider}}</td>
+                          <td>{{row.status}}</td>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="5">
+                            <div class="empty-message">
+                              <i class="ph ph-info"></i>
+                              <p>{{ 'TRIP_TICKET.NO_CLAIMS' | translate }}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <div class="col-md-9 col-sm-9">
+                    <h4 class="panel-title">
+                      <i class="ph ph-list-checks"></i>
+                      <a
+                        (click)="toggleCollapse('collapse12', $event)"
+                        style="cursor: pointer"
+                        class="tab"
+                        >&nbsp;{{ 'TRIP_TICKET.COMMENTS' | translate }}</a
+                      >
+                    </h4>
+                  </div>
+                  <div class="col-md-3 col-sm-2 text-right">
+                    <div *ngIf="loggedRole !== 'ROLE_READONLY'">
+                      <button
+                        class="btn btn-information btn-block"
+                        [title]="'TRIP_TICKET.ADD_COMMENT' | translate"
+                        (click)="showCommentModal()"
+                      >
+                        {{ 'TRIP_TICKET.ADD_COMMENT' | translate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div id="collapse12" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+
+                    <p-table
+                      [value]="commentAdded || []"
+                      styleClass="p-datatable-sm"
+                      [sortMode]="'multiple'"
+                      [rows]="6"
+                      [paginator]="true"
+                      [globalFilterFields]="['date', 'time', 'actionTakenBy', 'comments']"
+                      [reorderableColumns]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="date">
+                            {{ 'TRIP_TICKET.DATE' | translate }}
+                            <p-sortIcon field="date"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="time">
+                            {{ 'TRIP_TICKET.TIME' | translate }}
+                            <p-sortIcon field="time"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="actionTakenBy">
+                            {{ 'TRIP_TICKET.PROVIDER_NAME' | translate }}
+                            <p-sortIcon field="actionTakenBy"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="comments">
+                            {{ 'TRIP_TICKET.COMMENTS' | translate }}
+                            <p-sortIcon field="comments"></p-sortIcon>
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td>{{row.date}}</td>
+                          <td>{{row.time}}</td>
+                          <td>{{row.actionTakenBy}}</td>
+                          <td>{{row.comments}}</td>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="4">
+                            <div class="empty-message">
+                              <i class="ph ph-info"></i>
+                              <p>{{ 'TRIP_TICKET.NO_COMMENTS' | translate }}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a (click)="toggleCollapse('collapse13', $event)" style="cursor: pointer"
+                      >&nbsp;&nbsp;&nbsp;{{ 'TRIP_TICKET.TICKET_STATUS' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse13" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+
+                    <p-table
+                      [value]="ticketStatus || []"
+                      styleClass="p-datatable-sm"
+                      [sortMode]="'multiple'"
+                      [rows]="6"
+                      [paginator]="true"
+                      [globalFilterFields]="['date', 'time', 'actionTakenBy', 'status']"
+                      [reorderableColumns]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th pSortableColumn="date">
+                            {{ 'TRIP_TICKET.DATE' | translate }}
+                            <p-sortIcon field="date"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="time">
+                            {{ 'TRIP_TICKET.TIME' | translate }}
+                            <p-sortIcon field="time"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="actionTakenBy">
+                            {{ 'TRIP_TICKET.PROVIDER_NAME' | translate }}
+                            <p-sortIcon field="actionTakenBy"></p-sortIcon>
+                          </th>
+                          <th pSortableColumn="status">
+                            {{ 'TRIP_TICKET.STATUS' | translate }}
+                            <p-sortIcon field="status"></p-sortIcon>
+                          </th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-row>
+                        <tr>
+                          <td>{{row.date}}</td>
+                          <td>{{row.time}}</td>
+                          <td>{{row.actionTakenBy}}</td>
+                          <td>{{row.status}}</td>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="emptymessage">
+                        <tr>
+                          <td colspan="4">
+                            <div class="empty-message">
+                              <i class="ph ph-info"></i>
+                              <p>{{ 'TRIP_TICKET.NO_STATUS' | translate }}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-10 col-sm-12">
+            <div class="container">
+              <div class="panel-group">
+                <div class="panel-heading">
+                  <h4 class="panel-title">
+                    <a (click)="toggleCollapse('collapse14', $event)" style="cursor: pointer"
+                      >&nbsp;&nbsp;&nbsp;{{ 'TRIP_TICKET.TICKET_UPDATES' | translate }}</a
+                    >
+                  </h4>
+                </div>
+                <div id="collapse14" class="panel-collapse collapse in">
+                  <div class="panel-body-dropdown">
+                    <br />
+                    <section class="table-flip-scroll">
+                      <p-table
+                        [value]="ticketUpdate || []"
+                        styleClass="p-datatable-sm"
+                        [sortMode]="'multiple'"
+                        [rows]="6"
+                        [paginator]="true"
+                        [globalFilterFields]="['date', 'time', 'actionTakenBy']"
+                        [reorderableColumns]="true"
+                      >
+                        <ng-template pTemplate="header">
+                          <tr>
+                            <th pSortableColumn="date">
+                              {{ 'TRIP_TICKET.DATE' | translate }}
+                              <p-sortIcon field="date"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="time">
+                              {{ 'TRIP_TICKET.TIME' | translate }}
+                              <p-sortIcon field="time"></p-sortIcon>
+                            </th>
+                            <th pSortableColumn="actionTakenBy">
+                              {{ 'TRIP_TICKET.PROVIDER_NAME' | translate }}
+                              <p-sortIcon field="actionTakenBy"></p-sortIcon>
+                            </th>
+                            <th>{{ 'TRIP_TICKET.UPDATES' | translate }}</th>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-row>
+                          <tr>
+                            <td>{{row.date}}</td>
+                            <td>{{row.time}}</td>
+                            <td>{{row.actionTakenBy}}</td>
+                            <td></td>
+                          </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                          <tr>
+                            <td colspan="3">
+                              <div class="empty-message">
+                                <i class="ph ph-info"></i>
+                                <p>{{ 'TRIP_TICKET.NO_UPDATES' | translate }}</p>
+                              </div>
+                            </td>
+                          </tr>
+                        </ng-template>
+                      </p-table>
+                    </section>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-sm-11">
+            <div class="right-btn">
+              <button
+                type="button"
+                id="btnPrevious"
+                class="btn btn-success bottonspace"
+                (click)="backToTicketView()"
+              >
+                {{ 'TRIP_TICKET.BACK' | translate }}</button
+              >&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog box for Add Comment -->
+<p-dialog
+  header="{{ 'TRIP_TICKET.ADD_COMMENT' | translate }}"
+  [(visible)]="displayDialog"
+  [modal]="true"
+  [style]="{width: '500px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="p-3">
+    <form [formGroup]="commentForm">
+      <div class="form-group">
+        <label>{{ 'TRIP_TICKET.COMMENT' | translate }}<span class="mandatory-input">*</span></label>
+        <textarea
+          class="form-control"
+          rows="4"
+          formControlName="comment"
+          style="width: 100%"
+          placeholder="{{ 'TRIP_TICKET.COMMENT_PLACEHOLDER' | translate }}"
+        ></textarea>
+        <small
+          *ngIf="commentForm.get('comment')?.invalid && commentForm.get('comment')?.touched"
+          class="text-danger"
+        >
+          {{ 'TRIP_TICKET.COMMENT_REQUIRED' | translate }}
+        </small>
+      </div>
+
+      <div class="text-right mt-3">
+        <button
+          type="button"
+          class="btn btn-secondary mr-2"
+          (click)="displayDialog = false"
+        >
+          {{ 'TRIP_TICKET.CANCEL' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="addComment(Ticket.id, commentForm.get('comment')?.value)"
+          [disabled]="commentForm.invalid"
+        >
+          {{ 'TRIP_TICKET.ADD_COMMENT' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+
+<!-- Send To Uber Dialog -->
+<p-dialog
+  [(visible)]="showUberDialog"
+  [header]="'TRIP_TICKET.SEND_TO_UBER' | translate"
+  [modal]="true"
+  [style]="{width: '70vw', maxWidth: '900px'}"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!uberBookingInProgress"
+  class="uber-dialog"
+  (onHide)="onUberDialogClosed()"
+>
+  <div class="uber-dialog-body" *ngIf="!uberBookingConfirmed">
+    <div class="uber-config" *ngIf="!showUberOptions">
+      <div class="config-left">
+          <div class="map-wrapper">
+            <div class="map-toolbar">
+              <span>{{ 'TRIP_TICKET.PICKUP_LOCATION' | translate }}</span>
+              <div class="map-layer-toggle">
+                <button type="button" class="btn btn-sm" [ngClass]="{'btn-primary': uberMapLayer==='standard','btn-secondary': uberMapLayer!=='standard'}" (click)="setUberMapLayer('standard')">OSM</button>
+                <button type="button" class="btn btn-sm" [ngClass]="{'btn-primary': uberMapLayer==='satellite','btn-secondary': uberMapLayer!=='satellite'}" (click)="setUberMapLayer('satellite')">SAT</button>
+              </div>
+            </div>
+            <!-- Instructional message for confirming and modifying locations -->
+            <div class="uber-map-instructions" style="margin: 8px 0 8px 0; color: #1FBAD6; font-size: 1.01em; display: flex; align-items: center; gap: 8px;">
+              <i class="ph ph-info-circle" style="font-size: 1.2em;"></i>
+              <span>
+                {{ 'TRIP_TICKET.MODIFY_UBER_LOCATIONS' | translate }}
+              </span>
+            </div>
+            <div id="uberMap" leaflet [leafletOptions]="uberLeafletOptions"
+              (leafletMapReady)="onUberMapReady($event)"
+              style="height:320px;width:100%; position:relative;">
+              <!-- Markers and Polyline are handled in the component via leaflet layers -->
+            </div>
+            <div class="coord-readout">
+              <i class="ph ph-map-pin"></i>
+              <span style="font-weight:600;">Pickup:</span> {{pickupLatLng?.lat | number:'1.6-6'}}, {{pickupLatLng?.lng | number:'1.6-6'}}<br>
+              <i class="ph ph-map-pin"></i>
+              <span style="font-weight:600;">Drop-off:</span> {{dropoffLatLng?.lat | number:'1.6-6'}}, {{dropoffLatLng?.lng | number:'1.6-6'}}
+            </div>
+          </div>
+      </div>
+      <div class="config-right">
+        <div class="form-group">
+          <label>{{ 'TRIP_TICKET.UBER_PICKUP_TIME' | translate }}</label>
+          <input type="datetime-local" class="form-control" [(ngModel)]="uberPickupDateTimeISO" [min]="uberMinDateTime" />
+          <div class="uber-checkbox-row">
+            <input id="uberPromisedDropOff" class="form-check-input" type="checkbox" [(ngModel)]="uberPromisedDropOff" />
+            <label for="uberPromisedDropOff">{{ 'TRIP_TICKET.UBER_PROMISED_DROPOFF' | translate }}</label>
+          </div>
+        </div>
+        <div class="form-group mt-sm">
+          <button class="btn btn-primary" (click)="requestUberOptions()" [disabled]="uberLoading">
+            <span *ngIf="!uberLoading" style="display:inline-block;vertical-align:middle;line-height:0;">
+              <!-- Uber-style minimal car with route SVG icon, more balanced and modern -->
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;">
+                <!-- Route curve -->
+                <path d="M6 20C8 13 20 13 22 8" stroke="#1FBAD6" stroke-width="2.2" stroke-linecap="round"/>
+                <!-- Car body (rounded, minimal) -->
+                <rect x="9" y="15.5" width="10" height="4" rx="2" fill="#fff" stroke="#111" stroke-width="2"/>
+                <!-- Car roof (rounded) -->
+                <rect x="12.5" y="13.5" width="3" height="2.2" rx="1.1" fill="#111"/>
+                <!-- Wheels -->
+                <circle cx="11.5" cy="20.5" r="1.2" fill="#111"/>
+                <circle cx="16.5" cy="20.5" r="1.2" fill="#111"/>
+                <!-- Route dot -->
+                <circle cx="22" cy="8" r="1.1" fill="#1FBAD6"/>
+              </svg>
+            </span>
+            <i *ngIf="uberLoading" class="ph ph-spinner ph-spin"></i>
+            {{ 'TRIP_TICKET.SEARCH' | translate }}
+          </button>
+          <button class="btn btn-secondary ml-sm" (click)="showUberDialog=false" [disabled]="uberLoading" style="margin-left:16px;">{{ 'COMMON.CANCEL' | translate }}</button>
+        </div>
+          <div class="mt-sm text-danger" *ngIf="uberError">
+          <i class="ph ph-warning"></i> {{uberError}}
+        </div>
+      </div>
+    </div>
+    <div class="uber-options" *ngIf="showUberOptions && !uberBookingConfirmed">
+  <div class="options-header" style="display: flex; align-items: center; gap: 16px; background: #18191a; color: #f1f1f1; padding: 16px 16px 0 16px; border-radius: 8px 8px 0 0;">
+        <button class="btn btn-secondary btn-sm" (click)="resetUberConfig()" style="background: var(--button-bg, var(--neutral-200, #f5f7fa)); color: var(--button-text, var(--text-color, #222)); border: none;">
+          <i class="ph ph-arrow-left"></i> {{ 'COMMON.BACK' | translate }}
+        </button>
+        <h4 style="margin: 0; color: var(--text-color, #222); font-weight: 600;">{{ 'TRIP_TICKET.UBER_AVAILABLE_OPTIONS' | translate }}</h4>
+      </div>
+      <div class="options-list" *ngIf="uberRideOptions?.length; else noOptions" style="background: var(--modal-bg, var(--background-color, #fff)); color: var(--text-color, #222); padding: 0 16px 16px 16px; border-radius: 0 0 8px 8px;">
+        <div class="uber-option" *ngFor="let opt of uberRideOptions" [ngClass]="{'selected': selectedUberOption?.uberRideOptionId===opt.uberRideOptionId}"
+          (click)="selectUberOption(opt)"
+          [ngStyle]="{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+            padding: '18px 0',
+            borderBottom: '1px solid var(--border-color, #e0e0e0)',
+            cursor: 'pointer',
+            borderRadius: '6px',
+            background: selectedUberOption?.uberRideOptionId===opt.uberRideOptionId ? 'var(--selected-bg, var(--neutral-200, #e9ecef))' : 'transparent',
+            transition: 'background 0.2s'
+          }">
+          <div class="icon-col" style="flex: 0 0 36px; display: flex; align-items: center; justify-content: center;">
+            <!-- If an image URL is provided for this option show it, otherwise fall back to an icon -->
+            <ng-container>
+              <img *ngIf="opt.imageUrl" [src]="opt.imageUrl" alt="{{opt.uberRideType.displayName || 'vehicle'}}" style="height:46px; width:auto; border-radius:4px; object-fit:cover;" />
+              <i *ngIf="!opt.imageUrl" class="ph ph-car" style="font-size: 28px; color: #fff;"></i>
+            </ng-container>
+          </div>
+          <div class="details-col" style="flex: 1 1 auto;">
+            <div class="name-line" style="display: flex; align-items: center; gap: 12px;">
+              <span class="name" style="font-size: 1.1em; font-weight: 500; color: var(--text-color, #222);">{{opt.uberRideType.displayName}}</span>
+              <span class="capacity" *ngIf="opt.uberRideType.capacity" style="display: flex; align-items: center; gap: 4px; color: var(--text-secondary, #666); font-size: 0.98em;">
+                <!-- Replace with official Uber SVG icon for user/capacity if available -->
+                <i class="ph ph-user" style="font-size: 1em;"></i> {{opt.uberRideType.capacity}}
+              </span>
+            </div>
+            <div class="meta-line" style="color: var(--text-secondary, #666); font-size: 0.97em; margin-top: 2px; display: flex; gap: 10px; align-items: center;">
+              <span *ngIf="opt.etaMinutes > 60">{{opt.estimatedPickupTime}} Pickup <span *ngIf="opt.estimatedDropoffTime"> <br/>{{opt.estimatedDropoffTime}} Dropoff</span></span>
+              <span *ngIf="opt.etaMinutes <= 60">{{opt.etaMinutes}} min ETA ({{opt.estimatedPickupTime}}) <span *ngIf="opt.estimatedDropoffTime"> <br/>{{opt.estimatedDropoffTime}} Dropoff</span></span>
+              <span *ngIf="opt.distance">• {{opt.distance | number:'1.1-1'}} km</span>
+              <!--<span *ngIf="opt.surgeMultiplier && opt.surgeMultiplier>1" class="surge" style="color: var(--warning-color, #ffc107);">• {{opt.surgeMultiplier}}x</span>-->
+            </div>
+          </div>
+          <div class="price-col" style="flex: 0 0 80px; text-align: right;">
+            <div class="price" style="font-size: 1.1em; font-weight: 600; color: var(--text-color, #222);">{{opt.price | currency:'USD':'symbol'}}</div>
+            <div class="orig-price" *ngIf="opt.fullPrice && opt.fullPrice>opt.price" style="text-decoration: line-through; color: var(--text-secondary, #666); font-size: 0.95em;">{{opt.fullPrice | currency:'USD':'symbol'}} ({{opt.fareDisplay}})</div>
+          </div>
+          <div class="select-indicator" *ngIf="selectedUberOption?.uberRideOptionId===opt.uberRideOptionId" style="margin-left: 10px;">
+            <i class="ph ph-check-circle" style="color: #1FBAD6; font-size: 1.5em;"></i>
+          </div>
+        </div>
+      </div>
+      <ng-template #noOptions>
+        <div class="empty-state" style="color: #AFAFAF; padding: 24px 0; text-align: center;"><i class="ph ph-warning"></i> {{ 'TRIP_TICKET.UBER_NO_OPTIONS' | translate }}</div>
+      </ng-template>
+      <div class="options-footer" style="padding: 16px; background: #191919; border-radius: 0 0 8px 8px; display: flex; justify-content: flex-end;">
+        <button class="btn btn-primary" (click)="confirmUberSelection()" [disabled]="!selectedUberOption || uberBookingInProgress"
+          [ngStyle]="{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'var(--primary-color, #3a7bd5)',
+            color: 'var(--button-text, #fff)',
+            border: 'none',
+            fontWeight: 600,
+            fontSize: '1.1em',
+            padding: '10px 24px',
+            borderRadius: '6px',
+            minWidth: '180px',
+            justifyContent: 'center',
+            opacity: (!selectedUberOption || uberBookingInProgress) ? 0.6 : 1
+          }">
+          <img src="assets/uber-logo.png" alt="Uber" style="height: 20px; width: auto; vertical-align: middle; margin-right: 8px; filter: none;" />
+          {{ 'TRIP_TICKET.SEND_TO_UBER' | translate }}
+        </button>
+      </div>
+      <div class="mt-sm text-danger" *ngIf="uberError" style="color: #FF6F61; padding: 8px 16px;">
+        <i class="ph ph-warning"></i> {{uberError}}
+      </div>
+    </div>
+  </div>
+  <div class="uber-confirm" *ngIf="uberBookingConfirmed">
+    <div class="success-icon"><i class="ph ph-check-circle"></i></div>
+    <h3>{{ 'TRIP_TICKET.UBER_BOOKING_CONFIRMED' | translate }}</h3>
+    <p>{{ 'TRIP_TICKET.UBER_BOOKING_REFERENCE' | translate }}: {{uberBookingReference}}</p>
+    <button class="btn btn-primary" (click)="showUberDialog=false">{{ 'COMMON.CLOSE' | translate }}</button>
+  </div>
+</p-dialog>
+
+<!-- Ride Status Dialog -->
+<p-dialog
+  [(visible)]="showRideStatusDialog"
+  [header]="'TRIP_TICKET.RIDE_STATUS' | translate"
+  [modal]="true"
+  [style]="{width: '80vw', maxWidth: '1200px'}"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!rideStatusLoading"
+  class="ride-status-dialog"
+>
+  <div class="ride-status-content" *ngIf="!rideStatusLoading">
+    <div class="ride-status-layout">
+      <!-- Map Section (Left Side) -->
+      <div class="map-section">
+        <div class="map-header">
+          <h4>{{ 'TRIP_TICKET.TRIP_ROUTE' | translate }}</h4>
+          <div class="map-layer-toggle">
+            <button type="button" class="btn btn-sm"
+              [ngClass]="{'btn-primary': rideStatusMapLayer==='standard','btn-secondary': rideStatusMapLayer!=='standard'}"
+              (click)="setRideStatusMapLayer('standard')">OSM</button>
+            <button type="button" class="btn btn-sm"
+              [ngClass]="{'btn-primary': rideStatusMapLayer==='satellite','btn-secondary': rideStatusMapLayer!=='satellite'}"
+              (click)="setRideStatusMapLayer('satellite')">SAT</button>
+          </div>
+        </div>
+        <div id="rideStatusMap" leaflet
+          [leafletOptions]="rideStatusLeafletOptions"
+          (leafletMapReady)="onRideStatusMapReady($event)"
+          style="height:400px;width:100%; position:relative;">
+        </div>
+        <div class="coord-readout" *ngIf="rideStatusPickupLatLng && rideStatusDropoffLatLng">
+          <div><i class="ph ph-map-pin" style="color: #4CAF50 !important;"></i>
+            Pickup: {{rideStatusPickupLatLng.lat | number:'1.6-6'}}, {{rideStatusPickupLatLng.lng | number:'1.6-6'}}
+          </div>
+          <div><i class="ph ph-map-pin" style="color: #FF5722 !important;"></i>
+            Drop-off: {{rideStatusDropoffLatLng.lat | number:'1.6-6'}}, {{rideStatusDropoffLatLng.lng | number:'1.6-6'}}
+          </div>
+          <div *ngIf="currentTripSummary?.vehicle_location">
+            <i class="ph ph-car" style="color: #2196F3;"></i>
+            Vehicle: {{currentTripSummary?.vehicle_location?.latitude | number:'1.6-6'}}, {{currentTripSummary?.vehicle_location?.longitude | number:'1.6-6'}}
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Section (Right Side) -->
+      <div class="details-section">
+        <div class="ride-details" *ngIf="currentTripSummary">
+          <!-- Cancel Trip Action (at top for immediate visibility) -->
+          <div class="detail-card" *ngIf="canCancelTrip(currentTripSummary)">
+            <div class="detail-header">
+              <i class="ph ph-warning"></i>
+              <h5>{{ 'TRIP_TICKET.TRIP_ACTIONS' | translate }}</h5>
+            </div>
+            <div class="detail-content">
+              <button class="btn btn-danger w-100"
+                (click)="cancelCurrentTrip(currentTripSummary)"
+                [disabled]="rideStatusLoading">
+                <i class="ph ph-x-circle"></i>
+                {{ 'TRIP_TICKET.CANCEL_TRIP' | translate }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Trip Status -->
+          <div class="detail-card" *ngIf="currentTripSummary.status">
+            <div class="detail-header">
+              <i class="ph ph-info-circle"></i>
+              <h5>{{ 'TRIP_TICKET.TRIP_STATUS' | translate }}</h5>
+            </div>
+            <div class="detail-content">
+              <div class="status-badge" [ngClass]="getStatusClass(currentTripSummary.status)">
+                {{currentTripSummary.status}}
+              </div>
+              <div *ngIf="currentTripSummary.status_detail" class="status-detail">
+                {{currentTripSummary.status_detail}}
+              </div>
+              <div *ngIf="currentTripSummary.request_time" class="request-time">
+                <strong>{{ 'TRIP_TICKET.REQUESTED' | translate }}:</strong>
+                {{formatTimestamp(currentTripSummary.request_time)}}
+              </div>
+            </div>
+          </div>
+
+          <!-- Trip Metrics -->
+          <div class="detail-card" *ngIf="currentTripSummary.trip_distance_miles || currentTripSummary.trip_duration_seconds">
+            <div class="detail-header">
+              <i class="ph ph-chart-line"></i>
+              <h5>{{ 'TRIP_TICKET.TRIP_METRICS' | translate }}</h5>
+            </div>
+            <div class="detail-content">
+              <div *ngIf="currentTripSummary.trip_distance_miles" class="metric-row">
+                <span class="metric-label">{{ 'TRIP_TICKET.DISTANCE' | translate }}:</span>
+                <span class="metric-value">{{currentTripSummary.trip_distance_miles | number:'1.2-2'}} miles</span>
+              </div>
+              <div *ngIf="currentTripSummary.trip_duration_seconds" class="metric-row">
+                <span class="metric-label">{{ 'TRIP_TICKET.DURATION' | translate }}:</span>
+                <span class="metric-value">{{formatDuration(currentTripSummary.trip_duration_seconds)}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Information -->
+          <div class="detail-card" *ngIf="currentTripSummary.vehicle">
+            <div class="detail-header">
+              <i class="ph ph-car"></i>
+              <h5>{{ 'TRIP_TICKET.VEHICLE_INFO' | translate }}</h5>
+            </div>
+            <div class="detail-content">
+              <div class="vehicle-info">
+                <img *ngIf="currentTripSummary.vehicle.picture_url"
+                  [src]="currentTripSummary.vehicle.picture_url"
+                  alt="Vehicle"
+                  class="vehicle-image" />
+                <div class="vehicle-details">
+                  <div *ngIf="currentTripSummary.vehicle.make || currentTripSummary.vehicle.model" class="vehicle-name">
+                    {{currentTripSummary.vehicle.make}} {{currentTripSummary.vehicle.model}}
+                  </div>
+                  <div *ngIf="currentTripSummary.vehicle.vehicle_color_name" class="vehicle-color">
+                    Color: {{currentTripSummary.vehicle.vehicle_color_name}}
+                  </div>
+                  <div *ngIf="currentTripSummary.vehicle.license_plate" class="vehicle-license">
+                    License: {{currentTripSummary.vehicle.license_plate}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver Information -->
+          <div class="detail-card" *ngIf="currentTripSummary.driver">
+            <div class="detail-header">
+              <i class="ph ph-user"></i>
+              <h5>{{ 'TRIP_TICKET.DRIVER_INFO' | translate }}</h5>
+            </div>
+            <div class="detail-content">
+              <div class="driver-info">
+                <img *ngIf="currentTripSummary.driver.picture_url"
+                  [src]="currentTripSummary.driver.picture_url"
+                  alt="Driver"
+                  class="driver-image" />
+                <div class="driver-details">
+                  <div *ngIf="currentTripSummary.driver.name" class="driver-name">
+                    {{currentTripSummary.driver.name}}
+                  </div>
+                  <div *ngIf="currentTripSummary.driver.rating" class="driver-rating">
+                    <i class="ph ph-star" *ngFor="let star of getStarArray(currentTripSummary.driver.rating)"
+                      [ngClass]="star ? 'filled' : 'empty'"></i>
+                    ({{currentTripSummary.driver.rating | number:'1.1-1'}})
+                  </div>
+                  <div *ngIf="currentTripSummary.driver.phone_number" class="driver-contact">
+                    <i class="ph ph-phone"></i> {{currentTripSummary.driver.phone_number}}
+                  </div>
+                  <div *ngIf="currentTripSummary.driver.regulatory_info" class="regulatory-info">
+                    {{currentTripSummary.driver.regulatory_info}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rider Tracking -->
+          <div class="detail-card" *ngIf="currentTripSummary.rider_tracking_url">
+            <div class="detail-header">
+              <i class="ph ph-map-trifold"></i>
+              <h5>{{ 'TRIP_TICKET.RIDER_TRACKING' | translate }}</h5>
+            </div>
+              <div  >
+                <div class="tracking-info-card">
+                  <div class="tracking-icon">
+                    <i class="ph ph-map-pin-line" style="font-size: 2rem; color: var(--primary-color);"></i>
+                  </div>
+                  <div class="tracking-content">
+                    <h6>{{ 'TRIP_TICKET.LIVE_TRACKING' | translate }}</h6>
+                    <p class="tracking-description">
+                      {{ 'TRIP_TICKET.TRACKING_DESCRIPTION' | translate }}
+                    </p>
+                    <button
+                      class="btn btn-primary tracking-button"
+                      (click)="openTrackingUrl(currentTripSummary.rider_tracking_url)"
+                      type="button">
+                      <i class="ph ph-arrow-square-out"></i>
+                      {{ 'TRIP_TICKET.OPEN_TRACKING' | translate }}
+                    </button>
+                    <small class="text-muted tracking-hint">
+                      <i class="ph ph-info"></i>
+                      {{ 'TRIP_TICKET.TRACKING_HINT' | translate }}
+                    </small>
+                  </div>
+                </div>
+              </div>
+
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="rideStatusError" class="error-state">
+          <i class="ph ph-warning"></i>
+          <p>{{rideStatusError}}</p>
+          <button class="btn btn-primary" (click)="loadRideStatus()">
+            {{ 'COMMON.RETRY' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="rideStatusLoading" class="loading-state">
+    <div class="text-center">
+      <i class="ph ph-spinner ph-spin" style="font-size: 2rem;"></i>
+      <p>{{ 'TRIP_TICKET.LOADING_RIDE_STATUS' | translate }}</p>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Dialog box for Create Claims -->
+<p-dialog
+  [header]="claimAction"
+  [(visible)]="createClaims"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="col-md-12">
+    <form class="form-horizontal ng-pristine ng-valid" novalidate #claimForm="ngForm">
+          <div class="form-group">
+            <div *ngIf="isInServiceArea === 0">
+              <label class="mandatory-input">{{ 'TRIP_TICKET.CLAIM_OUTSIDE_SA' | translate }}</label>
+            </div>
+
+            <div *ngIf="eligibleForCreateClaim  === 0 ||eligibleForCreateClaim ===1">
+              <div class="col-sm-1">
+                <input type="checkbox" id="acknowledge" name="acknowledge" value="true" [(ngModel)]="ackStatus" required
+                  #acknowledge="ngModel">
+              </div>
+              <label>{{ 'TRIP_TICKET.ACKNOWLEDGE_OUTSIDE_HOURS' | translate }}<span
+                  class="mandatory-input">*</span></label>
+            </div>
+            <label class="add-ticket-label col-xs-4">{{'TRIP_TICKET.PROVIDER_SUBMITTED_COST' | translate}}
+              $ <span class="mandatory-input">*</span></label>
+            <div class="col-xs-8">
+                <input
+                  type="text"
+                  class="form-control-link textColor"
+                  id="rqstfare"
+                  [ngModel]="requestedFare | number:'1.2-2'"
+                  (ngModelChange)="onFormattedRequestedFareChange($event)"
+                  name="rqstFareOfTicket"
+                  [required]=true
+                  min="0"
+                  step="0.01"
+                  [disabled]="((!isOriginator) || (claimStatus === 'Approved'))"
+                  (change)="onChangeInput($event,'requestedFare')">
+            </div>
+          </div>
+
+
+
+      <div class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.FARE' | translate }}<span class="mandatory-input"></span></label
+        >
+        <div class="col-xs-8">
+          <input
+            type="text"
+            class="form-control form-control-link textColor"
+            id="fare"
+            [ngModel]="fare | number:'1.2-2'"
+            (ngModelChange)="onFormattedFareChange($event)"
+            name="fareOfTicket"
+            [required]="false"
+            #fareOfTicket="ngModel"
+            min="0"
+            step="0.01"
+            pattern="^\d+(?:\.\d{1,2})?$"
+            [ngClass]="{'invalid-input': !fareOfTicket.valid && !fareOfTicket.pristine }"
+          />
+          <span *ngIf="!fareOfTicket.valid && !fareOfTicket.pristine" class="mandatory-input"
+            >{{ 'TRIP_TICKET.ENTER_VALID_FARE' | translate }}
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.NOTES' | translate }}<span class="mandatory-input"></span></label
+        >
+        <div class="col-xs-8">
+          <textarea
+            rows="4"
+            cols="38"
+            class="text-Border textColor"
+            id="notes"
+            [(ngModel)]="notes"
+            name="notesForClaim"
+            [required]="false"
+            maxlength="500"
+            #notesForClaim="ngModel"
+            [ngClass]="{'invalid-input': !notesForClaim.valid && !notesForClaim.pristine }"
+          ></textarea>
+          <span *ngIf="!notesForClaim.valid && !notesForClaim.pristine" class="mandatory-input"
+            >{{ 'TRIP_TICKET.ENTER_VALID_NOTES' | translate }}
+          </span>
+        </div>
+      </div>
+      <div *ngIf="!createClaimPickupDate" class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.PROPOSED_PICKUP_DATE' | translate }}<span class="mandatory-input"
+            >*</span
+          ></label
+        >
+        <div class="col-xs-8">
+          <input
+            class="form-control form-control-link textColor"
+            type="text"
+            [(ngModel)]="pickupDate"
+            id="PickupDate"
+            name="PickupDate"
+            disabled
+            [required]="true"
+          />
+        </div>
+      </div>
+      <div *ngIf="createClaimPickupDate" class="form-group lineSpace">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.PROPOSED_PICKUP_DATE' | translate }}<span class="mandatory-input"
+            >*</span
+          ></label
+        >
+        <div class="col-xs-8">
+          <p-calendar
+            [(ngModel)]="pickupDate"
+            name="PickupDate"
+            id="PickupDate"
+            #PickupDate="ngModel"
+            [style]="{'width':'100%'}"
+            [ngClass]="{'invalid-input': !PickupDate.valid && !PickupDate.pristine }"
+            [maxDate]="dateForCheck"
+            [required]="true"
+          >
+          </p-calendar>
+          <span *ngIf="!PickupDate.valid && !PickupDate.pristine" class="mandatory-input">
+            {{ 'TRIP_TICKET.ENTER_VALID_PICKUP_DATE' | translate }}
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.PROPOSED_PICKUP_TIME' | translate }}<span class="mandatory-input"
+            >*</span
+          ></label
+        >
+        <div class="col-xs-8">
+          <input
+            class="form-control form-control-link textColor"
+            type="time"
+            [(ngModel)]="proposedPickupTime"
+            id="PickupTime"
+            name="PickupTime"
+            #PickupTime="ngModel"
+            [ngClass]="{'invalid-input': !PickupTime.valid && !PickupTime.pristine }"
+            [required]="true"
+          />
+          <span *ngIf="!PickupTime.valid && !PickupTime.pristine" class="mandatory-input">
+            {{ 'TRIP_TICKET.ENTER_VALID_PICKUP_TIME' | translate }}
+          </span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.PROPOSED_DROPOFF_DATE' | translate }}</label
+        >
+        <div class="col-xs-8">
+          <input
+            class="form-control form-control-link textColor"
+            type="text"
+            [(ngModel)]="dropoffDate"
+            id="DropoffDate"
+            name="dropoffDate"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="add-ticket-label col-xs-4"
+          >{{ 'TRIP_TICKET.PROPOSED_DROPOFF_TIME' | translate }}</label
+        >
+        <div class="col-xs-8">
+          <input
+            class="form-control form-control-link textColor"
+            type="text"
+            [(ngModel)]="dropoffTime"
+            id="DropoffTime"
+            name="dropoffTime"
+            disabled
+          />
+        </div>
+      </div>
+      <div *ngIf="isTrustedPartner === 1">
+        <label>{{ 'TRIP_TICKET.TRUSTED_PROVIDER_NOTE' | translate }}</label>
+      </div>
+      <!-- Debug info section -->
+      <!-- <div class="form-group">
+        <div class="col-xs-12">
+          <div class="alert alert-info">
+            <strong>Debug Info:</strong><br />
+            Form Valid: {{claimForm?.form?.valid}}<br />
+            Fare Valid: {{fareOfTicket?.valid}}<br />
+            Notes Valid: {{notesForClaim?.valid}}<br />
+            Pickup Date: {{pickupDate}}<br />
+            Pickup Time Valid: {{PickupTime?.valid}}<br />
+            Form Touched: {{claimForm?.form?.touched}}<br />
+            Form Dirty: {{claimForm?.form?.dirty}}<br />
+            Claim From Grid: {{claimFromGrid}}<br />
+            Update Claim: {{updateClaim}}<br />
+            From Grid: {{fromGrid}}<br />
+            Claim From Grid As Admin: {{claimFromGridAsAdmin}}<br />
+          </div>
+        </div>
+      </div> -->
+      <!-- End of debug info -->
+      <div *ngIf="!updateClaim" class="buttonRightForClaim">
+
+        <button
+          *ngIf="claimFromGrid === true"
+          type="button"
+          class="btn btn-primary"
+          (click)="createClaim(Ticket.id, notes, fare, proposedPickupTime, pickupDate, ackStatus, requestedFare)"
+          [disabled]="!claimForm.form.valid"
+        >
+
+          {{ 'TRIP_TICKET.CLAIM' | translate }}
+        </button>
+        <button
+          *ngIf="claimFromGrid === false"
+          type="button"
+          class="btn btn-primary"
+          (click)="createClaimFromGrid(notes, fare, proposedPickupTime, pickupDate, ackStatus, requestedFare)"
+          [disabled]="!claimForm.form.valid"
+        >
+          {{ 'TRIP_TICKET.CLAIM' | translate }}
+        </button>
+        <button
+          *ngIf="claimFromGridAsAdmin"
+          type="button"
+          class="btn btn-primary"
+          (click)="createClaimAsAdmin(Ticket.id, notes, fare, proposedPickupTime, pickupDate, ackStatus, requestedFare)"
+          [disabled]="!claimForm.form.valid"
+        >
+          {{ 'TRIP_TICKET.CLAIM' | translate }}
+        </button>
+      </div>
+      <div *ngIf="updateClaim" class="buttonRightForClaim">
+        <button
+          *ngIf="fromGrid"
+          type="button"
+          class="btn btn-primary"
+          (click)="editClaimFromGrid(notes, fare, proposedPickupTime, pickupDate)"
+          [disabled]="!claimForm.form.valid"
+        >
+          {{ 'TRIP_TICKET.UPDATE' | translate }}
+        </button>
+        <button
+          *ngIf="!fromGrid"
+          type="button"
+          class="btn btn-primary"
+          (click)="editClaim(notes, fare, requestedFare, proposedPickupTime, pickupDate)"
+          [disabled]="!claimForm.form.valid"
+        >
+          {{ 'TRIP_TICKET.UPDATE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</p-dialog>
+
+<!-- Dialog box for Claim Approval -->
+<p-dialog
+  header="{{ 'TRIP_TICKET.CLAIM_ACTION' | translate }}"
+  [(visible)]="changeToApproved"
+  [modal]="true"
+  [style]="{width: '300px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div>
+    <label class="add-ticket-label"
+      >{{ 'TRIP_TICKET.CLAIMANT' | translate }}<span class="mandatory-input">*</span></label
+    >
+    <select
+      [(ngModel)]="claimantNameToApprove"
+      name="claimant1"
+      [required]="true"
+      #claimant1="ngModel"
+      class="form-control"
+      [ngClass]="{'invalid-input': !claimant1.valid && !claimant1.pristine }"
+    >
+      <option value="" selected>{{ 'TRIP_TICKET.PLEASE_SELECT' | translate }}</option>
+      <option *ngFor="let claimant of claimantList" value="{{claimant}}">{{claimant}}</option>
+    </select>
+    <div class="buttonRightForApproved">
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!claimant1.valid"
+        (click)="ApprovedFromGrid(claimantNameToApprove)"
+      >
+        {{ 'TRIP_TICKET.APPROVE' | translate }}
+      </button>
+    </div>
+  </div>
+</p-dialog>
+
+<!-- Dialog box for Claim Decline -->
+<p-dialog
+  header="{{ 'TRIP_TICKET.CLAIM_ACTION' | translate }}"
+  [(visible)]="changeToDecline"
+  [modal]="true"
+  [style]="{width: '300px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <label class="add-ticket-label"
+    >{{ 'TRIP_TICKET.CLAIMANT' | translate }}<span class="mandatory-input">*</span></label
+  >
+  <select
+    [(ngModel)]="claimantNameToDecline"
+    name="claimant"
+    [required]="true"
+    #claimant="ngModel"
+    class="form-control"
+    [ngClass]="{'invalid-input': !claimant.valid && !claimant.pristine }"
+  >
+    <option value="" selected>{{ 'TRIP_TICKET.PLEASE_SELECT' | translate }}</option>
+    <option *ngFor="let claimant of claimantList" value="{{claimant}}">{{claimant}}</option>
+  </select>
+  <div class="buttonRightForApproved">
+    <button
+      type="button"
+      class="btn btn-primary"
+      [disabled]="!claimant.valid"
+      (click)="declineFromGrid(claimantNameToDecline)"
+    >
+      {{ 'TRIP_TICKET.DECLINE' | translate }}
+    </button>
+  </div>
+</p-dialog>
+
+<!-- File Upload Dialog -->
+<p-dialog
+  header="{{ 'TRIP_TICKET.UPLOAD_TICKETS' | translate }}"
+  [(visible)]="showUploadDialog"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  [breakpoints]="{'960px': '75vw', '640px': '90vw'}"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="!isUploading"
+>
+  <div class="upload-dialog-content d-flex flex-column gap-lg" style="min-height: 420px;">
+    <!-- Instructions Section -->
+    <section class="upload-instructions mb-lg p-md" *ngIf="!uploadSuccess">
+      <div class="instruction-header d-flex align-items-center gap-md mb-md" style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;">
+        <i class="ph ph-info" style="font-size: 1.5rem;"></i>
+        <h2 style="margin: 0; font-size: 2rem; font-weight: 600; letter-spacing: -0.5px;">{{ 'TRIP_TICKET.UPLOAD_INSTRUCTIONS_TITLE' | translate }}</h2>
+      </div>
+      <div class="instruction-section mb-md">
+        <h4 class="mb-xs">{{ 'TRIP_TICKET.FILE_REQUIREMENTS' | translate }}</h4>
+        <ul class="list-unstyled mb-0">
+          <li class="d-flex align-items-center gap-xs mb-xs">
+            <i class="ph ph-file-csv"></i>
+            <span>{{ 'TRIP_TICKET.UPLOAD_FORMAT' | translate }}</span>
+          </li>
+          <li class="d-flex align-items-center gap-xs">
+            <i class="ph ph-file-size"></i>
+            <span>{{ 'TRIP_TICKET.UPLOAD_SIZE' | translate: { size: maxFileSize / (1024 * 1024) } }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="instruction-section mb-md">
+        <h4 class="mb-xs">{{ 'TRIP_TICKET.REQUIRED_FIELDS' | translate }}</h4>
+        <ul class="list-unstyled mb-0">
+          <li>Customer Information (First Name, Last Name)</li>
+          <li>Addresses (Pickup, Drop-off, Customer)</li>
+          <li>Trip Details (Origin Trip ID, Pickup Time, Drop-off Time)</li>
+        </ul>
+      </div>
+      <div class="instruction-section mb-md">
+        <h4 class="mb-xs">Originating Requestor</h4>
+        <div>
+          <select class="form-control" [(ngModel)]="selectedOriginatingProvider">
+            <option [ngValue]="null">{{ 'TRIP_TICKET.PLEASE_SELECT' | translate }}</option>
+            <option *ngFor="let opt of uploadOriginatingProviderOptions" [value]="opt.value">{{opt.label}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="template-section mt-md">
+        <button class="btn btn-secondary w-100" (click)="downloadTemplate()">
+          <i class="ph ph-download"></i>
+          {{ 'TRIP_TICKET.DOWNLOAD_TEMPLATE' | translate }}
+        </button>
+      </div>
+    </section>
+
+    <!-- File Selection -->
+    <section class="file-selection mb-lg" *ngIf="!isUploading && !uploadSuccess">
+  <div class="file-drop-zone d-flex flex-column align-items-center justify-content-center p-lg border rounded gap-lg"
+       (dragover)="onDragOver($event)"
+       (dragleave)="onDragLeave($event)"
+       (drop)="onDrop($event)"
+       style="min-height: 140px; background: var(--neutral-100, #23272e); border: 1.5px solid var(--neutral-300, #444); transition: background 0.2s, border 0.2s; box-shadow: 0 2px 12px 0 rgba(0,0,0,0.08);">
+        <input
+          #fileInput
+          type="file"
+          class="file-input"
+          (change)="onFileSelected($event)"
+          [accept]="allowedFileTypes"
+          [disabled]="isUploading"
+          hidden
+        />
+
+        <div class="drop-zone-content text-center" *ngIf="!selectedFile">
+          <i class="ph ph-upload-simple mb-sm" style="font-size: 2rem; color: var(--primary-color, #5f9eff) !important;"></i>
+          <p class="mb-xs" style="color: var(--text-color, #e9ecef);">{{ 'TRIP_TICKET.DRAG_DROP' | translate }}</p>
+          <span class="mb-xs d-block" style="color: var(--text-secondary, #b0b0b0);">{{ 'TRIP_TICKET.OR' | translate }}&nbsp;</span>
+          <button type="button" class="btn btn-primary mt-md" style="min-width: 160px;" (click)="fileInput.click()">
+            {{ 'TRIP_TICKET.BROWSE_FILES' | translate }}
+          </button>
+        </div>
+
+        <div class="selected-file w-100 d-flex align-items-center justify-content-between gap-md" *ngIf="selectedFile">
+          <div class="file-details d-flex align-items-center gap-md p-md rounded" style="background: var(--neutral-900, #18191a); border: 1px solid var(--neutral-400, #333); min-width: 0;">
+            <i class="ph ph-file-xls" *ngIf="selectedFile.name.endsWith('.xlsx') || selectedFile.name.endsWith('.xls')" style="font-size: 1.5rem; color: var(--primary-color, #5f9eff) !important;"></i>
+            <i class="ph ph-file-csv" *ngIf="selectedFile.name.endsWith('.csv')" style="font-size: 1.5rem; color: var(--primary-color, #5f9eff) !important;"></i>
+            <div class="file-info" style="min-width: 0;">
+              <div class="file-name fw-semibold text-truncate" style="color: var(--text-color, #e9ecef); max-width: 180px;">{{selectedFile.name}}</div>
+              <div class="file-size text-muted" style="color: var(--text-secondary, #b0b0b0);">{{(selectedFile.size / 1024).toFixed(2)}} KB</div>
+            </div>
+          </div>
+          <button class="btn btn-icon btn-light ml-md" (click)="resetFileSelection()" aria-label="Remove file" title="Remove selected file" style="border-radius: 50%; background: var(--neutral-800, #23272e); border: 1px solid var(--neutral-400, #333);">
+            <i class="ph ph-x" style="color: var(--text-color, #fff) !important;"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Error Message -->
+    <section class="error-message mb-lg" *ngIf="uploadError && !isUploading">
+      <div class="alert alert-danger d-flex align-items-start gap-md">
+        <i class="ph ph-warning"></i>
+        <div class="error-details" >
+          <strong>{{ 'TRIP_TICKET.UPLOAD_ERROR' | translate }}</strong>
+          <br />
+          {{uploadError}}
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Section -->
+    <section class="progress-container mb-lg" *ngIf="isUploading">
+      <div class="upload-status d-flex align-items-center gap-md mb-md">
+        <i class="ph ph-upload" style="font-size: 1.5rem;"></i>
+        <p class="uploading-text mb-0">{{ 'TRIP_TICKET.UPLOADING' | translate }}...</p>
+      </div>
+      <div class="progress mb-xs" style="height: 8px;">
+        <div
+          class="progress-bar bg-primary"
+          role="progressbar"
+          [style.width.%]="uploadProgress"
+          [attr.aria-valuenow]="uploadProgress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        ></div>
+      </div>
+      <div class="progress-text text-center fw-semibold">{{uploadProgress}}%</div>
+    </section>
+
+    <!-- Success Message -->
+    <section class="success-message mb-lg" *ngIf="uploadSuccess">
+      <div class="alert alert-success d-flex align-items-start gap-md">
+        <i class="ph ph-check-circle mt-1"></i>
+        <div class="success-details">
+          <strong>{{ 'TRIP_TICKET.UPLOAD_SUCCESS' | translate }}</strong>
+          <div class="upload-results mt-xs" *ngIf="uploadResult">
+            <p class="mb-0">
+              <i class="ph ph-plus-circle"></i>
+              {{ 'TRIP_TICKET.TICKETS_CREATED' | translate }}: {{uploadResult.created}}
+            </p>
+            <p class="mb-0">
+              <i class="ph ph-ticket"></i>
+              {{ 'TRIP_TICKET.TICKETS_UPDATED' | translate }}: {{uploadResult.updated}}
+            </p>
+            <p class="mb-0" *ngIf="uploadResult.errors">
+              <i class="ph ph-warning"></i>
+              {{ 'TRIP_TICKET.TICKETS_FAILED' | translate }}: {{uploadResult.errors}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dialog Footer -->
+    <footer class="dialog-footer d-flex gap-md justify-content-end mt-auto pt-md border-top">
+      <div style="display: flex; flex-direction: row; gap: 16px; align-items: center; flex-wrap: nowrap; width: auto;">
+        <button
+          type="button"
+          class="btn btn-secondary align-middle"
+          (click)="cancelUpload()"
+          [disabled]="isUploading"
+          style="min-width: 180px; max-width: 220px; height: 48px; font-size: 1rem; padding: 0 24px; display: inline-flex; align-items: center; justify-content: center;"
+        >
+          {{ isUploading ? ('TRIP_TICKET.UPLOADING' | translate) : ('TRIP_TICKET.CANCEL' | translate) }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary align-middle"
+          (click)="uploadFile()"
+          [disabled]="!selectedFile || isUploading || uploadSuccess"
+          style="min-width: 180px; max-width: 220px; height: 48px; font-size: 1rem; padding: 0 24px; display: inline-flex; align-items: center; justify-content: center;"
+        >
+       <i class="ph" [ngClass]="{'ph-upload': !isUploading, 'ph-spinner ph-spin': isUploading}"
+         style="margin-right: 6px; color: var(--primary-color, #5f9eff) !important;"></i>
+          {{ 'TRIP_TICKET.UPLOAD' | translate }}
+        </button>
+      </div>
+    </footer>
+  <style>
+    /* Force icon color in upload dialog regardless of global styles */
+    .upload-dialog-content .ph-upload-simple,
+    .upload-dialog-content .ph-file-xls,
+    .upload-dialog-content .ph-file-csv,
+    .upload-dialog-content .ph-upload,
+    .upload-dialog-content .ph-spinner,
+    .upload-dialog-content .ph-info {
+      color: var(--primary-color, #5f9eff) !important;
+    }
+    .upload-dialog-content .ph-x {
+      color: var(--text-color, #fff) !important;
+    }
+
+  </style>
+  </div>
+</p-dialog>
+
+<!-- Edit Trip Ticket Dialog -->
+<p-dialog
+  [(visible)]="showEditDialog"
+  [header]="!showTripResultStep ? ('TRIP_TICKET.EDIT_TICKET' | translate) : 'Complete Trip - Enter Trip Results'"
+  [modal]="true"
+  [style]="{width: '60vw'}"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <!-- Step 1: Edit Ticket Form -->
+  <div *ngIf="!showTripResultStep">
+    <form [formGroup]="editTicketForm" (ngSubmit)="onSubmitEdit()">
+      <div class="p-fluid">
+        <!-- Customer Information -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.CUSTOMER_NAME' | translate }}</label>
+          <div class="p-inputgroup">
+            <input type="text" pInputText formControlName="customerFirstName" placeholder="First Name">
+            <input type="text" pInputText formControlName="customerLastName" placeholder="Last Name">
+          </div>
+        </div>
+
+        <!-- Pickup Information -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.PICKUP_DATE_TIME' | translate }}</label>
+          <div class="p-inputgroup">
+            <p-calendar formControlName="pickupDate" [showTime]="true" [showSeconds]="false"></p-calendar>
+          </div>
+        </div>
+
+        <!-- Dropoff Information -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.DROPOFF_DATE_TIME' | translate }}</label>
+          <div class="p-inputgroup">
+            <p-calendar formControlName="dropoffDate" [showTime]="true" [showSeconds]="false"></p-calendar>
+          </div>
+        </div>
+
+        <!-- Ticket Status -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.STATUS' | translate }}</label>
+          <div class="p-inputgroup">
+            <p-dropdown
+              [options]="TicketStatus"
+              optionLabel="label"
+              optionValue="value"
+              formControlName="ticketStatusId"
+              placeholder="Select status"
+            ></p-dropdown>
+          </div>
+        </div>
+
+        <!-- Seats Required -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.SEATS_REQUIRED' | translate }}</label>
+          <div class="p-inputgroup">
+            <p-inputNumber formControlName="seatsRequired" [min]="1" [max]="10"></p-inputNumber>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="p-field mb-3">
+          <label>{{ 'TRIP_TICKET.NOTES' | translate }}</label>
+          <div class="p-inputgroup">
+            <textarea pInputTextarea formControlName="notes" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 2: Trip Result Form -->
+  <div *ngIf="showTripResultStep">
+    <div class="mb-4 p-3 p-message p-message-info">
+      <div class="p-message-wrapper">
+        <span class="p-message-icon ph ph-info-circle"></span>
+        <div class="p-message-text">
+          Please enter the completed trip information below. Required fields are marked with an asterisk (*).
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="tripResultForm" (ngSubmit)="onSubmitTripResult()">
+      <div class="p-fluid">
+        <div class="p-grid p-formgrid">
+          <!-- Pickup Times -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Actual Pickup Arrive Time</label>
+              <p-calendar formControlName="actualPickupArriveTime" [showTime]="true" [showSeconds]="false"></p-calendar>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Actual Pickup Depart Time *</label>
+              <p-calendar formControlName="actualPickupDepartTime" [showTime]="true" [showSeconds]="false"></p-calendar>
+            </div>
+          </div>
+
+          <!-- Dropoff Times -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Actual Drop-off Arrive Time</label>
+              <p-calendar formControlName="actualDropOffArriveTime" [showTime]="true" [showSeconds]="false"></p-calendar>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Actual Drop-off Depart Time *</label>
+              <p-calendar formControlName="actualDropOffDepartTime" [showTime]="true" [showSeconds]="false"></p-calendar>
+            </div>
+          </div>
+
+          <!-- Coordinates -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Pickup Latitude</label>
+              <input type="number" pInputText formControlName="pickUpLatitude" step="any" placeholder="e.g. 40.7128">
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Pickup Longitude</label>
+              <input type="number" pInputText formControlName="pickupLongitude" step="any" placeholder="e.g. -74.0060">
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Drop-off Latitude</label>
+              <input type="number" pInputText formControlName="dropOffLatitude" step="any" placeholder="e.g. 40.7589">
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Drop-off Longitude</label>
+              <input type="number" pInputText formControlName="dropOffLongitude" step="any" placeholder="e.g. -73.9851">
+            </div>
+          </div>
+
+          <!-- Vehicle and Driver -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Vehicle ID</label>
+              <input type="text" pInputText formControlName="vehicleId" placeholder="Vehicle identifier">
+            </div>
+          </div>
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Driver ID</label>
+              <input type="text" pInputText formControlName="driverId" placeholder="Driver identifier">
+            </div>
+          </div>
+
+          <!-- Passenger Information -->
+          <div class="p-col-12 p-md-4">
+            <div class="p-field mb-3">
+              <label>Number of Guests</label>
+              <p-inputNumber formControlName="numberOfGuests" [min]="0"></p-inputNumber>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4">
+            <div class="p-field mb-3">
+              <label>Number of Attendants</label>
+              <p-inputNumber formControlName="numberOfAttendants" [min]="0"></p-inputNumber>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4">
+            <div class="p-field mb-3">
+              <label>Total Passengers</label>
+              <p-inputNumber formControlName="numberOfPassengers" [min]="0"></p-inputNumber>
+            </div>
+          </div>
+
+          <!-- Financial Information -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Fare Collected</label>
+              <p-inputNumber formControlName="fareCollected" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+            </div>
+          </div>
+
+          <!-- Cancellation Reason -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>Cancellation Reason </label>
+              <input type="text" pInputText formControlName="cancellationReason" placeholder="Enter reason for cancellation">
+            </div>
+          </div>
+
+          <!-- No Show Reason -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field mb-3">
+              <label>No Show Reason </label>
+              <input type="text" pInputText formControlName="noShowReason" placeholder="Enter reason for no show">
+            </div>
+          </div>
+
+          <!-- No Show Flag -->
+          <div class="p-col-12 p-md-6">
+            <div class="p-field-checkbox mb-3 no-show-field">
+              <p-checkbox formControlName="noShowFlag" [binary]="true" inputId="noShow"></p-checkbox>
+              <label for="noShow" class="ml-2 checkbox-label">No Show?</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div *ngIf="!showTripResultStep" class="p-dialog-footer-buttons">
+      <button pButton pRipple label="{{ 'COMMON.CANCEL' | translate }}" icon="ph ph-x" class="p-button-text mr-2" (click)="showEditDialog = false; resetEditDialog()"></button>
+      <button pButton pRipple label="{{ 'COMMON.SAVE' | translate }}" icon="ph ph-check" class="p-button-primary" (click)="onSubmitEdit()" [disabled]="!editTicketForm.valid || isSaving"></button>
+    </div>
+    <div *ngIf="showTripResultStep" class="p-dialog-footer-buttons">
+      <button pButton pRipple label="Back" icon="ph ph-arrow-left" class="p-button-text mr-2" (click)="goBackToEditStep()"></button>
+      <button pButton pRipple label="{{ 'COMMON.CANCEL' | translate }}" icon="ph ph-x" class="p-button-text mr-2" (click)="showEditDialog = false; resetEditDialog()"></button>
+      <button pButton pRipple label="Complete Trip" icon="ph ph-check-circle" class="p-button-success" (click)="onSubmitTripResult()" [disabled]="!tripResultForm.valid || isSaving">
+        <span *ngIf="isSaving" class="ph ph-spinner-gap animate-spin mr-2"></span>
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Cancellation Reason Dialog -->
+<p-dialog
+  [(visible)]="showCancellationReasonDialog"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  header="Cancellation Reason"
+  [style]="{width: '500px'}"
+  (onHide)="cancelCancellationDialog()">
+
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="cancellationReason">Please enter the reason for cancellation:</label>
+      <textarea
+        id="cancellationReason"
+        pInputTextarea
+        [(ngModel)]="cancellationReason"
+        rows="5"
+        placeholder="Enter cancellation reason..."
+        [autoResize]="true">
+      </textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      class="p-button-secondary"
+      icon="ph ph-x"
+      (click)="cancelCancellationDialog()">
+    </button>
+    <button
+      pButton
+      type="button"
+      label="Submit"
+      class="p-button-primary"
+      icon="ph ph-check"
+      (click)="submitCancellation()">
+    </button>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,63 @@
+// Import Phosphor Icons styles
+@import "https://cdn.jsdelivr.net/npm/@phosphor-icons/web/css/regular.css";
+@import "https://cdn.jsdelivr.net/npm/@phosphor-icons/web/css/bold.css";
+
+// Common icon styles
+i {
+  margin: 5px;
+  font-size: 15px;
+}
+
+// Ensure Phosphor Icons are displayed correctly
+i.ph {
+  font-size: inherit;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+// Large icons
+.icons {
+  font-size: 25px;
+}
+
+// Action button icons - ensure perfect centering in circular buttons
+.btn-icon,
+button.btn-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 25px !important;
+  height: 25px !important;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  position: relative !important;
+
+  i {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 14px !important;
+  }
+}
+
+// Ensure proper margins between action buttons
+.action-icons {
+  display: flex;
+  align-items: center;
+
+  .btn-icon {
+    margin-right: 8px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

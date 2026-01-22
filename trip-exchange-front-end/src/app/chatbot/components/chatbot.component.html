@@ -1,0 +1,119 @@
+<div class="chatbot-container" [class.chatbot-open]="isChatbotOpen">
+  <!-- Chatbot Toggle Button -->
+  <button
+    *ngIf="!isChatbotOpen"
+    class="chatbot-toggle"
+    (click)="toggleChatbot()"
+    pTooltip="Open Chat Assistant"
+    tooltipPosition="left"
+    type="button">
+    <i class="pi pi-comments"></i>
+  </button>
+
+  <!-- Chatbot Window -->
+  <div class="chatbot-window" *ngIf="isChatbotOpen" [class.minimized]="isMinimized">
+    <!-- Header -->
+    <div class="chatbot-header">
+      <div class="header-content">
+        <i class="pi pi-android"></i>
+        <span class="title">AI Assistant</span>
+        <div class="status-indicator" [class.online]="!isLoading"></div>
+      </div>
+      <div class="header-actions">
+        <button
+          class="header-btn"
+          (click)="minimizeChat()"
+          pTooltip="Minimize"
+          type="button">
+          <i class="pi" [class.pi-window-minimize]="!isMinimized" [class.pi-window-maximize]="isMinimized"></i>
+        </button>
+        <button
+          class="header-btn"
+          (click)="newChat()"
+          pTooltip="New Chat"
+          type="button">
+          <i class="pi pi-plus"></i>
+        </button>
+        <button
+          class="header-btn"
+          (click)="clearChat()"
+          pTooltip="Clear Chat"
+          type="button">
+          <i class="pi pi-trash"></i>
+        </button>
+        <button
+          class="header-btn close-btn"
+          (click)="closeChat()"
+          pTooltip="Close"
+          type="button">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-container" *ngIf="error">
+      <p-message
+        severity="error"
+        [text]="error"
+        [closable]="true"
+        (onClose)="dismissError()">
+      </p-message>
+    </div>
+
+    <!-- Chat Body -->
+    <div class="chatbot-body" *ngIf="!isMinimized">
+      <!-- Messages Container -->
+      <div class="messages-container" #messageContainer>
+        <div class="messages-list">
+          <app-chat-message
+            *ngFor="let message of messages; trackBy: trackByMessageId"
+            [message]="message">
+          </app-chat-message>
+
+          <!-- Typing Indicator -->
+          <app-typing-indicator *ngIf="isTyping"></app-typing-indicator>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="input-container">
+        <div class="input-wrapper">
+          <input
+            #messageInput
+            type="text"
+            pInputText
+            [(ngModel)]="newMessage"
+            (keypress)="onKeyPress($event)"
+            [disabled]="isLoading"
+            placeholder="Type your message here..."
+            class="message-input"
+            autocomplete="off">
+
+          <button
+            class="send-button"
+            (click)="sendMessage()"
+            [disabled]="!newMessage.trim() || isLoading"
+            type="button">
+            <i class="pi pi-send" *ngIf="!isLoading"></i>
+            <i class="pi pi-spin pi-spinner" *ngIf="isLoading"></i>
+          </button>
+        </div>
+
+        <!-- Toggle for response type -->
+        <div class="toggle-container" style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
+          <label style="display: flex; align-items: center; gap: 4px;">
+            <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="TEXT"> TEXT
+          </label>
+          <label style="display: flex; align-items: center; gap: 4px;">
+            <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="REPORTING_CHARTING"> Report/Chart
+          </label>
+        </div>
+
+        <div class="input-footer">
+          <small class="input-hint">Press Enter to send, Shift+Enter for new line</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

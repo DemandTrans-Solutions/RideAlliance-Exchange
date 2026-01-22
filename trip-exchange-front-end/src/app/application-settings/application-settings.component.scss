@@ -1,0 +1,31 @@
+// Import shared styles with corrected path
+@import '../shared/styles/index';
+
+// Component-specific styles
+.left {
+  padding-left: 1000px;
+}
+
+// Add width constraints similar to change-password-after-login component
+.settings-card {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--border-radius-lg);
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: var(--space-lg);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

@@ -1,0 +1,553 @@
+/* Modern Theme for Clearinghouse Client - 2025 Edition */
+
+:root {
+  /* Color palette - 2025 design trends favor more natural, muted colors with high contrast options */
+  --primary-color: #3a7bd5;
+  --primary-light: #5f9eff;
+  --primary-dark: #1c5eba;
+  --accent-color: #6c63ff;
+  --success-color: #00c853;
+  --warning-color: #ffc107;
+  --danger-color: #f44336;
+  --info-color: #03a9f4;
+
+  /* Neutral palette - More nuanced grays for modern UI */
+  --neutral-900: #121417;
+  --neutral-800: #212529;
+  --neutral-700: #343a40;
+  --neutral-600: #495057;
+  --neutral-500: #6c757d;
+  --neutral-400: #adb5bd;
+  --neutral-300: #ced4da;
+  --neutral-200: #e9ecef;
+  --neutral-100: #f8f9fa;
+  --white: #ffffff;
+
+  /* Icon properties */
+  --icon-size-xs: var(--font-size-xs);
+  --icon-size-sm: var(--font-size-sm);
+  --icon-size-md: var(--font-size-md);
+  --icon-size-lg: var(--font-size-lg);
+  --icon-size-xl: var(--font-size-xl);
+  --icon-color: var(--neutral-700); /* Default neutral color for icons in light mode */
+  --icon-hover-color: var(--primary-color);
+  --icon-active-color: var(--primary-dark);
+
+  /* Form colors */
+  --input-bg: var(--white);
+  --input-text: var(--neutral-900);
+  --input-border: var(--neutral-300);
+  --input-placeholder: var(--neutral-500);
+  --input-focus-border: var(--primary-color);
+  --input-focus-shadow: rgba(58, 123, 213, 0.2);
+
+  /* Typography */
+  --font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+
+  /* Spacing */
+  --space-unit: 0.25rem;
+  --space-xs: calc(var(--space-unit) * 1); /* 0.25rem */
+  --space-sm: calc(var(--space-unit) * 2); /* 0.5rem */
+  --space-md: calc(var(--space-unit) * 4); /* 1rem */
+  --space-lg: calc(var(--space-unit) * 6); /* 1.5rem */
+  --space-xl: calc(var(--space-unit) * 8); /* 2rem */
+  --space-2xl: calc(var(--space-unit) * 12); /* 3rem */
+
+  /* Borders */
+  --border-radius-sm: 0.25rem;
+  --border-radius-md: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 0.75rem;
+  --border-radius-2xl: 1rem;
+  --border-radius-full: 9999px;
+
+  /* Shadows for depth */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Z-index layers */
+  --z-below: -1;
+  --z-normal: 1;
+  --z-above: 10;
+  --z-modal: 100;
+  --z-popover: 200;
+  --z-tooltip: 300;
+}
+
+/* Modern layout helpers */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--space-sm);
+}
+
+.gap-md {
+  gap: var(--space-md);
+}
+
+.gap-lg {
+  gap: var(--space-lg);
+}
+
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Modern card styling */
+.card {
+  background-color: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-lg);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Modern button styling */
+.btn {
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  border: none;
+  font-family: var(--font-family);
+  padding: var(--space-sm) var(--space-lg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: var(--neutral-200);
+  color: var(--neutral-800);
+}
+
+.btn-secondary:hover {
+  background-color: var(--neutral-300);
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.btn-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-full);
+  padding: 0;
+  justify-content: center;
+}
+
+/* Custom form styling */
+.form-control {
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--input-border);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px var(--input-focus-shadow);
+}
+
+.form-control::placeholder {
+  color: var(--input-placeholder);
+}
+
+.form-label {
+  font-size: 1.1rem;
+  color: var(--neutral-700);
+  font-weight: 500;
+  /*font-size: var(--font-size-sm);*/
+  margin-bottom: var(--space-xs);
+  display: block;
+}
+
+/* Badge styling */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-sm);
+  height: 20px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border-radius: var(--border-radius-full);
+}
+
+.badge-primary {
+  background-color: var(--primary-light);
+  color: white;
+}
+
+.badge-success {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.badge-warning {
+  background-color: var(--warning-color);
+  color: var(--neutral-900);
+}
+
+.badge-danger {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+/* Table styling */
+.table-modern {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-modern thead th {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+  font-weight: 600;
+  text-align: left;
+  padding: var(--space-md);
+  border-bottom: 2px solid var(--neutral-200);
+  font-size: var(--font-size-sm);
+}
+
+.table-modern tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.table-modern tbody tr:hover {
+  background-color: var(--neutral-100);
+}
+
+.table-modern td {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--neutral-200);
+  color: var(--neutral-800);
+}
+
+/* PrimeNG overrides */
+:root {
+  --primary-color-prime: var(--primary-color);
+}
+
+body .p-component {
+  font-family: var(--font-family);
+}
+
+body .p-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  border-radius: var(--border-radius-md);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+body .p-button:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+body .p-button:focus {
+  box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.2);
+}
+
+body .p-inputtext {
+  font-family: var(--font-family);
+  border-radius: var(--border-radius-md);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+body .p-inputtext::placeholder {
+  color: var(--input-placeholder);
+}
+
+body .p-inputtext:focus {
+  box-shadow: 0 0 0 3px var(--input-focus-shadow);
+  border-color: var(--input-focus-border);
+}
+
+body .p-dropdown {
+  border-radius: var(--border-radius-md);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+}
+
+body .p-dropdown:focus {
+  box-shadow: 0 0 0 3px var(--input-focus-shadow);
+  border-color: var(--input-focus-border);
+}
+
+body .p-calendar .p-inputtext {
+  border-radius: var(--border-radius-md);
+}
+
+body .p-dialog {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+}
+
+body .p-dialog .p-dialog-header {
+  border-top-left-radius: var(--border-radius-lg);
+  border-top-right-radius: var(--border-radius-lg);
+  background-color: var(--white);
+  color: var(--neutral-900);
+}
+
+body .p-dialog .p-dialog-content {
+  background-color: var(--white);
+}
+
+body .p-dialog .p-dialog-footer {
+  background-color: var(--white);
+  border-bottom-left-radius: var(--border-radius-lg);
+  border-bottom-right-radius: var(--border-radius-lg);
+}
+
+body .p-table .p-datatable-thead > tr > th {
+  background-color: var(--neutral-100);
+  color: var(--neutral-700);
+  font-weight: 600;
+  padding: var(--space-md);
+  border-color: var(--neutral-200);
+}
+
+body .p-table .p-datatable-tbody > tr {
+  transition: background-color var(--transition-fast);
+}
+
+body .p-table .p-datatable-tbody > tr:hover {
+  background-color: var(--neutral-100);
+}
+
+body .p-table .p-datatable-tbody > tr > td {
+  padding: var(--space-md);
+  border-color: var(--neutral-200);
+}
+
+/* Animations for modern feel */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) ease-out forwards;
+}
+
+/* Dark mode support - 2025 apps should support dark mode */
+/* Removed OS-driven @media (prefers-color-scheme: dark) block.
+ * Dark mode is now controlled exclusively via body.dark-theme class
+ * in theme-override.css to avoid conflicts with user preference. */
+
+/* Manual theme override: dark mode */
+body.dark-theme:root, body.dark-theme {
+  --primary-color: #5f9eff;
+  --primary-light: #80b0ff;
+  --primary-dark: #3a7bd5;
+  --neutral-900: #f8f9fa;
+  --neutral-800: #e9ecef;
+  --neutral-700: #dee2e6;
+  --neutral-600: #ced4da;
+  --neutral-500: #adb5bd;
+  --neutral-400: #6c757d;
+  --neutral-300: #495057;
+  --neutral-200: #343a40;
+  --neutral-100: #212529;
+  --white: #121417;
+
+  --input-bg: #2a2d35;
+  --input-text: #e9ecef;
+  --input-border: #495057;
+  --input-placeholder: #adb5bd;
+  --input-focus-border: var(--primary-color);
+  --input-focus-shadow: rgba(95, 158, 255, 0.3);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+  --icon-color: var(--neutral-100);
+}
+
+/* Manual theme override: light mode */
+body.light-theme:root, body.light-theme {
+  --primary-color: #3a7bd5;
+  --primary-light: #5f9eff;
+  --primary-dark: #1c5eba;
+  --accent-color: #6c63ff;
+  --success-color: #00c853;
+  --warning-color: #ffc107;
+  --danger-color: #f44336;
+  --info-color: #03a9f4;
+
+  --neutral-900: #121417;
+  --neutral-800: #212529;
+  --neutral-700: #343a40;
+  --neutral-600: #495057;
+  --neutral-500: #6c757d;
+  --neutral-400: #adb5bd;
+  --neutral-300: #ced4da;
+  --neutral-200: #e9ecef;
+  --neutral-100: #f8f9fa;
+  --white: #ffffff;
+
+  --input-bg: var(--white);
+  --input-text: var(--neutral-900);
+  --input-border: var(--neutral-300);
+  --input-placeholder: var(--neutral-500);
+  --input-focus-border: var(--primary-color);
+  --input-focus-shadow: rgba(58, 123, 213, 0.2);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  --icon-color: var(--neutral-700);
+}
+
+/* Manual theme overrides take precedence over system theme */
+
+/* Updated Base icon styles */
+.ph {
+  font-size: calc(var(--icon-size-md) * 2);
+  color: var(--icon-color);
+  transition: color var(--transition-fast);
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Ensure Phosphor Icons styles are applied */
+body i.ph {
+  font-size: calc(var(--icon-size-md) * 2);
+  color: var(--icon-color);
+  vertical-align: middle;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Updated Icon sizes */
+.ph-xs { font-size: calc(var(--icon-size-xs) * 2); }
+.ph-sm { font-size: calc(var(--font-size-sm) * 2); }
+.ph-md { font-size: calc(var(--font-size-md) * 2); }
+.ph-lg { font-size: calc(var(--font-size-lg) * 2); }
+.ph-xl { font-size: calc(var(--font-size-xl) * 2); }
+
+/* Icon in buttons */
+.btn .ph {
+  margin-right: var(--space-xs);
+  font-size: calc(var(--icon-size-md) * 2);
+  color: inherit; /* Inherit color from button */
+}
+
+/* Icon in p-table */
+body .p-table .p-datatable-tbody > tr > td .ph {
+  font-size: var(--icon-size-sm);
+  color: inherit; /* Inherit color from table cell */
+}
+
+/* Interactive icons */
+.ph-clickable {
+  cursor: pointer;
+}
+.ph-clickable:hover {
+  color: var(--icon-hover-color);
+}
+.ph-clickable:active {
+  color: var(--icon-active-color);
+}
+
+/* Adjust icon color for light mode */
+body.light-theme .ph {
+  color: #333; /* Darker color for better visibility in light mode */
+}

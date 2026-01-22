@@ -1,0 +1,62 @@
+<div style="max-height: 650px; overflow: auto; overflow-x: hidden">
+  <form novalidate #providerPartnersForm="ngForm">
+    <!-- form to select the provider-partner for Site Admin start-->
+    <div class="form-group">
+      <label class="col-sm-6 text-primary section-subtitle"
+        ><u>{{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER_HEADER' | translate }}</u></label
+      >
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <label class="add-ticket-label"
+          >{{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER' | translate }}<span class="mandatory-input"
+            >*</span
+          ></label
+        >
+        <select
+          id="provider"
+          class="form-control"
+          [(ngModel)]="providerPartnersId"
+          name="provider"
+          required
+          pattern="[0-9\ ]{1,100}"
+          #provider="ngModel"
+          (change)="searchProviderPartner(providerPartnersId)"
+          [ngClass]="{'invalid-input': !provider.valid && !provider.pristine }"
+        >
+          <option [ngValue]="providerPartnersId">
+            {{ 'ADMIN_PROVIDER_PARTNERS.PLEASE_SELECT' | translate }}
+          </option>
+          <option *ngFor="let provider of providersList" [ngValue]="provider.providerId">
+            {{provider.providerName}}
+          </option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <button
+          *ngIf="choice === 'providerPartner'"
+          type="button"
+          id="btnNext"
+          class="btn btn-danger bottonspace btn-round"
+          (click)="searchProviderPartner(providerPartnersId)"
+          [disabled]="!providerPartnersForm.form.valid"
+        >
+          {{ 'ADMIN_PROVIDER_PARTNERS.GET_PARTNERS' | translate }}
+        </button>
+        <button
+          *ngIf="choice === 'service'"
+          type="button"
+          id="btnNext"
+          class="btn btn-danger bottonspace btn-round"
+          (click)="searchProviderPartner(providerPartnersId)"
+          [disabled]="!providerPartnersForm.form.valid"
+        >
+          {{ 'ADMIN_PROVIDER_PARTNERS.GET_SERVICE' | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+  <!-- form to select the provider-partner for Site Admin completed-->
+</div>

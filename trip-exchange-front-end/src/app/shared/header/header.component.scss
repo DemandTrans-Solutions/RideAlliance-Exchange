@@ -1,0 +1,344 @@
+// Import shared styles with corrected path
+@import '../styles/index';
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 180px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 12px 8px;
+}
+
+.loginHeader {
+  background: primaryColor;
+  color: white;
+  font-size: 40px;
+}
+.logo {
+  background: primaryColor;
+  color: white;
+  font-size: 30px;
+  padding: 5px;
+}
+
+.style {
+  font-style: oblique;
+  font-variant: small-caps;
+}
+
+.view {
+  cursor: pointer;
+}
+
+.dropDownMenu {
+  padding-right: 5%;
+}
+
+/* Modern Header Component Styles - 2025 Edition */
+
+/* Default header styling (dark mode) */
+.app-header {
+  background-color: #2c3e50; // Dark blue-gray that complements the logo colors
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  width: 100%; /* Ensure full width */
+}
+
+/* Logo styling */
+.logo-section {
+  display: flex;
+  align-items: center;
+  margin-right: auto; /* Push everything else to the right */
+}
+
+.app-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo-image {
+  height: 40px;
+  margin-right: 10px;
+  transition: transform 0.2s ease;
+}
+
+.app-logo:hover .logo-image {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff; // White text for the logo
+}
+
+/* Rest of header styling */
+.main-nav {
+  flex-grow: 1;
+  margin: 0 20px;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin-right: 20px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  color: #ecf0f1; // Light color for better visibility on dark background
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1); // Subtle light hover effect
+  color: #fff;
+}
+
+.nav-link i {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Dark mode toggle button */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #ecf0f1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: rotate(15deg);
+}
+
+.theme-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.theme-toggle-btn i {
+  font-size: 18px;
+}
+
+/* User menu styling */
+.user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.user-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #fff; // White text for user info
+}
+
+.user-button:hover {
+  background-color: rgba(255, 255, 255, 0.1); // Subtle hover effect
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 8px;
+}
+
+.user-name {
+  font-weight: 500;
+  font-size: 14px;
+  color: #fff; // White text for username
+}
+
+.user-role {
+  font-size: 12px;
+  color: #bdc3c7; // Slightly muted for secondary information
+}
+
+.dropdown-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #34495e; // Slightly lighter than header for dropdown
+  border-radius: 4px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+  min-width: 180px;
+  z-index: 1001;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  color: #ecf0f1; // Light text for dropdown items
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1); // Subtle light hover effect
+}
+
+.dropdown-item i {
+  margin-right: 10px;
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.1); // Subtle divider
+  margin: 5px 0;
+}
+
+/* Light mode styling for header */
+body.light-theme {
+  .app-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .logo-text {
+    color: #3a7bd5; // Primary color for the logo text in light mode
+  }
+
+  .nav-link {
+    color: #495057; // Dark text for better visibility on light background
+  }
+
+  .nav-link:hover {
+    background-color: rgba(58, 123, 213, 0.08); // Subtle blue hover effect
+    color: #3a7bd5; // Primary blue on hover
+  }
+
+  .theme-toggle-btn {
+    color: #495057;
+  }
+
+  .theme-toggle-btn:hover {
+    background-color: rgba(58, 123, 213, 0.08);
+  }
+
+  .theme-toggle-btn:focus {
+    box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.25);
+  }
+
+  .user-button {
+    color: #343a40; // Dark text for user info in light mode
+  }
+
+  .user-button:hover {
+    background-color: rgba(58, 123, 213, 0.08);
+  }
+
+  .user-name {
+    color: #343a40;
+  }
+
+  .user-role {
+    color: #6c757d;
+  }
+
+  .dropdown-panel {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-item {
+    color: #343a40;
+  }
+
+  .dropdown-item:hover {
+    background-color: rgba(58, 123, 213, 0.08);
+    color: #3a7bd5;
+  }
+
+  .dropdown-divider {
+    background-color: #e9ecef;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .nav-label {
+    display: none;
+  }
+
+  .main-nav .nav-link i {
+    margin-right: 0;
+    font-size: var(--font-size-xl);
+  }
+
+  .user-button .user-role {
+    display: none;
+  }
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .dropdown-panel {
+    background-color: #1a2530; // Darker background for dark mode dropdown
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .dropdown-item {
+    color: #ecf0f1;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .dropdown-divider {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "mcp": {
+    "inputs": [],
+    "servers": {
+      "fetch": {
+        "command": "/Users/tvoir/.local/bin/mcp-server-fetch",
+        "args": []
+      },
+      "filesystem": {
+        "command": "mcp-server-filesystem",
+        "args": [
+          "${workspaceFolder}"
+        ]
+      },
+      "git": {
+        "command": "/Users/tvoir/.local/bin/mcp-server-git",
+        "args": []
+      },
+      "nx-mcp": {
+        "command": "npx",
+        "args": [
+          "nx-mcp@latest",
+          ".",
+          "--maxFileSize=5000000"
+        ],
+        "env": {}
+      }
+    }
+  },
+  "nxConsole.generateAiAgentRules": true,
+  "angular.enable-strict-mode-prompt": false,
+  "chat.tools.terminal.autoApprove": {
+    "/^set -e\ncd /Users/tvoir/repos/dts/github/trip-exchange-front-end\nif ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then git init; fi\ngit remote remove origin 2>/dev/null \\|\\| true\ngit remote add origin https://github\\.com/DemandTrans-Solutions/trip-exchange-front-end\nBRANCH=\\$\\(git symbolic-ref --short HEAD 2>/dev/null \\|\\| echo main\\)\nprintf \"Pushing branch '%s' to origin\\.\\.\\.\n\" \"\\$BRANCH\"\ngit push -u origin \"\\$BRANCH\"\n$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^git remote -v && echo '---branch---' && git symbolic-ref --short HEAD 2>/dev/null \\|\\| echo '\\(detached or no branch\\)' && echo '---upstream---' && git rev-parse --abbrev-ref --symbolic-full-name @\\{u\\} 2>/dev/null \\|\\| echo '\\(no upstream\\)' && echo '---branch-vv---' && git branch -vv \\| sed -n '1,10p'$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^git push -u origin main$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^git add -A && git commit -m \"Initial commit \\(add existing project files\\)\" \\|\\| echo 'No changes to commit or commit failed' && git push -u origin main \\|\\| echo 'Push failed'$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

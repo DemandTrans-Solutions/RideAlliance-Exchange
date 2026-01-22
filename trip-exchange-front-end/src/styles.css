@@ -1,0 +1,1249 @@
+/* PrimeNG overlay dark theme (class-based) */
+/* Note: Converted from OS media query to respect app theme toggle */
+body.dark-theme .p-overlay,
+body.dark-theme .p-autocomplete-panel,
+body.dark-theme .p-autocomplete-items,
+body.dark-theme .p-autocomplete-panel .p-autocomplete-items {
+  background-color: var(--neutral-200, #343a40) !important;
+  color: var(--neutral-800, #e9ecef) !important;
+  border-color: var(--neutral-400, #495057) !important;
+}
+body.dark-theme .p-autocomplete-item {
+  background-color: transparent !important;
+  color: var(--neutral-800, #e9ecef) !important;
+}
+body.dark-theme .p-autocomplete-item.p-highlight,
+body.dark-theme .p-autocomplete-item.p-highlight.p-focus {
+  background-color: var(--primary-light, #5a9bff) !important;
+  color: #fff !important;
+}
+body.dark-theme .p-autocomplete-panel .p-autocomplete-empty-message {
+  color: var(--neutral-600, #adb5bd) !important;
+}
+/* Ensure all children in overlay are visible in dark theme */
+body.dark-theme .p-overlay * {
+  color: var(--neutral-800, #e9ecef) !important;
+  background: transparent !important;
+}
+/* You can add global styles to this file, and also import other style files */
+
+/* Import Leaflet styles using node_modules paths */
+@import '~leaflet/dist/leaflet.css';
+@import '~leaflet-draw/dist/leaflet.draw.css';
+
+/* Bootstrap import */
+@import '../bower_components/bootstrap/dist/css/bootstrap.min.css';
+
+/* Main application styles */
+
+/* Import our modern theme */
+@import './assets/css/modern-theme.css';
+
+/* Import a modern font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global font configuration */
+:root {
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+}
+
+/* Consistent Button Styling - Match trip-ticket.component.html buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+  min-width: 100px;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background-color: var(--primary-color, #007bff);
+  color: #fff;
+  border: 1px solid var(--primary-color, #007bff);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark, #0069d9);
+  border-color: var(--primary-dark, #0069d9);
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary:disabled {
+  background-color: var(--primary-color, #007bff);
+  border-color: var(--primary-color, #007bff);
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: var(--neutral-200, #e9ecef);
+  color: var(--neutral-900, #212529);
+  border: 1px solid var(--neutral-200, #e9ecef);
+}
+
+.btn-secondary:hover {
+  background-color: var(--neutral-300, #dee2e6);
+  border-color: var(--neutral-300, #dee2e6);
+}
+
+.btn-secondary:focus {
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+.btn-secondary:disabled {
+  background-color: var(--neutral-200, #e9ecef);
+  border-color: var(--neutral-200, #e9ecef);
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Ensure icons within buttons are consistently styled */
+.btn i {
+  font-size: 1rem;
+  line-height: 1;
+  margin-right: 0.25rem;
+  background-color: transparent !important;
+}
+
+/* Form button specific fix - For disabled button issue */
+button:not([disabled]).btn-primary,
+button:not([disabled]).btn-secondary,
+.btn-primary:not([disabled]),
+.btn-secondary:not([disabled]) {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  color: inherit !important;
+}
+
+button[disabled].btn-primary,
+button[disabled].btn-secondary,
+.btn-primary[disabled],
+.btn-secondary[disabled] {
+  opacity: 0.65 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Fix for button text color in dark mode */
+@media (prefers-color-scheme: dark) {
+  button.btn-secondary:not([disabled]),
+  .btn-secondary:not([disabled]) {
+    color: #ffffff !important;
+  }
+
+  button.btn-primary:not([disabled]),
+  .btn-primary:not([disabled]) {
+    color: #ffffff !important;
+  }
+}
+
+/* Dark mode button styles */
+@media (prefers-color-scheme: dark) {
+  /* General button styles for dark mode */
+  .btn {
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Primary button styling for dark mode */
+  .btn-primary {
+    background-color: var(--primary-light, #5a9bff) !important;
+    border-color: var(--primary-light, #5a9bff) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-color, #3a7bd5) !important;
+    border-color: var(--primary-color, #3a7bd5) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .btn-primary:focus {
+    box-shadow: 0 0 0 3px rgba(90, 155, 255, 0.4) !important;
+  }
+
+  /* Secondary button styling for dark mode */
+  .btn-secondary {
+    background-color: var(--neutral-300, #495057) !important;
+    color: var(--neutral-100, #f8f9fa) !important;
+    border-color: var(--neutral-300, #495057) !important;
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--neutral-400, #6c757d) !important;
+    border-color: var(--neutral-400, #6c757d) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .btn-secondary:focus {
+    box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.4) !important;
+  }
+
+  /* Success button styling for dark mode */
+  .btn-success {
+    background-color: var(--success-color, #2ecc71) !important;
+    border-color: var(--success-color, #2ecc71) !important;
+  }
+
+  .btn-success:hover {
+    background-color: var(--success-dark, #27ae60) !important;
+    border-color: var(--success-dark, #27ae60) !important;
+  }
+
+  /* Danger button styling for dark mode */
+  .btn-danger {
+    background-color: var(--danger-color, #e74c3c) !important;
+    border-color: var(--danger-color, #e74c3c) !important;
+  }
+
+  .btn-danger:hover {
+    background-color: var(--danger-dark, #c0392b) !important;
+    border-color: var(--danger-dark, #c0392b) !important;
+  }
+
+  /* Warning button styling for dark mode */
+  .btn-warning {
+    background-color: var(--warning-color, #f39c12) !important;
+    border-color: var(--warning-color, #f39c12) !important;
+    color: #212529 !important;
+  }
+
+  .btn-warning:hover {
+    background-color: var(--warning-dark, #d35400) !important;
+    border-color: var(--warning-dark, #d35400) !important;
+    color: #ffffff !important;
+  }
+
+  /* Info button styling for dark mode */
+  .btn-info {
+    background-color: var(--info-color, #3498db) !important;
+    border-color: var(--info-color, #3498db) !important;
+  }
+
+  .btn-info:hover {
+    background-color: var(--info-dark, #2980b9) !important;
+    border-color: var(--info-dark, #2980b9) !important;
+  }
+
+  /* Light button styling for dark mode */
+  .btn-light {
+    background-color: var(--neutral-200, #343a40) !important;
+    color: var(--neutral-100, #f8f9fa) !important;
+    border-color: var(--neutral-200, #343a40) !important;
+  }
+
+  .btn-light:hover {
+    background-color: var(--neutral-300, #495057) !important;
+    border-color: var(--neutral-300, #495057) !important;
+  }
+
+  /* Dark button styling for dark mode */
+  .btn-dark {
+    background-color: var(--neutral-900, #212529) !important;
+    color: var(--neutral-100, #f8f9fa) !important;
+    border-color: var(--neutral-900, #212529) !important;
+  }
+
+  .btn-dark:hover {
+    background-color: var(--neutral-800, #343a40) !important;
+    border-color: var(--neutral-800, #343a40) !important;
+  }
+
+  /* Icon styling inside buttons for dark mode */
+  .btn i {
+    color: inherit !important;
+  }
+
+  /* Outline buttons in dark mode */
+  .btn-outline-primary {
+    color: var(--primary-light, #5a9bff) !important;
+    border-color: var(--primary-light, #5a9bff) !important;
+    background-color: transparent !important;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--primary-light, #5a9bff) !important;
+    color: #ffffff !important;
+  }
+
+  .btn-outline-secondary {
+    color: var(--neutral-300, #adb5bd) !important;
+    border-color: var(--neutral-300, #adb5bd) !important;
+    background-color: transparent !important;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: var(--neutral-300, #adb5bd) !important;
+    color: var(--neutral-900, #212529) !important;
+  }
+
+  /* Fix for PrimeNG buttons in dark mode */
+  .p-button {
+    background-color: var(--primary-light, #5a9bff) !important;
+    border-color: var(--primary-light, #5a9bff) !important;
+    color: #ffffff !important;
+  }
+
+  .p-button:hover {
+    background-color: var(--primary-color, #3a7bd5) !important;
+    border-color: var(--primary-color, #3a7bd5) !important;
+  }
+
+  /* Disabled button styling for dark mode */
+  .btn:disabled,
+  .btn.disabled {
+    background-color: var(--neutral-600, #6c757d) !important;
+    border-color: var(--neutral-600, #6c757d) !important;
+    color: var(--neutral-300, #adb5bd) !important;
+    opacity: 0.65 !important;
+  }
+}
+
+/* Calendar Dark Theme (class-based) - replaces OS media query */
+/* This ensures proper contrast for the p-calendar component in dark mode */
+body.dark-theme .p-datepicker,
+body.dark-theme .p-component.p-datepicker,
+body.dark-theme .p-component.p-calendar .p-datepicker {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid #495057 !important;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-header,
+body.dark-theme .p-component.p-datepicker .p-datepicker-header,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-header {
+  background-color: #343a40 !important;
+  border-bottom: 1px solid #495057 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-title,
+body.dark-theme .p-component.p-datepicker .p-datepicker-title,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-title {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-title .p-datepicker-month,
+body.dark-theme .p-datepicker .p-datepicker-title .p-datepicker-year,
+body.dark-theme .p-component.p-datepicker .p-datepicker-title .p-datepicker-month,
+body.dark-theme .p-component.p-datepicker .p-datepicker-title .p-datepicker-year,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-title .p-datepicker-month,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-title .p-datepicker-year {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-prev,
+body.dark-theme .p-datepicker .p-datepicker-next,
+body.dark-theme .p-component.p-datepicker .p-datepicker-prev,
+body.dark-theme .p-component.p-datepicker .p-datepicker-next,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-prev,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-next {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-datepicker-prev:hover,
+body.dark-theme .p-datepicker .p-datepicker-next:hover,
+body.dark-theme .p-component.p-datepicker .p-datepicker-prev:hover,
+body.dark-theme .p-component.p-datepicker .p-datepicker-next:hover,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-prev:hover,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-datepicker-next:hover {
+  background-color: #495057 !important;
+}
+
+body.dark-theme .p-datepicker table,
+body.dark-theme .p-component.p-datepicker table,
+body.dark-theme .p-component.p-calendar .p-datepicker table {
+  border-collapse: collapse;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker table th,
+body.dark-theme .p-component.p-datepicker table th,
+body.dark-theme .p-component.p-calendar .p-datepicker table th {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker table td,
+body.dark-theme .p-component.p-datepicker table td,
+body.dark-theme .p-component.p-calendar .p-datepicker table td {
+  padding: 0.2rem !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker table td > span,
+body.dark-theme .p-component.p-datepicker table td > span,
+body.dark-theme .p-component.p-calendar .p-datepicker table td > span {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker table td > span.p-disabled,
+body.dark-theme .p-component.p-datepicker table td > span.p-disabled,
+body.dark-theme .p-component.p-calendar .p-datepicker table td > span.p-disabled {
+  color: #6c757d !important;
+}
+
+body.dark-theme .p-datepicker table td > span:hover,
+body.dark-theme .p-datepicker table td > span:focus,
+body.dark-theme .p-component.p-datepicker table td > span:hover,
+body.dark-theme .p-component.p-datepicker table td > span:focus,
+body.dark-theme .p-component.p-calendar .p-datepicker table td > span:hover,
+body.dark-theme .p-component.p-calendar .p-datepicker table td > span:focus {
+  background-color: #495057 !important;
+}
+
+body.dark-theme .p-datepicker table td.p-datepicker-today > span,
+body.dark-theme .p-component.p-datepicker table td.p-datepicker-today > span,
+body.dark-theme .p-component.p-calendar .p-datepicker table td.p-datepicker-today > span {
+  background-color: rgba(95, 158, 255, 0.3) !important;
+  color: #fff !important;
+}
+
+body.dark-theme .p-datepicker table td.p-datepicker-other-month > span,
+body.dark-theme .p-component.p-datepicker table td.p-datepicker-other-month > span,
+body.dark-theme .p-component.p-calendar .p-datepicker table td.p-datepicker-other-month > span {
+  color: #6c757d !important;
+}
+
+body.dark-theme .p-datepicker table td .p-highlight,
+body.dark-theme .p-component.p-datepicker table td .p-highlight,
+body.dark-theme .p-component.p-calendar .p-datepicker table td .p-highlight {
+  background-color: #5f9eff !important;
+  color: #ffffff !important;
+}
+
+/* Time picker styling - dark theme */
+body.dark-theme .p-datepicker .p-timepicker,
+body.dark-theme .p-component.p-datepicker .p-timepicker,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-timepicker {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-timepicker > div a,
+body.dark-theme .p-component.p-datepicker .p-timepicker > div a,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-timepicker > div a {
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker .p-timepicker > div a:hover,
+body.dark-theme .p-component.p-datepicker .p-timepicker > div a:hover,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-timepicker > div a:hover {
+  background-color: #495057 !important;
+}
+
+body.dark-theme .p-datepicker .p-timepicker > div span,
+body.dark-theme .p-component.p-datepicker .p-timepicker > div span,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-timepicker > div span {
+  color: #e9ecef !important;
+}
+
+/* Fix SVG icons in calendar - dark theme */
+body.dark-theme .p-datepicker svg.p-icon,
+body.dark-theme .p-component.p-datepicker svg.p-icon,
+body.dark-theme .p-component.p-calendar .p-datepicker svg.p-icon,
+body.dark-theme .p-datepicker .p-icon,
+body.dark-theme .p-component.p-datepicker .p-icon,
+body.dark-theme .p-component.p-calendar .p-datepicker .p-icon {
+  color: #e9ecef !important;
+  fill: #e9ecef !important;
+}
+
+/* Override specific PrimeNG calendar selectors - dark theme */
+body.dark-theme .p-datepicker-wrapper .p-datepicker.p-component {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+/* Additional specific overrides for PrimeNG selectors - dark theme */
+body.dark-theme .p-datepicker.p-component.ng-star-inserted {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+body.dark-theme .p-datepicker.p-component.ng-trigger {
+  background-color: #2a2d35 !important;
+  color: #e9ecef !important;
+}
+
+/* Force override any inline styling - dark theme */
+body.dark-theme .p-datepicker[style*='background-color'] {
+  background-color: #2a2d35 !important;
+}
+
+/* Light theme: selected p-multiselect items use white background and dark text */
+body.light-theme .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight,
+body.light-theme .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight.p-focus {
+  background: #fff !important;
+  color: #222 !important;
+}
+
+/* Form buttons specific styling - Fixing issues with save/cancel buttons */
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.form-actions .btn,
+.form-actions .btn-primary,
+.form-actions .btn-secondary,
+button.btn-primary,
+button.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: auto;
+  padding: 0.75rem 1.5rem;
+  /*font-size: 1rem;*/
+  font-weight: 500;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.form-actions .btn-primary,
+button.btn-primary {
+  background-color: var(--primary-color, #007bff) !important;
+  color: #fff !important;
+  border: 1px solid var(--primary-color, #007bff) !important;
+}
+
+.form-actions .btn-primary:hover:not(:disabled),
+button.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-dark, #0069d9) !important;
+  border-color: var(--primary-dark, #0069d9) !important;
+}
+
+.form-actions .btn-secondary,
+button.btn-secondary {
+  background-color: var(--neutral-200, #e9ecef) !important;
+  color: var(--neutral-900, #212529) !important;
+  border: 1px solid var(--neutral-200, #e9ecef) !important;
+}
+
+.form-actions .btn-secondary:hover:not(:disabled),
+button.btn-secondary:hover:not(:disabled) {
+  background-color: var(--neutral-300, #dee2e6) !important;
+  border-color: var(--neutral-300, #dee2e6) !important;
+}
+
+.form-actions .btn:disabled,
+.form-actions .btn-primary:disabled,
+.form-actions .btn-secondary:disabled,
+button.btn-primary:disabled,
+button.btn-secondary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Additional fix for buttons appearing incorrectly disabled */
+.form-actions .btn-primary:not([disabled]),
+.form-actions button.btn-primary:not([disabled]),
+button.btn-primary:not([disabled]),
+.btn-primary:not([disabled]) {
+  background-color: var(--primary-color, #007bff) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-color, #007bff) !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+.form-actions .btn-secondary:not([disabled]),
+.form-actions button.btn-secondary:not([disabled]),
+button.btn-secondary:not([disabled]),
+.btn-secondary:not([disabled]) {
+  background-color: var(--neutral-200, #e9ecef) !important;
+  color: var(--neutral-900, #212529) !important;
+  border-color: var(--neutral-200, #e9ecef) !important;
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-actions .btn-primary:not([disabled]),
+  .form-actions button.btn-primary:not([disabled]),
+  button.btn-primary:not([disabled]),
+  .btn-primary:not([disabled]) {
+    background-color: var(--primary-light, #5a9bff) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-light, #5a9bff) !important;
+  }
+
+  .form-actions .btn-secondary:not([disabled]),
+  .form-actions button.btn-secondary:not([disabled]),
+  button.btn-secondary:not([disabled]),
+  .btn-secondary:not([disabled]) {
+    background-color: var(--neutral-300, #495057) !important;
+    color: #ffffff !important;
+    border-color: var(--neutral-300, #495057) !important;
+  }
+}
+
+/* Dark mode specific form button styling */
+@media (prefers-color-scheme: dark) {
+  .form-actions .btn-primary,
+  button.btn-primary {
+    background-color: var(--primary-light, #5a9bff) !important;
+    border-color: var(--primary-light, #5a9bff) !important;
+    color: #ffffff !important;
+  }
+
+  .form-actions .btn-primary:hover:not(:disabled),
+  button.btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-color, #3a7bd5) !important;
+    border-color: var(--primary-color, #3a7bd5) !important;
+  }
+
+  .form-actions .btn-secondary,
+  button.btn-secondary {
+    background-color: var(--neutral-300, #495057) !important;
+    color: #ffffff !important;
+    border-color: var(--neutral-300, #495057) !important;
+  }
+
+  .form-actions .btn-secondary:hover:not(:disabled),
+  button.btn-secondary:hover:not(:disabled) {
+    background-color: var(--neutral-400, #6c757d) !important;
+    border-color: var(--neutral-400, #6c757d) !important;
+  }
+
+  .form-actions .btn:disabled,
+  .form-actions .btn-primary:disabled,
+  .form-actions .btn-secondary:disabled,
+  button.btn-primary:disabled,
+  button.btn-secondary:disabled {
+    background-color: var(--neutral-500, #6c757d) !important;
+    border-color: var(--neutral-500, #6c757d) !important;
+    color: var(--neutral-200, #e9ecef) !important;
+    opacity: 0.65 !important;
+  }
+}
+
+/* Trip Notes dark mode fix */
+.trip-notes-text {
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.trip-notes-content {
+  color: var(--neutral-900);
+  background-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  .trip-notes-content {
+    color: var(--neutral-800) !important;
+    background-color: transparent !important;
+  }
+}
+
+body {
+  font-family: var(--font-family);
+  color: var(--neutral-900);
+  background-color: var(--neutral-100);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smoothly transition between light and dark mode */
+body {
+  transition: background-color var(--transition-slow), color var(--transition-slow);
+}
+
+/* Override PrimeNG components */
+.ui-widget {
+  font-family: var(--font-family-base) !important;
+}
+
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: var(--font-family-base) !important;
+  font-size: 16px !important; /* Increased font size for better readability */
+}
+
+/* Override Bootstrap components */
+.form-control,
+.btn,
+input,
+select,
+textarea {
+  font-family: var(--font-family-base) !important;
+  font-size: 16px !important; /* Increased font size for better readability */
+}
+
+/* Specific styling for disabled inputs to ensure text is clearly visible in both light and dark modes */
+input:disabled,
+textarea:disabled,
+select:disabled {
+  color: var(--neutral-700) !important;
+  background-color: var(--neutral-100) !important;
+  opacity: 0.9 !important;
+  font-size: 16px !important; /* Ensuring consistent font size */
+}
+
+/* Global container styles */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+/* Responsive container adjustments */
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 var(--space-xl);
+  }
+}
+
+/* Utility classes for spacing */
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+.mb-xl {
+  margin-bottom: var(--space-xl);
+}
+
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+.mt-md {
+  margin-top: var(--space-md);
+}
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+.mt-xl {
+  margin-top: var(--space-xl);
+}
+
+.p-sm {
+  padding: var(--space-sm);
+}
+.p-md {
+  padding: var(--space-md);
+}
+.p-lg {
+  padding: var(--space-lg);
+}
+.p-xl {
+  padding: var(--space-xl);
+}
+
+/* Fix Glyphicon font paths */
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('/assets/fonts/glyphicons-halflings-regular.eot');
+  src: url('/assets/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/glyphicons-halflings-regular.woff2') format('woff2'),
+    url('/assets/fonts/glyphicons-halflings-regular.woff') format('woff'),
+    url('/assets/fonts/glyphicons-halflings-regular.ttf') format('truetype'),
+    url('/assets/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+
+/* Modern scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-400);
+  border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-500);
+}
+
+/* PrimeNG overrides for global application - additions to our theme file */
+.p-component {
+  font-family: var(--font-family) !important;
+}
+
+/* Modern form labels */
+label {
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  color: var(--neutral-700);
+  margin-bottom: var(--space-xs);
+  display: inline-block;
+}
+
+/* Accessibility focus styles */
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Global heading 7 style (custom) */
+h7 {
+  font-size: 1.25rem !important;
+  line-height: 1.4;
+}
+
+/* Override for size-h7 utility class (custom heading) */
+.size-h7 {
+  font-size: var(--font-size-xl) !important; /* 1.25rem */
+  line-height: 1.5 !important;
+}
+
+/* Highly-specific override for labels with both text-primary and size-h7 */
+.text-primary.size-h7 {
+  font-size: var(--font-size-2xl) !important; /* 1.5rem */
+  line-height: 1.6 !important;
+}
+
+/* Dark mode overrides for input fields */
+@media (prefers-color-scheme: dark) {
+  input:disabled,
+  textarea:disabled,
+  select:disabled {
+    color: var(--neutral-800) !important;
+    background-color: var(--neutral-300) !important;
+    opacity: 0.9 !important;
+  }
+
+  input,
+  textarea,
+  select,
+  .form-control {
+    background-color: var(--neutral-200) !important;
+    color: var(--neutral-900) !important;
+    border-color: var(--neutral-400) !important;
+  }
+}
+
+/* Dark mode: ensure text-primary.size-h7 contrasts on dark backgrounds */
+@media (prefers-color-scheme: dark) {
+  .text-primary.size-h7 {
+    color: var(--neutral-50) !important; /* light color for readability */
+  }
+}
+
+/* Scoped fix for Font Awesome icons within buttons */
+button.btn-icon i {
+  font-family: 'Phosphor';
+  font-weight: 900 !important;
+  color: #333 !important; /* Ensure the icon is visible */
+  /*font-size: 1.2rem !important;*/
+  display: inline-block !important;
+  line-height: 1 !important;
+}
+
+/* Restoring toast-related styling */
+.p-toast {
+  opacity: 1;
+}
+
+.p-toast .p-toast-message {
+  background-color: var(--card-background, #ffffff);
+  border-radius: var(--border-radius-md, 8px);
+  box-shadow: var(--dropdown-shadow, 0 8px 16px rgba(0, 0, 0, 0.15));
+  border-left: 6px solid var(--primary-color, #3a7bd5);
+  color: var(--text-color, #333333);
+}
+
+.p-toast .p-toast-message.p-toast-message-success {
+  border-left-color: var(--success-color, #00c853);
+}
+
+.p-toast .p-toast-message.p-toast-message-error {
+  border-left-color: var(--danger-color, #f44336);
+}
+
+.p-toast .p-toast-message.p-toast-message-warn {
+  border-left-color: var(--warning-color, #ffc107);
+}
+
+.p-toast .p-toast-message.p-toast-message-info {
+  border-left-color: var(--info-color, #03a9f4);
+}
+
+.p-toast .p-toast-message .p-toast-message-content {
+  color: inherit;
+}
+
+.p-toast .p-toast-message .p-toast-summary,
+.p-toast .p-toast-message .p-toast-detail {
+  color: inherit;
+}
+
+.p-toast .p-toast-message .p-toast-icon-close {
+  color: var(--text-light, #666666);
+}
+
+.p-toast .p-toast-message .p-toast-icon-close:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  color: var(--text-color, #333333);
+}
+
+/* Dark mode toast styling */
+@media (prefers-color-scheme: dark) {
+  .p-toast .p-toast-message {
+    background-color: var(--neutral-200, #343a40) !important;
+    color: var(--neutral-800, #e9ecef) !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-detail,
+  .p-toast .p-toast-message .p-toast-summary,
+  .p-toast .p-toast-message .p-toast-message-content {
+    color: var(--neutral-800, #e9ecef) !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-icon {
+    color: var(--neutral-800, #e9ecef) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success .p-toast-icon {
+    color: var(--success-color, #27ae60) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error .p-toast-icon {
+    color: var(--danger-color, #c0392b) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon {
+    color: var(--warning-color, #e67e22) !important;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-info .p-toast-icon {
+    color: var(--info-color, #3498db) !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-icon-close {
+    color: var(--neutral-600, #ced4da) !important;
+  }
+
+  .p-toast .p-toast-message .p-toast-icon-close:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--neutral-800, #e9ecef) !important;
+  }
+}
+
+/* Form validation error styles */
+.error-message {
+  color: var(--danger-color, #f44336);
+  font-size: var(--font-size-sm, 0.875rem);
+  margin-top: var(--space-xs, 0.25rem);
+  display: block;
+}
+
+.invalid-input {
+  border-color: var(--danger-color, #f44336) !important;
+  box-shadow: 0 0 0 1px rgba(244, 67, 54, 0.2);
+}
+
+/* Dark mode specific error styles */
+@media (prefers-color-scheme: dark) {
+  .error-message {
+    color: #ff6b6b; /* Brighter red for better visibility in dark mode */
+  }
+
+  .invalid-input {
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.2);
+  }
+}
+
+/* Global fix for circular action buttons with Font Awesome icons */
+.btn-icon,
+button.btn-icon {
+  /* reset native button styles */
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  /* display: flex !important; */
+  align-items: center !important;
+  justify-content: center !important;
+  width: 25px !important;
+  height: 25px !important;
+  padding: 0 !important;
+  border-radius: 9999px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.btn-icon i,
+button.btn-icon i {
+  font-family: 'Phosphor';
+  font-weight: 900 !important;
+  /*font-size: 14px !important;*/
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: auto !important;
+  height: auto !important;
+  line-height: 1 !important;
+}
+
+.action-icons {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Button icon colors for different states */
+.btn-icon.btn-edit i,
+.btn-icon.btn-edit .fa-edit,
+button.btn-icon.btn-edit .fa-edit,
+button i.fas.fa-edit,
+.btn-icon i.fas.fa-edit {
+  color: var(--primary-dark, #2980b9) !important; /* Darker blue in light mode */
+}
+
+.btn-icon.btn-danger i,
+.btn-icon.btn-danger .fa-toggle-off {
+  color: var(--danger-color, #e74c3c) !important;
+}
+
+.btn-icon.btn-success i,
+.btn-icon.btn-success .fa-toggle-on {
+  color: var(--success-color, #2ecc71) !important;
+}
+
+/* Download button styling - consistent in both light and dark modes */
+.btn-icon.btn-download i,
+button.btn-icon.btn-download i,
+.btn-icon.btn-download .fa-download,
+button.btn-icon.btn-download .fa-download {
+  color: var(--primary-color, #3498db) !important; /* Blue in light mode */
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .btn-icon i,
+  button.btn-icon i {
+    color: #f0f0f0 !important;
+  }
+
+  /* Make edit icons brighter in dark mode (flipping light/dark appearances) */
+  .btn-icon.btn-edit i,
+  .btn-icon.btn-edit .fa-edit,
+  button.btn-icon.btn-edit .fa-edit,
+  button i.fas.fa-edit,
+  .btn-icon i.fas.fa-edit {
+    color: var(--primary-light, #5dade2) !important; /* Lighter blue in dark mode */
+  }
+
+  /* Fix for dark-colored buttons with icons - ensure icon has contrast with background */
+  .btn-icon.btn-danger,
+  button.btn-icon.btn-danger {
+    background-color: var(--danger-color, #c0392b) !important;
+  }
+
+  .btn-icon.btn-danger i,
+  button.btn-icon.btn-danger i,
+  .btn-icon.btn-danger .fa,
+  button.btn-icon.btn-danger .fa,
+  .btn-icon.btn-danger .fa-toggle-off {
+    color: #ffffff !important;
+  }
+
+  .btn-icon.btn-success,
+  button.btn-icon.btn-success {
+    background-color: var(--success-color, #2ecc71) !important;
+  }
+
+  .btn-icon.btn-success i,
+  button.btn-icon.btn-success i,
+  .btn-icon.btn-success .fa,
+  button.btn-icon.btn-success .fa,
+  .btn-icon.btn-success .fa-toggle-on {
+    color: #ffffff !important;
+  }
+
+  /* Download button in dark mode - ensure visibility with dark background */
+  .btn-icon.btn-download,
+  button.btn-icon.btn-download {
+    background-color: var(--neutral-300, #495057) !important;
+  }
+
+  .btn-icon.btn-download i,
+  button.btn-icon.btn-download i,
+  .btn-icon.btn-download .fa-download,
+  button.btn-icon.btn-download .fa-download {
+    color: #ffffff !important; /* White icon in dark mode */
+  }
+
+  .btn-icon.btn-download:hover,
+  button.btn-icon.btn-download:hover {
+    background-color: var(--primary-color, #3498db) !important;
+  }
+}
+
+
+/* Increase icon size globally for p-tables */
+.p-table i {
+  font-size: 1.25em !important;
+}
+
+/* Final Light Theme Enforcement — defeats OS-level dark rules in this file */
+body.light-theme .p-datepicker,
+body.light-theme .p-component.p-datepicker,
+body.light-theme .p-component.p-calendar .p-datepicker,
+body.light-theme .p-calendar-panel,
+body.light-theme .p-dropdown-panel,
+body.light-theme .p-multiselect-panel {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.light-theme .p-datepicker .p-datepicker-header,
+body.light-theme .p-calendar-panel .p-datepicker-header {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+body.light-theme .p-datepicker table td,
+body.light-theme .p-datepicker table td > span {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker table td > span:hover,
+body.light-theme .p-datepicker table td > span:focus {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+}
+
+body.light-theme .p-datepicker table td.p-highlight > span,
+body.light-theme .p-calendar-panel .p-dropdown-item.p-highlight,
+body.light-theme .p-dropdown-panel .p-dropdown-item.p-highlight,
+body.light-theme .p-multiselect-panel .p-multiselect-item.p-highlight {
+  background-color: #3a7bd5 !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-item,
+body.light-theme .p-multiselect-panel .p-multiselect-item {
+  background-color: transparent !important;
+  color: #212529 !important;
+}
+
+body.light-theme .p-dropdown-panel .p-dropdown-item:hover,
+body.light-theme .p-multiselect-panel .p-multiselect-item:hover {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+}
+
+/* Ensure overlay containers inherit light theme */
+body.light-theme .p-overlay,
+body.light-theme .p-autocomplete-panel {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-color: #ced4da !important;
+}
+
+body.light-theme .p-overlay *,
+body.light-theme .p-autocomplete-panel * {
+  color: #212529 !important;
+}
+
+/* Light theme timepicker - ensure white background and dark text */
+body.light-theme .p-datepicker .p-timepicker,
+body.light-theme .p-component.p-datepicker .p-timepicker,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker {
+  background-color: #ffffff !important;
+  color: #212529 !important;
+  border-top: 1px solid #dee2e6 !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker > div,
+body.light-theme .p-component.p-datepicker .p-timepicker > div,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker > div {
+  color: #212529 !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker > div a,
+body.light-theme .p-component.p-datepicker .p-timepicker > div a,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker > div a {
+  color: #212529 !important;
+  background-color: transparent !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker > div a:hover,
+body.light-theme .p-component.p-datepicker .p-timepicker > div a:hover,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker > div a:hover {
+  background-color: #edf2ff !important;
+  color: #1c5eba !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker > div span,
+body.light-theme .p-component.p-datepicker .p-timepicker > div span,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker > div span {
+  color: #212529 !important;
+  background-color: transparent !important;
+}
+
+body.light-theme .p-datepicker .p-timepicker span,
+body.light-theme .p-component.p-datepicker .p-timepicker span,
+body.light-theme .p-component.p-calendar .p-datepicker .p-timepicker span {
+  color: #212529 !important;
+}
+
+/* Light theme SVG icons in calendar */
+body.light-theme .p-datepicker svg.p-icon,
+body.light-theme .p-component.p-datepicker svg.p-icon,
+body.light-theme .p-component.p-calendar .p-datepicker svg.p-icon,
+body.light-theme .p-datepicker .p-icon,
+body.light-theme .p-component.p-datepicker .p-icon,
+body.light-theme .p-component.p-calendar .p-datepicker .p-icon {
+  color: #212529 !important;
+  fill: #212529 !important;
+}

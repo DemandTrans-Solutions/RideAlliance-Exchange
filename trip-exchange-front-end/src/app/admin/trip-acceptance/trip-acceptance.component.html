@@ -1,0 +1,184 @@
+<div class="admin-module">
+  <div class="card">
+    <div class="card-header">
+      <h2 class="section-title">{{ 'ADMIN.TRIP_ACCEPTANCE.TITLE' | translate }}</h2>
+    </div>
+    <div class="card-body">
+      <h3 class="section-subtitle">{{ 'ADMIN.TRIP_ACCEPTANCE.CONFIGURE' | translate }}</h3>
+
+      <form
+        #acceptanceForm="ngForm"
+        (ngSubmit)="saveTripAcceptanceCriteria(acceptanceForm)"
+        novalidate
+      >
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="futureDays" class="form-label">
+                {{ 'ADMIN.TRIP_ACCEPTANCE.FUTURE_DAYS' | translate }}
+                <span class="required-indicator">*</span>
+              </label>
+              <input
+                type="number"
+                id="futureDays"
+                name="futureDays"
+                class="form-control"
+                [(ngModel)]="criteria.futureDays"
+                required
+                min="1"
+                max="365"
+                #futureDays="ngModel"
+              />
+              <div
+                *ngIf="futureDays.invalid && (futureDays.dirty || futureDays.touched)"
+                class="text-danger"
+              >
+                <small *ngIf="futureDays.errors?.['required']">
+                  {{ 'COMMON.FIELD_REQUIRED' | translate }}
+                </small>
+                <small *ngIf="futureDays.errors?.['min'] || futureDays.errors?.['max']">
+                  {{ 'ADMIN.TRIP_ACCEPTANCE.DAYS_RANGE_ERROR' | translate }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="dayOfWeek" class="form-label">
+                {{ 'ADMIN.TRIP_ACCEPTANCE.DAY_OF_WEEK' | translate }}
+                <span class="required-indicator">*</span>
+              </label>
+              <select
+                id="dayOfWeek"
+                name="dayOfWeek"
+                class="form-control"
+                [(ngModel)]="criteria.dayOfWeek"
+                required
+                #dayOfWeek="ngModel"
+              >
+                <option value="" disabled>{{ 'COMMON.SELECT' | translate }}</option>
+                <option *ngFor="let day of weekDays" [value]="day">{{ day }}</option>
+              </select>
+              <div
+                *ngIf="dayOfWeek.invalid && (dayOfWeek.dirty || dayOfWeek.touched)"
+                class="text-danger"
+              >
+                <small *ngIf="dayOfWeek.errors?.['required']">
+                  {{ 'COMMON.FIELD_REQUIRED' | translate }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="timeOfDay" class="form-label">
+                {{ 'ADMIN.TRIP_ACCEPTANCE.TIME_OF_DAY' | translate }}
+                <span class="required-indicator">*</span>
+              </label>
+              <input
+                type="time"
+                id="timeOfDay"
+                name="timeOfDay"
+                class="form-control"
+                [(ngModel)]="criteria.timeOfDay"
+                required
+                #timeOfDay="ngModel"
+              />
+              <div
+                *ngIf="timeOfDay.invalid && (timeOfDay.dirty || timeOfDay.touched)"
+                class="text-danger"
+              >
+                <small *ngIf="timeOfDay.errors?.['required']">
+                  {{ 'COMMON.FIELD_REQUIRED' | translate }}
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="fundingSource" class="form-label">
+                {{ 'ADMIN.TRIP_ACCEPTANCE.FUNDING_SOURCE' | translate }}
+                <span class="required-indicator">*</span>
+              </label>
+              <select
+                id="fundingSource"
+                name="fundingSource"
+                class="form-control"
+                [(ngModel)]="criteria.fundingSourceId"
+                required
+                #fundingSource="ngModel"
+              >
+                <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
+                <option *ngFor="let source of fundingSources" [value]="source.id">
+                  {{ source.name }}
+                </option>
+              </select>
+              <div
+                *ngIf="fundingSource.invalid && (fundingSource.dirty || fundingSource.touched)"
+                class="text-danger"
+              >
+                <small *ngIf="fundingSource.errors?.['required']">
+                  {{ 'COMMON.FIELD_REQUIRED' | translate }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-bar text-end">
+          <button type="submit" class="btn btn-primary" [disabled]="acceptanceForm.invalid">
+            {{ 'COMMON.SAVE' | translate }}
+          </button>
+        </div>
+      </form>
+
+      <hr />
+
+      <h3 class="section-subtitle mt-4">
+        {{ 'ADMIN.TRIP_ACCEPTANCE.EXISTING_CRITERIA' | translate }}
+      </h3>
+
+      <div *ngIf="existingCriteria.length > 0; else noCriteria">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.FUTURE_DAYS' | translate }}</th>
+                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.DAY_OF_WEEK' | translate }}</th>
+                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.TIME_OF_DAY' | translate }}</th>
+                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.FUNDING_SOURCE' | translate }}</th>
+                <th>{{ 'COMMON.STATUS' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of existingCriteria">
+                <td>{{ item.futureDays }}</td>
+                <td>{{ item.dayOfWeek }}</td>
+                <td>{{ item.timeOfDay }}</td>
+                <td>{{ item.fundingSourceName }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="item.isActive ? 'status-active' : 'status-inactive'"
+                  >
+                    {{ item.isActive ? ('COMMON.ACTIVE' | translate) : ('COMMON.INACTIVE' |
+                    translate) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <ng-template #noCriteria>
+        <div class="alert alert-info">{{ 'ADMIN.TRIP_ACCEPTANCE.NO_CRITERIA' | translate }}</div>
+      </ng-template>
+    </div>
+  </div>
+</div>

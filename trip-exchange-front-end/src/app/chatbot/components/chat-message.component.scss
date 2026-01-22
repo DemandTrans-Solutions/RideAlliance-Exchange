@@ -1,0 +1,323 @@
+@import '../../shared/styles/index';
+
+.message-wrapper {
+  display: flex;
+  margin-bottom: 16px;
+  animation: fadeInUp 0.3s ease-out;
+
+  &.user-message {
+    justify-content: flex-end;
+
+    .message-content {
+      flex-direction: row-reverse;
+    }
+
+    .message-bubble {
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: var(--white);
+      margin-left: 40px;
+
+      .message-time {
+        color: rgba(255, 255, 255, 0.8);
+      }
+    }
+  }
+
+  &.bot-message {
+    justify-content: flex-start;
+
+    .message-bubble {
+      background: var(--white);
+      color: var(--text-primary);
+      border: 1px solid var(--neutral-300);
+      margin-right: 40px;
+    }
+  }
+
+  &.error-message {
+    .message-bubble {
+      background: var(--error-50);
+      border-color: var(--error-200);
+      color: var(--error-700);
+    }
+  }
+}
+
+.message-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  max-width: 85%;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 4px;
+
+  .bot-message & {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    color: var(--white);
+  }
+
+  .user-message & {
+    background: var(--neutral-200);
+    color: var(--neutral-600);
+  }
+}
+
+.message-bubble {
+  border-radius: 18px;
+  padding: 12px 16px;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  word-wrap: break-word;
+  line-height: 1.4;
+
+  .user-message & {
+    border-bottom-right-radius: 6px;
+  }
+
+  .bot-message & {
+    border-bottom-left-radius: 6px;
+  }
+}
+
+.message-text {
+  font-size: 14px;
+  margin-bottom: 4px;
+
+  // Style for formatted content
+  ::ng-deep {
+    strong {
+      font-weight: 600;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+
+    .user-message & a {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .bot-message & a {
+      color: var(--primary-500);
+    }
+  }
+}
+
+.message-time {
+  font-size: 11px;
+  color: var(--neutral-500);
+  text-align: right;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+.message-metadata {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--neutral-300);
+  font-size: 12px;
+
+  .user-message & {
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .metadata-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .metadata-key {
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  .metadata-value {
+    font-weight: 400;
+    text-align: right;
+    word-break: break-word;
+    max-width: 60%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .message-content {
+    max-width: 95%;
+  }
+
+  .message-bubble {
+    .user-message & {
+      margin-left: 20px;
+    }
+
+    .bot-message & {
+      margin-right: 20px;
+    }
+  }
+
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+/* Dark mode support using established theme system */
+@media (prefers-color-scheme: dark) {
+  .bot-message .message-bubble {
+    background: var(--neutral-800);
+    border-color: var(--neutral-700);
+    color: var(--neutral-100);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .message-avatar {
+    .user-message & {
+      background: var(--neutral-700);
+      color: var(--neutral-300);
+    }
+  }
+
+  .error-message .message-bubble {
+    background: var(--error-900);
+    border-color: var(--error-700);
+    color: var(--error-100);
+  }
+
+  .message-metadata {
+    .bot-message & {
+      border-color: var(--neutral-700);
+    }
+  }
+
+  .message-text ::ng-deep {
+    .bot-message & a {
+      color: var(--primary-light);
+    }
+  }
+
+  .message-time {
+    color: var(--neutral-400);
+  }
+}
+
+/* Manual theme class support */
+html body.dark-theme {
+  .bot-message .message-bubble {
+    background: var(--neutral-800) !important;
+    border-color: var(--neutral-700) !important;
+    color: var(--neutral-100) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  .message-avatar {
+    .user-message & {
+      background: var(--neutral-700) !important;
+      color: var(--neutral-300) !important;
+    }
+  }
+
+  .error-message .message-bubble {
+    background: var(--error-900) !important;
+    border-color: var(--error-700) !important;
+    color: var(--error-100) !important;
+  }
+
+  .message-metadata {
+    .bot-message & {
+      border-color: var(--neutral-700) !important;
+    }
+
+    .metadata-key {
+      color: var(--neutral-300) !important;
+    }
+
+    .metadata-value {
+      color: var(--neutral-200) !important;
+    }
+  }
+
+  .message-text ::ng-deep {
+    .bot-message & a {
+      color: var(--primary-light) !important;
+    }
+  }
+
+  .message-time {
+    color: var(--neutral-400) !important;
+  }
+}
+
+/* Light theme class support */
+html body.light-theme {
+  .bot-message .message-bubble {
+    background: var(--white) !important;
+    border-color: var(--neutral-300) !important;
+    color: var(--text-primary) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  .message-avatar {
+    .user-message & {
+      background: var(--neutral-200) !important;
+      color: var(--neutral-600) !important;
+    }
+  }
+
+  .error-message .message-bubble {
+    background: var(--error-50) !important;
+    border-color: var(--error-200) !important;
+    color: var(--error-700) !important;
+  }
+
+  .message-metadata {
+    .bot-message & {
+      border-color: var(--neutral-300) !important;
+    }
+  }
+
+  .message-text ::ng-deep {
+    .bot-message & a {
+      color: var(--primary-500) !important;
+    }
+  }
+
+  .message-time {
+    color: var(--neutral-500) !important;
+  }
+}

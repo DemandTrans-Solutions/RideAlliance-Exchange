@@ -1,0 +1,120 @@
+{
+  "@context": "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld",
+  "@id": "https://github.com/DemandTrans-Solutions/trip-exchange-services/data.json",
+  "@type": "dcat:Catalog",
+  "conformsTo": "https://project-open-data.cio.gov/v1.1/schema",
+  "describedBy": "https://project-open-data.cio.gov/v1.1/schema/catalog.json",
+  "dataset": [
+    {
+      "@type": "dcat:Dataset",
+      "title": "Trip Exchange Service - Clearinghouse API and Data Platform",
+      "description": "A comprehensive Spring Boot-based web service and API platform that facilitates trip exchange and coordination between transportation service providers. The system enables efficient resource sharing, improved service delivery, and coordination among transit providers. It provides REST APIs for managing trip tickets, claims, partnerships, and provider coordination, along with real-time data exchange capabilities. The platform includes features for trip management, provider partnerships, JWT-based authentication, role-based access control, geospatial data handling, and email notifications. This dataset encompasses both the API service endpoints and the underlying data structures for transportation coordination.",
+      "keyword": [
+        "trip exchange",
+        "transit",
+        "transportation",
+        "mobility",
+        "paratransit",
+        "trip coordination",
+        "service providers",
+        "API",
+        "REST API",
+        "clearinghouse",
+        "trip tickets",
+        "trip claims",
+        "provider partnerships",
+        "transportation data",
+        "transit coordination",
+        "demand response",
+        "shared mobility"
+      ],
+      "modified": "2026-01-05",
+      "publisher": {
+        "@type": "org:Organization",
+        "name": "Demandtrans Solutions"
+      },
+      "contactPoint": {
+        "@type": "vcard:Contact",
+        "fn": "Todd Voirol",
+        "hasEmail": "mailto:todd.voirol@demandtrans.com"
+      },
+      "identifier": "DTS-TRIP-EXCHANGE-001",
+      "accessLevel": "public",
+      "bureauCode": [],
+      "programCode": [],
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "rights": "This data is made available as public domain. There are no restrictions on use, modification, or distribution. The data and API are provided 'as is' without warranty of any kind.",
+      "spatial": "Not geographically restricted - applicable to transportation service coordination nationally",
+      "temporal": "Not temporally restricted - ongoing service",
+      "distribution": [
+        {
+          "@type": "dcat:Distribution",
+          "title": "Trip Exchange REST API",
+          "description": "RESTful API providing programmatic access to trip exchange functionality including authentication, provider management, trip tickets, claims, and partnerships.",
+          "accessURL": "https://github.com/DemandTrans-Solutions/trip-exchange-services",
+          "format": "API",
+          "mediaType": "application/json",
+          "conformsTo": "https://www.openapis.org/"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "title": "OpenAPI Specification",
+          "description": "Machine-readable API specification in OpenAPI 3.0 format describing all available endpoints, request/response schemas, and authentication requirements.",
+          "downloadURL": "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/api-docs.json",
+          "format": "JSON",
+          "mediaType": "application/json",
+          "conformsTo": "https://spec.openapis.org/oas/v3.0.0"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "title": "Source Code Repository",
+          "description": "Complete source code for the Trip Exchange Service platform including API implementations, data models, security configurations, and deployment scripts.",
+          "accessURL": "https://github.com/DemandTrans-Solutions/trip-exchange-services",
+          "format": "Source Code",
+          "mediaType": "text/plain"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "title": "Database Schema Scripts",
+          "description": "SQL scripts for database initialization and trip ticket data generation.",
+          "accessURL": "https://github.com/DemandTrans-Solutions/trip-exchange-services/tree/main/dbscript",
+          "format": "SQL",
+          "mediaType": "application/sql"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "title": "API Documentation",
+          "description": "Human-readable API documentation and authentication guide.",
+          "downloadURL": "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/API_AUTHENTICATION_GUIDE.md",
+          "format": "Markdown",
+          "mediaType": "text/markdown"
+        }
+      ],
+      "accrualPeriodicity": "irregular",
+      "conformsTo": [
+        "https://www.openapis.org/",
+        "https://datatracker.ietf.org/doc/html/rfc7519"
+      ],
+      "describedBy": "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/README.md",
+      "describedByType": "text/markdown",
+      "issued": "2025-01-01",
+      "language": [
+        "en-US"
+      ],
+      "landingPage": "https://github.com/DemandTrans-Solutions/trip-exchange-services",
+      "references": [
+        "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/README.md",
+        "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/API_AUTHENTICATION_GUIDE.md",
+        "https://github.com/DemandTrans-Solutions/trip-exchange-services/blob/main/pom.xml"
+      ],
+      "theme": [
+        "Transportation",
+        "Public Transit",
+        "Mobility Services",
+        "Data Exchange"
+      ],
+      "dataQuality": true,
+      "systemOfRecords": ""
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trip Exchange</title>
+    <base href="/" />
+
+    <!-- Content Security Policy to allow Firebase, Google Auth, and reCAPTCHA -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval'
+        https://www.google.com
+        https://www.gstatic.com
+        https://apis.google.com
+        https://www.googleapis.com
+        https://cdnjs.cloudflare.com
+        https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline'
+        https://fonts.googleapis.com
+        https://www.gstatic.com
+        https://cdnjs.cloudflare.com
+        https://cdn.jsdelivr.net;
+      font-src 'self'
+        https://fonts.gstatic.com
+        https://fonts.googleapis.com
+        https://cdnjs.cloudflare.com
+        https://cdn.jsdelivr.net;
+      img-src 'self' data: https:;
+      connect-src 'self'
+        http://localhost:8080
+
+        https://router.project-osrm.org
+        https://identitytoolkit.googleapis.com
+        https://securetoken.googleapis.com
+        https://exchange.demandtrans-apis.com
+        https://tripexchange.demandtrans-apis.com
+        https://www.googleapis.com
+        https://firebase.googleapis.com
+        https://content-firebaseappcheck.googleapis.com
+        https://www.google.com
+        https://cdn.jsdelivr.net;
+      frame-src 'self'
+        https://www.google.com
+        https://accounts.google.com
+        https://recaptcha.google.com
+        https://ride-alliance-exchange.firebaseapp.com
+        https://*.firebaseapp.com;
+    " />
+
+    <link rel="icon" type="image/svg+xml" href="assets/images/logos/trip-exchange-favicon.svg" />
+
+    <!-- reCAPTCHA v3 is handled automatically by Firebase App Check - no manual script needed -->
+
+    <!-- Modern approach: Use CDN for dependencies -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- PrimeNG Theme -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/primeng@16.4.0/resources/themes/lara-light-blue/theme.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/primeng@16.4.0/resources/primeng.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/primeicons@6.0.1/primeicons.min.css"
+    />
+
+
+        <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"
+    />
+
+    <!-- App specific styles -->
+    <link href="/assets/css/main.css" rel="stylesheet" />
+    <link href="/assets/css/custom.css" rel="stylesheet" />
+    <link href="/assets/css/modern-theme.css" rel="stylesheet" />
+    <link href="/assets/css/theme-override.css" rel="stylesheet" id="theme-override" />
+    <link href="/assets/css/media-query-override.css" rel="stylesheet" id="media-query-override" />
+  </head>
+  <body>
+    <app-root>
+      <div class="loading-app-container">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p>Loading application...</p>
+      </div>
+    </app-root>
+
+    <!-- Apply saved theme immediately to prevent flash of wrong theme -->
+    <script>
+      // Apply theme from localStorage immediately
+      document.addEventListener('DOMContentLoaded', function () {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+          document.body.classList.add('dark-theme');
+        } else if (savedTheme === 'light') {
+          document.body.classList.add('light-theme');
+        } else {
+          // Check system preference
+          if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-theme');
+          } else {
+            document.body.classList.add('light-theme');
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowCloudFrontServicePrincipal",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "cloudfront.amazonaws.com"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::demandtrans-demos/*",
+            "Condition": {
+                "StringEquals": {
+                    "AWS:SourceArn": "arn:aws:cloudfront::750446117464:distribution/E2VHUY8UVKDIKW"
+                }
+            }
+        },
+        {
+            "Sid": "AllowCloudFrontOAI",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity E31G1D01O7NMUO"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::demandtrans-demos/*"
+        }
+    ]
+}

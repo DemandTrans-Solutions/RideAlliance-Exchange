@@ -1,0 +1,138 @@
+// Import shared styles with corrected path
+@import '../../shared/styles/index';
+
+table {
+  width: 100%;
+}
+
+th,
+td {
+  text-align: center !important;
+  padding: 5px;
+}
+
+.ui-paginator-element {
+  padding: 0 5px 0 5px;
+}
+
+.datatable-search-box {
+  max-width: 100%;
+  padding: 0 15px 0 15px;
+  height: 35px;
+  font-size: 14px;
+}
+
+.input-group-addon {
+  height: 35px;
+  padding: 5px 5px;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 0;
+}
+
+i {
+  margin: 5px;
+  font-size: 15px;
+}
+
+.active {
+  color: #34a853;
+}
+
+.deactive {
+  color: #ea4335;
+}
+
+.table-td-padding {
+  padding: 5px !important;
+}
+
+.icons {
+  font-size: 25px;
+}
+
+:host ::ng-deep .p-datatable {
+  font-size: 16px;
+
+  .p-datatable-header {
+    background-color: var(--neutral-100);
+    border-bottom: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+  }
+
+  .p-datatable-thead > tr > th {
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    font-weight: 600;
+    padding: var(--space-md);
+    border-color: var(--neutral-200);
+    text-transform: uppercase;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+
+  .p-datatable-tbody > tr {
+    transition: background-color var(--transition-fast);
+
+    &:hover {
+      background-color: var(--neutral-100);
+    }
+
+    > td {
+      padding: var(--space-md);
+      border-color: var(--neutral-200);
+      font-size: 16px;
+
+      .action-buttons {
+        display: flex;
+        gap: var(--space-xs);
+
+        button {
+          width: 28px;
+          height: 28px;
+          border-radius: var(--border-radius-full);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all var(--transition-fast);
+          background-color: var(--neutral-100);
+          border: none;
+          color: var(--neutral-600);
+
+          &:hover {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-sm);
+          }
+
+          i {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+
+  .p-paginator {
+    background-color: var(--neutral-100);
+    border-top: 1px solid var(--neutral-200);
+    padding: var(--space-md);
+    font-size: 15px;
+
+    .p-paginator-pages .p-paginator-page.p-highlight {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  }
+
+  // Loading spinner
+  &-loading-icon {
+    width: 50px;
+    height: 50px;
+  }
+}
+.action-buttons {
+  margin-bottom: 15px;
+}

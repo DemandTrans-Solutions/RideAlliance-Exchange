@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch ClearingHouse",
+            "request": "launch",
+            "mainClass": "com.clearinghouse.ClearingHouseApplication",
+            "projectName": "clearingHouse",
+            "env": {
+                "SPRING_PROFILES_ACTIVE": "local"
+            }
+        }
+    ]
+}

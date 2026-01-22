@@ -1,0 +1,200 @@
+<div class="admin-module">
+  <!-- Fund source list view -->
+  <div *ngIf="showGrid" class="data-view">
+    <h2 class="section-title">
+      <span class="heading-underline">Funding Sources</span>
+    </h2>
+
+    <div class="action-bar">
+      <div class="search-section">
+        <div class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input #globalFilter type="text" pInputText class="form-control" placeholder="Search..." />
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button
+          *ngIf="loggerRole === 'ROLE_ADMIN'"
+          class="btn-primary"
+          (click)="addFundSource()"
+        >
+          <i class="ph ph-plus" aria-hidden="true"></i>
+          <span>Add Funding Source</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="data-table-container">
+      <p-table
+        [value]="arrFundSource"
+        [rows]="10"
+        [paginator]="true"
+        [globalFilterFields]="['name', 'description']"
+        [tableStyle]="{'min-width': '50rem'}"
+        styleClass="funding-sources-table"
+        [globalFilterFunction]="filterGlobal"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name" class="column-name">
+              Name <p-sortIcon field="name"></p-sortIcon>
+            </th>
+            <th pSortableColumn="description" class="column-description">
+              Description <p-sortIcon field="description"></p-sortIcon>
+            </th>
+            <th class="column-actions">Status</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-fund>
+          <tr>
+            <td class="column-name">
+
+              {{fund.name}}
+            </td>
+            <td class="column-description">
+              {{fund.description}}
+            </td>
+            <td class="column-actions">
+              <div class="action-icons">
+                <button
+                  class="btn-icon btn-edit"
+                  title="Edit"
+                  aria-label="Edit funding source"
+                  (click)="editFund(fund)"
+                >
+                  <i class="ph ph-pencil-simple"></i>
+                </button>
+
+                <ng-container *ngIf="loggerRole === 'ROLE_ADMIN'">
+                  <button
+                    *ngIf="fund.status"
+                    class="btn-icon btn-success"
+                    title="Click to deactivate"
+                    aria-label="Deactivate funding source"
+                    (click)="updateStatus(fund)"
+                  >
+                    <i class="ph ph-check-circle"></i>
+                  </button>
+
+                  <button
+                    *ngIf="!fund.status"
+                    class="btn-icon btn-danger"
+                    title="Click to activate"
+                    aria-label="Activate funding source"
+                    (click)="updateStatus(fund)"
+                  >
+                    <i class="ph ph-x-circle"></i>
+                  </button>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="3">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>No funding sources found.</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Add/Edit fund source form -->
+  <div *ngIf="!showGrid" class="form-view">
+    <div class="form-container">
+      <h2 class="form-title">
+        {{pageName}} Funding Source
+      </h2>
+
+      <form #fundSourceForm="ngForm" class="data-form">
+        <div class="form-group">
+          <label for="fundName" class="form-label">
+            Name <span class="required-indicator">*</span>
+          </label>
+          <input
+            id="fundName"
+            type="text"
+            class="form-control"
+            [(ngModel)]="fund.name"
+            name="fundName"
+            required
+            pattern="(\s*\S\s*)+"
+            (keypress)="omit_special_char($event)"
+            #fundName="ngModel"
+            [ngClass]="{'invalid-input': !fundName.valid && !fundName.pristine}"
+            aria-describedby="fundName-error"
+          />
+          <div
+            id="fundName-error"
+            class="error-message"
+            *ngIf="!fundName.valid && !fundName.pristine"
+          >
+            Enter valid Funding Source Name
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fundDescription" class="form-label">Description</label>
+          <input
+            id="fundDescription"
+            type="text"
+            class="form-control"
+            [(ngModel)]="fund.description"
+            name="fundDescription"
+            (keypress)="omit_special_char($event)"
+            aria-label="Funding source description"
+          />
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            aria-label="Cancel editing"
+          >
+            Cancel
+          </button>
+
+          <ng-container *ngIf="pageName === 'Add'">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="!fundSourceForm.valid"
+              (click)="saveFundingSource()"
+              aria-label="Save funding source"
+            >
+              Save
+            </button>
+          </ng-container>
+
+          <ng-container *ngIf="pageName === 'Edit'">
+            <button
+              type="button"
+              class="btn-primary"
+              [disabled]="!fund.name"
+              (click)="updateFundSource()"
+              aria-label="Update funding source"
+            >
+              Update
+            </button>
+          </ng-container>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<p-confirmDialog
+  [style]="{width: '450px'}"
+  header="Confirmation"
+  icon="pi pi-exclamation-triangle"
+></p-confirmDialog>

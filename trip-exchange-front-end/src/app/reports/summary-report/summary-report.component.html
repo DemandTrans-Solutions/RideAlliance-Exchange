@@ -1,0 +1,292 @@
+<div class="report-container">
+  <header class="report-header">
+    <h2 class="report-title">{{ 'SUMMARY_REPORT.TITLE' | translate }}</h2>
+  </header>
+
+
+  <div class="instruction-panel" role="region" aria-label="{{ 'SUMMARY_REPORT.TITLE' | translate }}">
+    <div class="instruction-content">
+      <i class="ph ph-info" aria-hidden="true"></i>
+      <div class="instruction-copy">
+        <!--<h3 class="instruction-title">{{ 'REPORTS.COMPLETED_TRIPS_REPORT' | translate }}</h3>-->
+        <p class="instruction-text">{{ 'REPORTS.SUMMARY_REPORTS_DESC' | translate }}</p>
+        <p class="instruction-run">
+          <strong>{{ 'REPORTS.HOW_TO_RUN_LABEL' | translate }}:</strong>
+          {{ 'REPORTS.SUMMARY_REPORTS_RUN' | translate }}
+          <span class="btn btn-primary btn-inline">{{ 'SUMMARY_REPORT.FILTER_REPORT' | translate }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-panel">
+    <div class="filter-container">
+      <div class="filter-row">
+        <div class="filter-group" *ngIf="loggerRole === 'ROLE_ADMIN'">
+          <label for="pro" class="filter-label">
+            {{ 'SUMMARY_REPORT.PROVIDER' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <select
+              id="pro"
+              class="form-control"
+              [(ngModel)]="providerPartnersId"
+              name="provider"
+              [required]="true"
+              (ngModelChange)="getDate(providerPartnersId)"
+              aria-describedby="provider-error"
+            >
+              <option [ngValue]="PleaseSelect">
+                {{ 'SUMMARY_REPORT.PLEASE_SELECT' | translate }}
+              </option>
+              <option *ngFor="let provider of providersList" [ngValue]="provider.providerId">
+                {{provider.providerName}}
+              </option>
+            </select>
+            <div
+              id="provider-error"
+              class="error-message"
+              *ngIf="providerPartnersId === PleaseSelect"
+            >
+              {{ 'SUMMARY_REPORT.PROVIDER_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="fromDateTime" class="filter-label">
+            {{ 'SUMMARY_REPORT.FROM_DATE' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="fromDate"
+              [showTime]="true"
+              id="fromDateTime"
+              hourFormat="12"
+              [style]="{'width':'100%'}"
+              inputId="fromDateTime"
+              aria-label="{{ 'SUMMARY_REPORT.FROM_DATE_ARIA' | translate }}"
+            >
+            </p-calendar>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="ToDateTime" class="filter-label">
+            {{ 'SUMMARY_REPORT.TO_DATE' | translate }} <span class="required-indicator">*</span>
+          </label>
+          <div class="filter-control">
+            <p-calendar
+              [(ngModel)]="toDate"
+              [showTime]="true"
+              id="ToDateTime"
+              hourFormat="12"
+              [style]="{'width':'100%'}"
+              [minDate]="range.fromDate"
+              (ngModelChange)="maxDate()"
+              inputId="ToDateTime"
+              aria-label="{{ 'SUMMARY_REPORT.TO_DATE_ARIA' | translate }}"
+            >
+            </p-calendar>
+            <div class="error-message" *ngIf="minRange">
+              {{ 'SUMMARY_REPORT.TO_DATE_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-group filter-actions">
+          <button
+            class="btn btn-primary"
+            [disabled]="!maxRange"
+            (click)="filter(toDate,providerPartnersId)"
+            aria-label="{{ 'SUMMARY_REPORT.FILTER_REPORT_ARIA' | translate }}"
+          >
+            <i class="ph ph-funnel" aria-hidden="true"></i>
+            {{ 'SUMMARY_REPORT.FILTER_REPORT' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-loading" *ngIf="loading">
+    <div class="loading-spinner">
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+      <div class="spinner-item"></div>
+    </div>
+    <span class="loading-text">{{ 'SUMMARY_REPORT.LOADING' | translate }}</span>
+  </div>
+
+  <div class="report-data">
+    <div class="report-section">
+      <div class="section-header" id="heading-active-trips">
+        <h3 class="section-title">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapse1"
+            aria-expanded="true"
+            aria-controls="collapse1"
+          >
+            <i class="ph ph-caret-down section-icon" aria-hidden="true"></i>
+            {{ 'SUMMARY_REPORT.ACTIVE_TRIPS' | translate }}
+          </button>
+        </h3>
+      </div>
+
+      <div
+        id="collapse1"
+        class="section-content collapse in"
+        aria-labelledby="heading-active-trips"
+      >
+        <div class="table-responsive">
+          <table class="report-table" *ngIf="!displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_TRIPS' | translate }}</td>
+                <td class="report-value">0</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="report-table" *ngIf="displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_TRIPS' | translate }}</td>
+                <td class="report-value">{{summaryReport.totalTicketCount}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.APPROVED' | translate }}</td>
+                <td class="report-value">{{summaryReport.approvedTicketCount}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.AVAILABLE' | translate }}</td>
+                <td class="report-value">{{summaryReport.availabeTicketCount}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.COMPLETED' | translate }}</td>
+                <td class="report-value">{{summaryReport.completedTicketCount}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.EXPIRED' | translate }}</td>
+                <td class="report-value">{{summaryReport.expiredTicketCount}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.RESCINDED' | translate }}</td>
+                <td class="report-value">{{summaryReport.rescindedTicketCount}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <div class="section-header" id="heading-claims-received">
+        <h3 class="section-title">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapse2"
+            aria-expanded="true"
+            aria-controls="collapse2"
+          >
+            <i class="ph ph-caret-down section-icon" aria-hidden="true"></i>
+            {{ 'SUMMARY_REPORT.CLAIMS_RECEIVED' | translate }}
+          </button>
+        </h3>
+      </div>
+
+      <div
+        id="collapse2"
+        class="section-content collapse in"
+        aria-labelledby="heading-claims-received"
+      >
+        <div class="table-responsive">
+          <table class="report-table" *ngIf="!displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_OFFERS' | translate }}</td>
+                <td class="report-value">0</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="report-table" *ngIf="displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_OFFERS' | translate }}</td>
+                <td class="report-value">{{summaryReport.totalCliamsReceived}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.APPROVED' | translate }}</td>
+                <td class="report-value">{{summaryReport.approvedClaimReceived}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.DECLINED' | translate }}</td>
+                <td class="report-value">{{summaryReport.declinedClaimReceived}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.RESCINDED' | translate }}</td>
+                <td class="report-value">{{summaryReport.rescindedCaimReceived}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <div class="section-header" id="heading-claims-submitted">
+        <h3 class="section-title">
+          <button
+            class="btn btn-link"
+            data-toggle="collapse"
+            data-target="#collapse3"
+            aria-expanded="true"
+            aria-controls="collapse3"
+          >
+            <i class="ph ph-caret-down section-icon" aria-hidden="true"></i>
+            {{ 'SUMMARY_REPORT.CLAIMS_SUBMITTED' | translate }}
+          </button>
+        </h3>
+      </div>
+
+      <div
+        id="collapse3"
+        class="section-content collapse in"
+        aria-labelledby="heading-claims-submitted"
+      >
+        <div class="table-responsive">
+          <table class="report-table" *ngIf="!displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_REQUESTS' | translate }}</td>
+                <td class="report-value">0</td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="report-table" *ngIf="displayRecords">
+            <tbody>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.TOTAL_NEW_REQUESTS' | translate }}</td>
+                <td class="report-value">{{summaryReport.totalCliamsSubmitted}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.APPROVED' | translate }}</td>
+                <td class="report-value">{{summaryReport.approvedClaimSubmitted}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.DECLINED' | translate }}</td>
+                <td class="report-value">{{summaryReport.declinedClaimSubmitted}}</td>
+              </tr>
+              <tr>
+                <td class="report-label">{{ 'SUMMARY_REPORT.RESCINDED' | translate }}</td>
+                <td class="report-value">{{summaryReport.rescindedCaimSubmitted}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

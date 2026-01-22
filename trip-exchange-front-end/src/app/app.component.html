@@ -1,0 +1,13 @@
+<div class="container-fluid body-container">
+  <p-toast position="bottom-right"></p-toast>
+  <p-confirmDialog
+    header="{{ 'APP.CONFIRMATION_HEADER' | translate }}"
+    icon="pi pi-exclamation-triangle"
+  ></p-confirmDialog>
+  <div class="container-fluid"><app-header></app-header></div>
+  <div class="container-fluid"><router-outlet></router-outlet></div>
+  <div class="container-fluid container-custompadding"><app-footer></app-footer></div>
+
+  <!-- Chatbot Integration -->
+  <app-chatbot></app-chatbot>
+</div>

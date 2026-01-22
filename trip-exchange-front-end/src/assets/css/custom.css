@@ -1,0 +1,978 @@
+﻿.text-center {
+  text-align: center;
+}
+
+.table > tbody > tr > td,
+.table > tfoot > tr > th,
+.table > tfoot > tr > td {
+  padding: 10px;
+  line-height: 1.42857;
+  vertical-align: middle;
+  border-top: 1px solid #ddd;
+}
+
+.leftmargin {
+  margin-left: 20%;
+}
+
+@media (max-width: 520px) {
+  .leftmargin {
+    margin-left: -2%;
+  }
+}
+
+/* --- custom css code -- */
+
+@media (min-width: 500px) {
+}
+.maxheight {
+  max-height: 60px !important;
+  width: 100px !important;
+}
+
+@media (min-width: 300px) {
+  .maxheight {
+    width: 100px !important;
+  }
+}
+
+.top-header .logo {
+  background-color: #176799 !important;
+  height: 68px;
+}
+
+.top-header .customlogo {
+  background-color: #176799 !important;
+  height: 68px !important;
+}
+
+@media (min-width: 768px) {
+  .top-header {
+    height: 74px;
+    background-color: #176799 !important;
+  }
+}
+
+#nav-container {
+  top: 100px !important;
+  background-color: #176799 !important;
+  width: 50px !important;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-left: 35px !important;
+    padding-right: 35px !important;
+  }
+}
+@media (min-width: 400px) {
+  .page {
+    padding-left: 35px !important;
+    padding-right: 35px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  #content {
+    left: 45px !important;
+  }
+}
+
+@media (min-width: 520px) {
+  #content {
+    left: 5px !important;
+  }
+}
+
+.on-canvas #content {
+  left: 55px !important;
+}
+
+.largeimage {
+  height: 44px !important;
+}
+
+.mediumimage {
+  height: 50px !important;
+}
+
+.smallimage {
+  height: 40px !important;
+}
+
+.iconpadding {
+  padding-bottom: 15px;
+  padding-right: 15px;
+}
+
+.backcolornone {
+  background-color: transparent !important;
+  text-decoration: none;
+}
+.addpadding1 {
+  padding: 12px 35px 0px 0px !important;
+  background-color: transparent !important;
+}
+
+.addpadding2 {
+  padding: 0px 58px 0px 0px !important;
+  background-color: transparent !important;
+  color: #176799 !important;
+}
+
+@media (max-width: 800px) {
+  .addpadding3 {
+    padding: 15px 36px 0px 0px !important;
+    background-color: transparent !important;
+    color: magento !important;
+  }
+}
+@media (max-width: 610px) {
+  .addpadding3 {
+    padding: 12px 50px 0px 0px !important;
+    background-color: transparent !important;
+    color: gray !important;
+  }
+}
+
+@media (max-width: 510px) {
+  .addpadding3 {
+    padding: 2px 50px 0px 0px !important;
+    background-color: transparent !important;
+  }
+}
+
+@media (max-width: 410px) {
+  .addpadding3 {
+    padding: 2px 16px 0px 0px !important; /*3px 50px 0px 0px !important;*/
+    background-color: transparent !important;
+  }
+}
+@media (max-width: 320px) {
+  .addpadding3 {
+    padding: 0px 20px 0px 0px !important; /* 0px 50px 0px 0px !important;*/
+    background-color: transparent !important;
+  }
+}
+
+.top-header .top-nav .nav-left > li {
+  margin-right: 25px;
+}
+
+.pull-right {
+  margin-top: 8px;
+}
+
+.smallfooter {
+  max-height: 15px !important;
+}
+
+.top-header .top-nav .nav-right {
+  line-height: 1px !important;
+}
+
+.inputwidth {
+  width: 50% !important;
+}
+
+.buttonwidth {
+  width: 53% !important;
+}
+
+@media (min-width: 200px) {
+  .navbar-brand {
+    width: 100%;
+  }
+}
+/*
+.personimg{
+	max-height: 40px;
+      padding-right: 2px;
+      margin-left: 0px;
+
+}*/
+.topheading {
+  padding: 1px 10px !important; /*1px 16px !important;*/
+}
+
+.boxicon {
+  width: 85px !important;
+}
+.boxmargin {
+  margin: 10px 10px 10px 0px;
+}
+.list-info li {
+  padding: 4px !important;
+}
+.bgnone {
+  background: none !important;
+  box-shadow: none !important;
+}
+.redcolor {
+  color: #ff0000;
+}
+.rightfloat {
+  float: right;
+}
+.rightfloat1 {
+  float: right;
+  padding-top: 8px;
+}
+.bgblue {
+  background-color: transparent !important;
+  /*color: #1C7EBB!important;*/
+  border-bottom: none;
+  border-radius: 7px;
+  text-transform: none !important;
+}
+.min-box {
+  padding: 1px 20px 2px 20px !important;
+}
+.nopadding {
+  padding: 0px !important;
+  max-height: 105px !important;
+}
+.smallpadding {
+  padding: 4px 120px !important;
+  min-height: 61px !important;
+}
+.loginpadding {
+  margin-left: 20px;
+  margin-right: 1px;
+}
+.bgpanel {
+  color: #59a67d;
+}
+.colorblue {
+  color: #1c7ebb !important;
+}
+.borderradius {
+  border-radius: 10px !important;
+}
+.colorgray {
+  color: #fff;
+}
+.textunderline {
+  text-decoration: underline !important;
+}
+.bottonspace {
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+.smallleftmargin {
+  margin-left: 2%;
+}
+.ui-checkbox {
+  position: relative;
+  margin: 0 20px 0px 20px !important;
+}
+.ui-select > select {
+  padding: 7px 6px !important;
+}
+.ui-select {
+  margin: 2px 0px 8px !important;
+}
+.margintop {
+  margin-top: 5px;
+}
+.pagination {
+  margin: 2px 0;
+}
+.btn {
+  outline: none !important;
+}
+textarea:focus,
+input:focus,
+input[type]:focus,
+.uneditable-input:focus {
+  border-color: rgba(229, 103, 23, 0.8);
+  box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset, 0 0 8px rgba(229, 103, 23, 0.6);
+  outline: 0 none;
+}
+a:hover,
+a:focus {
+  color: #ffae02 !important;
+}
+.twoemsize {
+  font-size: 2.5em;
+}
+.orangecolor {
+  color: #ffae02;
+}
+.paddingleftl {
+  padding-left: 50px !important;
+}
+.smallpaddingleft {
+  padding-left: 26px;
+}
+.form-control {
+  margin-bottom: 8px;
+}
+
+.ScrollStyle {
+  max-height: 800px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.paddingleft {
+  padding-left: 16px;
+}
+.textboxlabel {
+  border: 0px;
+  display: inline-block;
+}
+.bottompadding {
+  padding-bottom: 4px;
+}
+.hrline {
+  border: 1px solid #ddd;
+}
+.form-control-static {
+  margin-bottom: 5px;
+}
+
+/*Clearing house wizard*/
+
+.nav-pills.nav-wizard > li {
+  position: relative;
+  overflow: visible;
+  border-right: 15px solid transparent;
+  border-left: 15px solid transparent;
+}
+.nav-pills.nav-wizard > li + li {
+  margin-left: 0;
+}
+.nav-pills.nav-wizard > li:first-child {
+  border-left: 0;
+}
+.nav-pills.nav-wizard > li:first-child a {
+  border-radius: 5px 0 0 5px;
+}
+.nav-pills.nav-wizard > li:last-child {
+  border-right: 0;
+}
+.nav-pills.nav-wizard > li:last-child a {
+  border-radius: 0 5px 5px 0;
+}
+.nav-pills.nav-wizard > li a {
+  border-radius: 0;
+  background-color: #eee;
+}
+.nav-pills.nav-wizard > li .nav-arrow {
+  position: absolute;
+  top: 0px;
+  right: -20px;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 19px 0 20px 20px;
+  border-color: transparent transparent transparent #eee;
+  z-index: 150;
+}
+.nav-pills.nav-wizard > li .nav-wedge {
+  position: absolute;
+  top: 0px;
+  left: -20px;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 19px 0 20px 20px;
+  border-color: #eee #eee #eee transparent;
+  z-index: 150;
+}
+.nav-pills.nav-wizard > li:hover .nav-arrow {
+  border-color: transparent transparent transparent #aaa;
+}
+.nav-pills.nav-wizard > li:hover .nav-wedge {
+  border-color: #aaa #aaa #aaa transparent;
+}
+.nav-pills.nav-wizard > li:hover a {
+  background-color: #aaa;
+  color: #fff;
+}
+.nav-pills.nav-wizard > li.active .nav-arrow {
+  border-color: transparent transparent transparent #428bca;
+}
+.nav-pills.nav-wizard > li.active .nav-wedge {
+  border-color: #428bca #428bca #428bca transparent;
+}
+.nav-pills.nav-wizard > li.active a {
+  background-color: #428bca;
+}
+.add-ticket-label {
+  font-weight: normal;
+}
+
+.form-control {
+  height: 26px;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+}
+.panel-body {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+/*.nav{
+padding-left: 15px;
+}*/
+
+.twoemsize {
+  font-size: 2.1em;
+}
+
+.btn {
+  min-width: 73px;
+}
+.top-header,
+.logo {
+  height: 60px !important;
+}
+.navbar-brand {
+  float: left;
+  padding: 15px 15px;
+  font-size: 15px;
+  line-height: 20px;
+  height: 20px;
+}
+.pull-right {
+  margin-top: 0;
+}
+.mandatory-input {
+  color: #ff7f7f;
+}
+
+.z-tabs.underlined.blue > ul.z-tabs-nav > li.z-active > a {
+  border-color: #00b0d8;
+  background-color: #1c7ebb !important;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.z-tabs.underlined.horizontal.xxlarge > ul.z-tabs-nav > li > a.z-link {
+  padding: 8px 16px !important;
+}
+.z-tabs.medium.vertical > ul > li > a {
+  padding: 9px 19px !important;
+}
+
+a.active {
+  background-color: #176799 !important;
+  color: #fff;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.ng2-pagination > li {
+  font-size: 14px !important;
+}
+
+.invalid-input {
+  border-color: #ff7f7f !important;
+}
+
+.ui-growl {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 301px;
+}
+
+.ui-shadow {
+  -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.ui-growl-item {
+  display: block;
+  padding: 10px 15px;
+}
+
+.ui-growl-icon-close {
+  position: absolute;
+  top: 5px;
+  right: 3px;
+  cursor: pointer;
+}
+
+.ui-growl-image {
+  float: left;
+  margin-left: 5px;
+  padding: 0;
+  display: block;
+}
+
+.ui-growl-message {
+  padding: 0 0 5px 0;
+  width: 220px;
+  float: right;
+}
+
+.ui-growl-title {
+  font-weight: bold;
+  padding: 0 0 7px 0;
+  display: block;
+}
+
+/*
+// loader starts*/
+
+.cssload-loader {
+  width: 97px;
+  height: 19px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+}
+.cssload-loader > div {
+  content: ' ';
+  width: 10px;
+  height: 10px;
+  background: rgb(33, 150, 243);
+  border-radius: 100%;
+  position: absolute;
+  animation: cssload-shift 2.3s linear infinite;
+  -o-animation: cssload-shift 2.3s linear infinite;
+  -ms-animation: cssload-shift 2.3s linear infinite;
+  -webkit-animation: cssload-shift 2.3s linear infinite;
+  -moz-animation: cssload-shift 2.3s linear infinite;
+}
+.cssload-loader > div:nth-of-type(1) {
+  animation-delay: -0.46s;
+  -o-animation-delay: -0.46s;
+  -ms-animation-delay: -0.46s;
+  -webkit-animation-delay: -0.46s;
+  -moz-animation-delay: -0.46s;
+}
+.cssload-loader > div:nth-of-type(2) {
+  animation-delay: -0.92s;
+  -o-animation-delay: -0.92s;
+  -ms-animation-delay: -0.92s;
+  -webkit-animation-delay: -0.92s;
+  -moz-animation-delay: -0.92s;
+}
+.cssload-loader > div:nth-of-type(3) {
+  animation-delay: -1.38s;
+  -o-animation-delay: -1.38s;
+  -ms-animation-delay: -1.38s;
+  -webkit-animation-delay: -1.38s;
+  -moz-animation-delay: -1.38s;
+}
+.cssload-loader > div:nth-of-type(4) {
+  animation-delay: -1.84s;
+  -o-animation-delay: -1.84s;
+  -ms-animation-delay: -1.84s;
+  -webkit-animation-delay: -1.84s;
+  -moz-animation-delay: -1.84s;
+}
+
+@keyframes cssload-shift {
+  0% {
+    left: -58px;
+    opacity: 0;
+    background-color: lightblue;
+  }
+  10% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    left: 97px;
+    opacity: 1;
+  }
+  100% {
+    left: 156px;
+    background-color: steelblue;
+    opacity: 0;
+  }
+}
+
+@-o-keyframes cssload-shift {
+  0% {
+    left: -58px;
+    opacity: 0;
+    background-color: lightblue;
+  }
+  10% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    left: 97px;
+    opacity: 1;
+  }
+  100% {
+    left: 156px;
+    background-color: steelblue;
+    opacity: 0;
+  }
+}
+
+@-ms-keyframes cssload-shift {
+  0% {
+    left: -58px;
+    opacity: 0;
+    background-color: lightblue;
+  }
+  10% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    left: 97px;
+    opacity: 1;
+  }
+  100% {
+    left: 156px;
+    background-color: steelblue;
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes cssload-shift {
+  0% {
+    left: -58px;
+    opacity: 0;
+    background-color: lightblue;
+  }
+  10% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    left: 97px;
+    opacity: 1;
+  }
+  100% {
+    left: 156px;
+    background-color: steelblue;
+    opacity: 0;
+  }
+}
+
+@-moz-keyframes cssload-shift {
+  0% {
+    left: -58px;
+    opacity: 0;
+    background-color: lightblue;
+  }
+  10% {
+    left: 0;
+    opacity: 1;
+  }
+  90% {
+    left: 97px;
+    opacity: 1;
+  }
+  100% {
+    left: 156px;
+    background-color: steelblue;
+    opacity: 0;
+  }
+}
+
+.cssForExpiredTicket {
+  /*background: rgb(255, 204, 204) 20px 50% no-repeat !important;*/
+  background: linear-gradient(rgb(255, 204, 204), rgb(255, 153, 153)) !important;
+  /*border: 2px solid rgb(255, 127, 127) !important;*/
+  /*border: 2px solid black !important;*/
+}
+.cssForRescindedTicket {
+  background: linear-gradient(rgb(252, 255, 204), rgb(246, 255, 102)) !important;
+  /*border: 2px solid rgb(240, 255, 0)!important;*/
+}
+/*// loader ends*/
+
+/* PrimeNG Confirmation Dialog - April 28, 2025 Update */
+.p-dialog.p-confirm-dialog {
+  border-radius: var(--border-radius-md, 8px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  min-width: 400px; /* Increased width for better readability */
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-header {
+  padding: 1.25rem 1.5rem; /* More vertical padding */
+  background-color: #f8f9fa;
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-title {
+  font-size: 1.4rem; /* Increased from default */
+  font-weight: 600;
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-content {
+  padding: 1.75rem 1.5rem; /* More vertical padding */
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-message {
+  font-size: 1.25rem; /* Increased from 1.1rem */
+  line-height: 1.6;
+  color: #333;
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-footer {
+  padding: 1.25rem 1.5rem; /* More vertical padding */
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem; /* Increased gap between buttons */
+}
+
+.p-dialog.p-confirm-dialog .p-dialog-footer button {
+  min-width: 110px; /* Slightly wider buttons */
+  padding: 0.7rem 1.3rem; /* More padding for buttons */
+  font-size: 1.15rem; /* Larger button text */
+}
+
+/* Increase icon size in confirmation dialog */
+.p-dialog.p-confirm-dialog .p-confirm-dialog-icon {
+  font-size: 1.75rem; /* Increased from 1.5rem */
+  margin-right: 1rem; /* More spacing */
+  color: #f59e0b;
+}
+
+/* Dark mode support with enhanced contrast */
+@media (prefers-color-scheme: dark) {
+
+
+  .p-dialog.p-confirm-dialog {
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+  }
+
+  .p-dialog.p-confirm-dialog .p-dialog-header {
+    background-color: #252525;
+    border-bottom: 1px solid #555;
+  }
+
+  .p-dialog.p-confirm-dialog .p-dialog-title {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  /* Fix for dark mode text contrast - specifically targeting #495057 color */
+  .p-dialog.p-confirm-dialog .p-dialog-content,
+  .p-dialog.p-confirm-dialog .p-dialog-message,
+  .p-dialog.p-confirm-dialog p,
+  .p-dialog.p-confirm-dialog span {
+    color: #ffffff !important;
+    font-weight: 500;
+    text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Override any styles with #495057 color in PrimeNG dialogs */
+  .p-component,
+  .p-component *,
+  .p-dialog * {
+    color: #ffffff !important;
+  }
+
+  .p-dialog.p-confirm-dialog .p-dialog-footer {
+    border-top: 1px solid #555;
+    background-color: #252525;
+  }
+
+  .p-confirm-dialog-reject {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border: none !important;
+  }
+
+  .p-confirm-dialog-reject:hover {
+    background-color: #5a6268 !important;
+  }
+
+  .p-confirm-dialog-accept {
+    background-color: #007bff !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+    border: none !important;
+  }
+
+  .p-confirm-dialog-accept:hover {
+    background-color: #0069d9 !important;
+  }
+
+  /* Ensure icon has good contrast */
+  .p-dialog.p-confirm-dialog .p-confirm-dialog-icon {
+    color: #ffc107;
+    filter: drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.5));
+  }
+}
+
+/* Ensure proper button spacing in confirmation dialog */
+button.p-button.p-confirm-dialog-reject {
+  margin-right: 1rem;
+}
+
+/* PrimeNG Table Dark Mode Fixes - April 28, 2025 */
+@media (prefers-color-scheme: dark) {
+  /* Fix for data tables in dark mode */
+  .data-table-container {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+
+  /* PrimeNG table specific overrides */
+  .p-datatable {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    background-color: #252525 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #2a2a2a !important;
+  }
+
+  /* Fix table header row */
+  .p-datatable .p-datatable-header {
+    background-color: #252525 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  /* Fix pagination controls */
+  .p-paginator {
+    background-color: #252525 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-paginator .p-paginator-page,
+  .p-paginator .p-paginator-next,
+  .p-paginator .p-paginator-last,
+  .p-paginator .p-paginator-first,
+  .p-paginator .p-paginator-prev {
+    color: #ffffff !important;
+  }
+
+  .p-paginator .p-paginator-page.p-highlight {
+    background-color: #3498db !important;
+    color: #ffffff !important;
+  }
+
+  /* Fix for search inputs within tables */
+  .p-datatable .p-datatable-header input,
+  .table-header input {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-datatable .p-datatable-header input::placeholder,
+  .table-header input::placeholder {
+    color: #aaaaaa !important;
+  }
+
+  /* Fix for dropdown/select elements */
+  .p-dropdown {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-dropdown-panel {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+  }
+
+  .p-dropdown-panel .p-dropdown-item {
+    color: #ffffff !important;
+  }
+
+  .p-dropdown-panel .p-dropdown-item:hover {
+    background-color: #444444 !important;
+  }
+}
+
+/* Set default text color using a CSS variable */
+:root {
+  --text-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #fff;
+  }
+  /* Override for PrimeNG components in dark mode */
+  .p-component,
+  .p-component *,
+  .p-dialog * {
+    color: var(--text-color, #fff) !important;
+  }
+  /* Ensure selected p-multiselect items with white background use dark text in dark mode */
+  .p-multiselect-item.p-highlight,
+  .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight,
+  .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight.p-focus {
+    background: #fff !important;
+    color: #222 !important;
+  }
+
+
+}
+
+  .error-details {
+    background: #2a2a2a !important;
+    border-color: #404040 !important;
+    color: red !important;
+    font-size: var(--font-size-lg, 1.125rem) !important;
+  }
+
+/* Final dark mode override for p-multiselect selected items: ensures dark text on white background, even after global rules */
+@media (prefers-color-scheme: dark) {
+  .p-multiselect-item.p-highlight,
+  .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight,
+  .p-multiselect .p-multiselect-items .p-multiselect-item.p-highlight.p-focus,
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight {
+    background: #2a2d35 !important;
+    color: #fff !important;
+  }
+}
+
+/* Hide the search bar in all PrimeNG p-multiselect components globally */
+.p-multiselect-filter-container {
+  display: none !important;
+}
+
+/* Dark mode: ensure 'select all' checkbox in p-multiselect header matches dark theme */
+@media (prefers-color-scheme: dark) {
+  .p-multiselect-header  {
+    background: #2a2d35 !important;
+    border-color: #444 !important;
+  }
+  .p-multiselect-header .p-highlight {
+    background: #3a7bd5 !important;
+    border-color: #3a7bd5 !important;
+    color: #fff !important;
+  }
+
+  /* Dark mode: ensure p-multiselect header (container of select all checkbox) matches dark theme */
+  .p-multiselect-panel .p-multiselect-header {
+    background: #2a2d35 !important;
+    color: #fff !important;
+  }
+}

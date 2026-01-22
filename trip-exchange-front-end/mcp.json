@@ -1,0 +1,9 @@
+{
+  "workspaceRoot": "/Users/tvoir/repos/dts/clearinghouse_client",
+  "servers": {
+    "nx-mcp": {
+      "command": "npx",
+      "args": ["nx-mcp@latest", "."]
+    }
+  }
+}

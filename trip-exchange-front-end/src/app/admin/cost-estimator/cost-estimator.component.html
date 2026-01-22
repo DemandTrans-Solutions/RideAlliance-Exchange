@@ -1,0 +1,115 @@
+<div class="p-4 cost-estimator-container">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="text-primary">
+        <i class="pi pi-calculator me-2"></i>
+        {{ 'admin.costEstimator.title' | translate }}
+      </h2>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h3>{{ 'admin.costEstimator.pickupFees' | translate }}</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                {{ 'admin.costEstimator.ambulatoryFee' | translate }}
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="placeholder"
+                  name="ambulatory"
+                  [(ngModel)]="ambulatory"
+                  [disabled]="!canEdit"
+                  appCostEstimator
+                />
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">
+                {{ 'admin.costEstimator.wheelchairFee' | translate }}
+              </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="placeholder"
+                  name="wheelchair"
+                  [(ngModel)]="wheelchair"
+                  [disabled]="!canEdit"
+                  appCostEstimator
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-light">
+          <h3>{{ 'admin.costEstimator.rateStructure' | translate }}</h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label"> {{ 'admin.costEstimator.feePerMile' | translate }} </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="placeholder"
+                  name="perMile"
+                  [(ngModel)]="perMile"
+                  [disabled]="!canEdit"
+                  appCostEstimator
+                />
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label"> {{ 'admin.costEstimator.feePerHour' | translate }} </label>
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="placeholder"
+                  name="perHour"
+                  [(ngModel)]="perHour"
+                  [disabled]="!canEdit"
+                  appCostEstimator
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 offset-md-2 text-end">
+      <p-button
+        styleClass="p-button-danger"
+        icon="pi pi-save"
+        [disabled]="!canEdit"
+        (click)="saveCostEstimator()"
+        [label]="'global.save' | translate"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>

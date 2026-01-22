@@ -1,0 +1,85 @@
+<body id="app">
+  <div class="auth-container">
+    <header class="auth-header">
+      <div class="logo">
+        <h1 class="style">{{ 'APP.TITLE' | translate }}</h1>
+      </div>
+    </header>
+
+    <main class="auth-content">
+      <div class="auth-card">
+        <h2 class="auth-title">{{ 'ACTIVATE_ACCOUNT.TITLE' | translate }}</h2>
+
+        <form [formGroup]="ngForm" (ngSubmit)="onSubmit(ngForm)" class="auth-form">
+          <div class="form-group">
+            <label for="username" class="form-label"
+              >{{ 'ACTIVATE_ACCOUNT.USERNAME_LABEL' | translate }}</label
+            >
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <i class="ph ph-user"></i>
+              </span>
+              <input
+                type="text"
+                pInputText
+                id="username"
+                name="username"
+                [(ngModel)]="activateAccount.username"
+                formControlName="Text"
+                [placeholder]="'ACTIVATE_ACCOUNT.USERNAME_PLACEHOLDER' | translate"
+                [required]="true"
+                aria-describedby="username-help"
+              />
+            </div>
+            <small
+              id="username-help"
+              class="form-text"
+              *ngIf="ngForm.get('Text')?.touched && ngForm.get('Text')?.invalid"
+            >
+              {{ 'ACTIVATE_ACCOUNT.USERNAME_REQUIRED' | translate }}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="temporarypassword" class="form-label"
+              >{{ 'ACTIVATE_ACCOUNT.TEMP_PASSWORD_LABEL' | translate }}</label
+            >
+            <div class="input-wrapper">
+              <span class="input-icon">
+                <i class="ph ph-lock"></i>
+              </span>
+              <input
+                type="password"
+                pInputText
+                id="temporarypassword"
+                name="temporarypassword"
+                [(ngModel)]="activateAccount.temporaryPassword"
+                formControlName="Password"
+                [placeholder]="'ACTIVATE_ACCOUNT.TEMP_PASSWORD_PLACEHOLDER' | translate"
+                [required]="true"
+                aria-describedby="password-help"
+              />
+            </div>
+            <small
+              id="password-help"
+              class="form-text"
+              *ngIf="ngForm.get('Password')?.touched && ngForm.get('Password')?.invalid"
+            >
+              {{ 'ACTIVATE_ACCOUNT.PASSWORD_REQUIRED' | translate }}
+            </small>
+          </div>
+
+          <button type="submit" class="btn-primary" [disabled]="!ngForm.valid">
+            {{ 'ACTIVATE_ACCOUNT.BUTTON' | translate }}
+          </button>
+
+          <div class="auth-links">
+            <a routerLink="/login" class="auth-link"
+              >{{ 'ACTIVATE_ACCOUNT.BACK_TO_LOGIN' | translate }}</a
+            >
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</body>

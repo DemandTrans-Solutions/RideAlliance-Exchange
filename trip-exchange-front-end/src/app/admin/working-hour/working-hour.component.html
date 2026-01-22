@@ -1,0 +1,244 @@
+<div class="admin-module">
+  <div class="data-view">
+    <!-- Page header with provider info -->
+    <div class="page-header">
+      <h2 class="section-title">{{ 'WORKING_HOURS.TITLE' | translate }}: {{ providerName }}</h2>
+      <button class="btn-secondary" (click)="goBack()">
+        <i class="ph ph-arrow-left" aria-hidden="true"></i> {{ 'WORKING_HOURS.BACK' | translate }}
+      </button>
+    </div>
+
+    <!-- Working hours data table -->
+    <div class="data-table-container" *ngIf="!isEditMode">
+      <div class="action-bar">
+        <button class="btn-primary" (click)="addWorkingHour()">
+          <i class="ph ph-plus" aria-hidden="true"></i> {{ 'WORKING_HOURS.ADD_NEW' | translate }}
+        </button>
+      </div>
+
+      <p-table
+        *ngIf="workingHours && workingHours.length > 0"
+        [value]="workingHours"
+        [rowsPerPageOptions]="[10,25,50]"
+        [rows]="10"
+        [paginator]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'WORKING_HOURS.DAY' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.START_TIME' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.END_TIME' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.IS_HOLIDAY' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.STATUS' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.ACTIONS' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-hour>
+          <tr [ngClass]="{'inactive-row': !hour.isActive}">
+            <td>{{ getDayName(hour.day) }}</td>
+            <td>{{ formatTime(hour.startTime) }}</td>
+            <td>{{ formatTime(hour.endTime) }}</td>
+            <td>
+              <span class="status-indicator" [ngClass]="{'active': hour.isHoliday}">
+                {{ hour.isHoliday ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+              </span>
+            </td>
+            <td>
+              <span class="status-indicator" [ngClass]="{'active': hour.isActive}">
+                {{ hour.isActive ? ('COMMON.ACTIVE' | translate) : ('COMMON.INACTIVE' | translate) }}
+              </span>
+            </td>
+            <td class="actions-column">
+              <div class="action-icons">
+                <button
+                  class="btn-icon btn-edit"
+                  (click)="editWorkingHour(hour)"
+                  [title]="'WORKING_HOURS.EDIT_TITLE' | translate"
+                  [attr.aria-label]="'WORKING_HOURS.EDIT_ARIA' | translate"
+                  style="margin-right: 8px"
+                >
+                  <i class="ph ph-pencil-simple"></i>
+                </button>
+                <!--
+                <button
+                  class="btn-icon"
+                  [ngClass]="hour.isActive ? 'btn-warning' : 'btn-success'"
+                  (click)="toggleActive(hour)"
+                  [title]="hour.isActive ? ('WORKING_HOURS.DEACTIVATE_TITLE' | translate) : ('WORKING_HOURS.ACTIVATE_TITLE' | translate)"
+                  [attr.aria-label]="hour.isActive ? ('WORKING_HOURS.DEACTIVATE_ARIA' | translate) : ('WORKING_HOURS.ACTIVATE_ARIA' | translate)"
+                  style="margin-right: 8px"
+                >
+                  <i class="ph" [ngClass]="hour.isActive ? 'ph-toggle-right' : 'ph-toggle-left'"></i>
+                </button>
+                -->
+                <button
+                  class="btn-icon btn-danger"
+                  (click)="deleteWorkingHour(hour)"
+                  [title]="'WORKING_HOURS.DELETE_TITLE' | translate"
+                  [attr.aria-label]="'WORKING_HOURS.DELETE_ARIA' | translate"
+                >
+                  <i class="ph ph-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>{{ 'WORKING_HOURS.NO_DATA' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      <p-table
+        [value]="[]"
+        styleClass="p-datatable-sm"
+        *ngIf="workingHours && workingHours.length === 0"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'WORKING_HOURS.DAY' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.START_TIME' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.END_TIME' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.IS_HOLIDAY' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.STATUS' | translate }}</th>
+            <th>{{ 'WORKING_HOURS.ACTIONS' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>{{ 'WORKING_HOURS.NO_DATA' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <!-- Working hour form -->
+    <div class="form-container" *ngIf="isEditMode">
+      <h3 class="form-title">
+        {{ isEditMode ? ('WORKING_HOURS.EDIT_HOUR' | translate) : ('WORKING_HOURS.ADD_NEW_HOUR' | translate) }}
+      </h3>
+
+      <form [formGroup]="workingHourForm" class="data-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="day" class="form-label">
+              {{ 'WORKING_HOURS.DAY' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <select
+              id="day"
+              class="form-select"
+              formControlName="day"
+              [ngClass]="{'invalid-input': workingHourForm.get('day').invalid && workingHourForm.get('day').touched}"
+            >
+              <option value="" disabled>{{ 'WORKING_HOURS.SELECT_DAY' | translate }}</option>
+              <option *ngFor="let day of daysOfWeek" [value]="day.value">
+                {{ day.label | translate }}
+              </option>
+            </select>
+            <div
+              class="error-message"
+              *ngIf="workingHourForm.get('day').invalid && workingHourForm.get('day').touched"
+            >
+              {{ 'WORKING_HOURS.DAY_REQUIRED' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group form-group-half">
+            <label for="startTime" class="form-label">
+              {{ 'WORKING_HOURS.START_TIME' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="time"
+              id="startTime"
+              class="form-control"
+              formControlName="startTime"
+              [ngClass]="{'invalid-input': workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched}"
+            />
+            <div
+              class="error-message"
+              *ngIf="workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched"
+            >
+              {{ 'WORKING_HOURS.VALID_TIME_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group form-group-half">
+            <label for="endTime" class="form-label">
+              {{ 'WORKING_HOURS.END_TIME' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="time"
+              id="endTime"
+              class="form-control"
+              formControlName="endTime"
+              [ngClass]="{'invalid-input': workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched}"
+            />
+            <div
+              class="error-message"
+              *ngIf="workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched"
+            >
+              {{ 'WORKING_HOURS.VALID_TIME_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group checkbox-group">
+            <div class="checkbox-container">
+              <input
+                type="checkbox"
+                id="isHoliday"
+                formControlName="isHoliday"
+                class="form-checkbox"
+              />
+              <label for="isHoliday" class="checkbox-label">
+                {{ 'WORKING_HOURS.MARK_AS_HOLIDAY' | translate }}
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <div class="checkbox-container">
+              <input
+                type="checkbox"
+                id="isActive"
+                formControlName="isActive"
+                class="form-checkbox"
+              />
+              <label for="isActive" class="checkbox-label">
+                {{ 'WORKING_HOURS.IS_ACTIVE' | translate }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="cancelEdit()">
+            {{ 'COMMON.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            [disabled]="workingHourForm.invalid"
+            (click)="saveWorkingHour()"
+          >
+            {{ isEditMode ? ('COMMON.UPDATE' | translate) : ('COMMON.SAVE' | translate) }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,540 @@
+<div class="admin-module">
+  <div *ngIf="showGrid" class="data-view">
+    <h2 class="section-title">{{ 'PROVIDERS.TITLE' | translate }}</h2>
+
+    <div class="action-bar">
+      <!-- <div class="search-container">
+        <div class="search-input-wrapper">
+          <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+          <input
+            #gb
+            type="text"
+            class="search-input"
+            pInputText
+            placeholder="{{ 'PROVIDERS.SEARCH_PLACEHOLDER' | translate }}"
+            aria-label="{{ 'PROVIDERS.SEARCH_ARIA' | translate }}"
+            (input)="filterGlobal($event)"
+          />
+        </div>
+      </div> -->
+
+      <div class="action-buttons">
+        <button
+          *ngIf="loggerRole === 'ROLE_ADMIN'"
+          class="btn-primary"
+          (click)="addProvider()"
+          aria-label="{{ 'PROVIDERS.ADD_PROVIDER_ARIA' | translate }}"
+        >
+          <i class="ph ph-plus" aria-hidden="true"></i>
+          <span>{{ 'PROVIDERS.ADD_PROVIDER' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="data-table-container">
+      <p-table
+        [value]="providerListData"
+        styleClass="p-datatable-sm"
+        [rowsPerPageOptions]="[10,25,50]"
+        [rows]="10"
+        [paginator]="true"
+        [filterDelay]="0"
+        [globalFilterFields]="['providerName','contactEmail','providerAddress.phoneNumber']"
+        [resizableColumns]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="providerName" class="column-name">
+              {{ 'PROVIDERS.NAME' | translate }} <p-sortIcon field="providerName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="contactEmail" class="column-email">
+              {{ 'PROVIDERS.EMAIL' | translate }} <p-sortIcon field="contactEmail"></p-sortIcon>
+            </th>
+            <th pSortableColumn="providerAddress.phoneNumber" class="column-phone">
+              {{ 'PROVIDERS.PHONE_NUMBER' | translate }}
+              <p-sortIcon field="providerAddress.phoneNumber"></p-sortIcon>
+            </th>
+            <th class="column-actions">{{ 'PROVIDERS.ACTIONS' | translate }}</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-provider>
+          <tr>
+            <td class="column-name">{{provider.providerName}}</td>
+            <td class="column-email">
+              <a href="mailto:{{provider.contactEmail}}" class="email-link"
+                >{{provider.contactEmail}}</a
+              >
+            </td>
+            <td class="column-phone">{{provider.providerAddress?.phoneNumber}}</td>
+            <td class="column-actions">
+              <div class="action-icons">
+                <button
+                  class="btn-icon btn-edit"
+                  [title]="'PROVIDERS.EDIT_PROVIDER_TITLE' | translate"
+                  [attr.aria-label]="'PROVIDERS.EDIT_PROVIDER_ARIA' | translate"
+                  style="margin-right: 8px"
+                  (click)="editProvider(provider)"
+                >
+                  <i class="ph ph-pencil-simple"></i>
+                </button>
+
+                <button
+                  class="btn-icon btn-info"
+                  [title]="'PROVIDERS.WORKING_HOURS_TITLE' | translate"
+                  [attr.aria-label]="'PROVIDERS.WORKING_HOURS_ARIA' | translate"
+                  style="margin-right: 8px"
+                  (click)="viewWorkingHours(provider)"
+                >
+                  <i class="ph ph-clock"></i>
+                </button>
+
+                <ng-container *ngIf="loggerRole === 'ROLE_ADMIN'">
+                  <button
+                    class="btn-icon"
+                    [ngClass]="{'btn-success': !provider.isActive, 'btn-danger': provider.isActive}"
+                    [title]="(provider.isActive ? 'PROVIDERS.DEACTIVATE_TITLE' : 'PROVIDERS.ACTIVATE_TITLE') | translate"
+                    [attr.aria-label]="(provider.isActive ? 'PROVIDERS.DEACTIVATE_ARIA' : 'PROVIDERS.ACTIVATE_ARIA') | translate"
+                    (click)="updateStatus(provider)"
+                  >
+                    <i
+                      class="ph"
+                      [ngClass]="{'ph-toggle-right': !provider.isActive, 'ph-toggle-left': provider.isActive}"
+                    ></i>
+                  </button>
+                </ng-container>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4">
+              <div class="empty-message">
+                <i class="ph ph-info"></i>
+                <span>{{ 'PROVIDERS.NO_RECORDS' | translate }}</span>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+  <!-- Add/Edit provider form -->
+  <div *ngIf="!showGrid" class="form-view">
+    <div class="form-container">
+      <h2 class="form-title">{{ pageName }} {{ 'PROVIDERS.PROVIDER' | translate }}</h2>
+
+      <form novalidate #providerForm="ngForm" class="data-form provider-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="providerName" class="form-label">
+              {{ 'PROVIDERS.NAME' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="providerName"
+              class="form-control"
+              [(ngModel)]="provider.providerName"
+              name="providerName"
+              [required]="true"
+              maxlength="100"
+              pattern="[a-zA-Z0-9 .,_\-]+"
+              #providerName="ngModel"
+              [ngClass]="{'invalid-input': !providerName.valid && !providerName.pristine}"
+              aria-describedby="providerName-error"
+            />
+            <div
+              id="providerName-error"
+              class="error-message"
+              *ngIf="!providerName.valid && !providerName.pristine"
+            >
+              {{ 'PROVIDERS.VALID_NAME_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contactEmail" class="form-label">
+              {{ 'PROVIDERS.PRIMARY_EMAIL' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="email"
+              id="contactEmail"
+              class="form-control"
+              [(ngModel)]="provider.contactEmail"
+              name="contactEmail"
+              [required]="true"
+              maxlength="100"
+              #contactEmail="ngModel"
+              pattern="[^@]+@[^@]+\.[a-zA-Z]{2,}"
+              [ngClass]="{'invalid-input': !contactEmail.valid && !contactEmail.pristine}"
+              aria-describedby="contactEmail-error"
+            />
+            <div
+              id="contactEmail-error"
+              class="error-message"
+              *ngIf="!contactEmail.valid && !contactEmail.pristine"
+            >
+              {{ 'PROVIDERS.VALID_EMAIL_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phoneNumber" class="form-label">
+              {{ 'PROVIDERS.PHONE_NUMBER' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <p-inputMask
+              id="phoneNumber"
+              [(ngModel)]="provider.providerAddress.phoneNumber"
+              name="phoneNumber"
+              [required]="true"
+              mask="(999) 999-9999"
+              styleClass="form-control"
+              pattern="^\([1-9][0-9]{2}\)[ ]([0-9]{3})[-]([0-9]{4})"
+              #phoneNumber="ngModel"
+              [ngClass]="{'invalid-input': !phoneNumber.valid && !phoneNumber.pristine}"
+              aria-describedby="phoneNumber-error"
+            >
+            </p-inputMask>
+            <div
+              id="phoneNumber-error"
+              class="error-message"
+              *ngIf="!phoneNumber.valid && !phoneNumber.pristine"
+            >
+              {{ 'PROVIDERS.VALID_PHONE_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="street1" class="form-label">
+              {{ 'PROVIDERS.ADDRESS_LINE_1' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="street1"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.street1"
+              name="street1"
+              [required]="true"
+              maxlength="50"
+              #street1="ngModel"
+              [ngClass]="{'invalid-input': !street1.valid && !street1.pristine}"
+              aria-describedby="street1-error"
+            />
+            <div
+              id="street1-error"
+              class="error-message"
+              *ngIf="!street1.valid && !street1.pristine"
+            >
+              {{ 'PROVIDERS.ADDRESS_LINE_1_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="street2" class="form-label"
+              >{{ 'PROVIDERS.ADDRESS_LINE_2' | translate }}</label
+            >
+            <input
+              type="text"
+              id="street2"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.street2"
+              name="street2"
+              maxlength="50"
+              #street2="ngModel"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="city" class="form-label">
+              {{ 'PROVIDERS.CITY' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="city"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.city"
+              name="city"
+              [required]="true"
+              maxlength="30"
+              #city="ngModel"
+              pattern="[A-Za-z ]{1,100}"
+              [ngClass]="{'invalid-input': !city.valid && !city.pristine}"
+              aria-describedby="city-error"
+            />
+            <div id="city-error" class="error-message" *ngIf="!city.valid && !city.pristine">
+              {{ 'PROVIDERS.VALID_CITY_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="states" class="form-label">
+              {{ 'PROVIDERS.STATE' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <select
+              id="states"
+              class="form-select"
+              [(ngModel)]="provider.providerAddress.state"
+              name="states"
+              [required]="true"
+              #states="ngModel"
+              [ngClass]="{'invalid-input': !states.valid && !states.pristine}"
+              aria-describedby="states-error"
+            >
+              <option value="">{{ 'PROVIDERS.PLEASE_SELECT' | translate }}</option>
+              <option value="AL">Alabama (AL)</option>
+              <option value="AK">Alaska (AK)</option>
+              <option value="AZ">Arizona (AZ)</option>
+              <option value="AR">Arkansas (AR)</option>
+              <option value="CA">California (CA)</option>
+              <option value="CO">Colorado (CO)</option>
+              <option value="CT">Connecticut (CT)</option>
+              <option value="DE">Delaware (DE)</option>
+              <option value="DC">District of Columbia (DC)</option>
+              <option value="FL">Florida (FL)</option>
+              <option value="GA">Georgia (GA)</option>
+              <option value="HI">Hawaii (HI)</option>
+              <option value="ID">Idaho (ID)</option>
+              <option value="IL">Illinois (IL)</option>
+              <option value="IN">Indiana (IN)</option>
+              <option value="IA">Iowa (IA)</option>
+              <option value="KS">Kansas (KS)</option>
+              <option value="KY">Kentucky (KY)</option>
+              <option value="LA">Louisiana (LA)</option>
+              <option value="ME">Maine (ME)</option>
+              <option value="MD">Maryland (MD)</option>
+              <option value="MA">Massachusetts (MA)</option>
+              <option value="MI">Michigan (MI)</option>
+              <option value="MN">Minnesota (MN)</option>
+              <option value="MS">Mississippi (MS)</option>
+              <option value="MO">Missouri (MO)</option>
+              <option value="MT">Montana (MT)</option>
+              <option value="NE">Nebraska (NE)</option>
+              <option value="NV">Nevada (NV)</option>
+              <option value="NH">New Hampshire (NH)</option>
+              <option value="NJ">New Jersey (NJ)</option>
+              <option value="NM">New Mexico (NM)</option>
+              <option value="NY">New York (NY)</option>
+              <option value="NC">North Carolina (NC)</option>
+              <option value="ND">North Dakota (ND)</option>
+              <option value="OH">Ohio (OH)</option>
+              <option value="OK">Oklahoma (OK)</option>
+              <option value="OR">Oregon (OR)</option>
+              <option value="PA">Pennsylvania (PA)</option>
+              <option value="RI">Rhode Island (RI)</option>
+              <option value="SC">South Carolina (SC)</option>
+              <option value="SD">South Dakota (SD)</option>
+              <option value="TN">Tennessee (TN)</option>
+              <option value="TX">Texas (TX)</option>
+              <option value="UT">Utah (UT)</option>
+              <option value="VT">Vermont (VT)</option>
+              <option value="VA">Virginia (VA)</option>
+              <option value="WA">Washington (WA)</option>
+              <option value="WV">West Virginia (WV)</option>
+              <option value="WI">Wisconsin (WI)</option>
+              <option value="WY">Wyoming (WY)</option>
+            </select>
+            <div id="states-error" class="error-message" *ngIf="!states.valid && !states.pristine">
+              {{ 'PROVIDERS.VALID_STATE_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="zipcode" class="form-label">
+              {{ 'PROVIDERS.ZIP_CODE' | translate }} <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="zipcode"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.zipcode"
+              name="zipcode"
+              [required]="true"
+              maxlength="5"
+              pattern="[0-9]{5}(-[0-9]{4})?"
+              #zipcode="ngModel"
+              [ngClass]="{'invalid-input': !zipcode.valid && !zipcode.pristine}"
+              (ngModelChange)="getLatLong(provider)"
+              aria-describedby="zipcode-error"
+            />
+            <div
+              id="zipcode-error"
+              class="error-message"
+              *ngIf="!zipcode.valid && !zipcode.pristine"
+            >
+              {{ 'PROVIDERS.VALID_ZIP_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group form-group-half">
+            <label for="latitude" class="form-label">{{ 'PROVIDERS.LATITUDE' | translate }}</label>
+            <input
+              type="number"
+              id="latitude"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.latitude"
+              name="lat"
+              maxlength="20"
+              [required]="true"
+              (click)="closer()"
+              [attr.aria-label]="'PROVIDERS.LATITUDE' | translate"
+            />
+          </div>
+
+          <div class="form-group form-group-half">
+            <label for="longitude" class="form-label"
+              >{{ 'PROVIDERS.LONGITUDE' | translate }}</label
+            >
+            <input
+              type="number"
+              id="longitude"
+              class="form-control"
+              [(ngModel)]="provider.providerAddress.longitude"
+              name="long"
+              maxlength="20"
+              [required]="true"
+              [attr.aria-label]="'PROVIDERS.LONGITUDE' | translate"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tripTicketExpirationDaysBefore" class="form-label">
+              {{ 'PROVIDERS.EXPIRATION_DAYS' | translate }}
+              <span class="required-indicator">*</span>
+            </label>
+            <input
+              type="number"
+              id="tripTicketExpirationDaysBefore"
+              class="form-control"
+              [(ngModel)]="provider.tripTicketExpirationDaysBefore"
+              name="tripTicketExpirationDaysBefore"
+              [required]="true"
+              min="1"
+              maxlength="3"
+              #tripTicketExpirationDaysBefore="ngModel"
+              pattern="^[+]?[0-9]+([.][0-9]+)?$"
+              [ngClass]="{'invalid-input': !tripTicketExpirationDaysBefore.valid && !tripTicketExpirationDaysBefore.pristine}"
+              aria-describedby="tripTicketExpirationDaysBefore-error"
+            />
+            <div
+              id="tripTicketExpirationDaysBefore-error"
+              class="error-message"
+              *ngIf="!tripTicketExpirationDaysBefore.valid && !tripTicketExpirationDaysBefore.pristine"
+            >
+              {{ 'PROVIDERS.VALID_DAYS_ERROR' | translate }}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tripTicketExpirationTimeOfDay" class="form-label">
+              {{ 'PROVIDERS.EXPIRATION_TIME' | translate }}
+              <span class="required-indicator">*</span>
+            </label>
+            <div class="timepicker-container">
+              <timepicker
+                id="tripTicketExpirationTimeOfDay"
+                [(ngModel)]="provider.tripTicketExpirationTimeOfDay"
+                [hourStep]="1"
+                [minuteStep]="15"
+                [showMeridian]="true"
+                name="tripTicketExpirationTimeOfDay"
+                #tripTicketExpirationTimeOfDay="ngModel"
+                [attr.aria-label]="'PROVIDERS.EXPIRATION_TIME_ARIA' | translate"
+              ></timepicker>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">
+              {{ 'PROVIDERS.PROVISIONAL_TIME' | translate }}
+              <span class="required-indicator">*</span>
+            </label>
+            <div class="time-inputs">
+              <div class="time-input-group">
+                <label for="tripTicketProvisionalTimehours" class="sub-label"
+                  >{{ 'PROVIDERS.HOURS' | translate }}</label
+                >
+                <input
+                  type="number"
+                  id="tripTicketProvisionalTimehours"
+                  class="form-control time-input"
+                  [(ngModel)]="tripTicketProvisionalTime_hours"
+                  name="tripTicketProvisionalTimehours"
+                  maxlength="2"
+                  min="0"
+                  max="24"
+                  step="1"
+                  #tripTicketProvisionalTimehours="ngModel"
+                  [required]="true"
+                  pattern="^[+]?[0-9]+([.][0-9]+)?$"
+                  [ngClass]="{'invalid-input': !tripTicketProvisionalTimehours.valid && !tripTicketProvisionalTimehours.pristine}"
+                  [attr.aria-label]="'PROVIDERS.PROVISIONAL_HOURS_ARIA' | translate"
+                />
+              </div>
+
+              <div class="time-input-group">
+                <label for="tripTicketProvisionalTimeminutes" class="sub-label"
+                  >{{ 'PROVIDERS.MINUTES' | translate }}</label
+                >
+                <input
+                  type="number"
+                  id="tripTicketProvisionalTimeminutes"
+                  class="form-control time-input"
+                  [(ngModel)]="tripTicketProvisionalTime_minutes"
+                  name="tripTicketProvisionalTimeminutes"
+                  maxlength="2"
+                  min="0"
+                  max="60"
+                  step="1"
+                  #tripTicketProvisionalTimeminutes="ngModel"
+                  [required]="true"
+                  pattern="^[+]?[0-9]+([.][0-9]+)?$"
+                  [ngClass]="{'invalid-input': !tripTicketProvisionalTimeminutes.valid && !tripTicketProvisionalTimeminutes.pristine}"
+                  [attr.aria-label]="'PROVIDERS.PROVISIONAL_MINUTES_ARIA' | translate"
+                />
+              </div>
+            </div>
+            <div
+              class="error-message"
+              *ngIf="
+              (!tripTicketProvisionalTimehours.valid && !tripTicketProvisionalTimehours.pristine) ||
+              (!tripTicketProvisionalTimeminutes.valid && !tripTicketProvisionalTimeminutes.pristine)"
+            >
+              {{ 'PROVIDERS.VALID_TIME_ERROR' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Form actions placed directly after the last form row -->
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="cancelEdit()"
+            [attr.aria-label]="'PROVIDERS.CANCEL_ARIA' | translate"
+          >
+            {{ 'PROVIDERS.CANCEL' | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="addEditProvider(tripTicketProvisionalTime_hours, tripTicketProvisionalTime_minutes)"
+            [disabled]="!providerForm.form.valid"
+            [attr.aria-label]="(pageName === 'Add' ? 'PROVIDERS.SAVE_ARIA' : 'PROVIDERS.UPDATE_ARIA') | translate"
+          >
+            {{ pageName === 'Add' ? ('PROVIDERS.SAVE' | translate) : ('PROVIDERS.UPDATE' |
+            translate) }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

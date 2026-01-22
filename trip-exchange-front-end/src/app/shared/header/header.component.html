@@ -1,0 +1,153 @@
+<!-- Modern Header Component - 2025 Edition -->
+<div id="header" class="app-header">
+  <div class="header-container">
+    <!-- Logo Section with Image -->
+    <div class="logo-section">
+      <div class="app-logo">
+        <img
+          src="assets/images/logos/trip-exchange-logo.svg"
+          alt="{{ 'HEADER.LOGO_ALT' | translate }}"
+          class="logo-image"
+          [class.clickable]="isAuthenticated"
+          *ngIf="!isAuthenticated; else clickableLogoImg"
+        />
+        <ng-template #clickableLogoImg>
+          <img
+            src="assets/images/logos/trip-exchange-logo.svg"
+            alt="{{ 'HEADER.LOGO_ALT' | translate }}"
+            class="logo-image clickable"
+            (click)="ticketEvent()"
+            style="cursor:pointer;"
+          />
+        </ng-template>
+        <span
+          class="logo-text"
+          [class.clickable]="isAuthenticated"
+          *ngIf="!isAuthenticated; else clickableLogoText"
+        >
+          {{ 'HEADER.LOGO_TEXT' | translate }}
+        </span>
+        <ng-template #clickableLogoText>
+          <span
+            class="logo-text clickable"
+            (click)="ticketEvent()"
+            style="cursor:pointer;"
+          >
+            {{ 'HEADER.LOGO_TEXT' | translate }}
+          </span>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Main Navigation - Only show when authenticated and not on login page -->
+    <nav class="main-nav" *ngIf="isAuthenticated ">
+      <ul class="nav-list">
+        <!-- Tickets - Available to all authenticated users -->
+        <li class="nav-item" title="{{ 'HEADER.TICKETS_TITLE' | translate }}">
+          <a #ticket (click)="ticketEvent()" class="nav-link">
+            <i class="ph ph-ticket"></i>
+            <span class="nav-label">{{ 'HEADER.TICKETS_LABEL' | translate }}</span>
+          </a>
+        </li>
+
+        <!-- Admin - Only for admin role -->
+        <li
+          class="nav-item"
+          title="{{ 'HEADER.ADMIN_TITLE' | translate }}"
+          *ngIf="hasRole(['ROLE_ADMIN','ROLE_PROVIDERADMIN'])"
+        >
+          <a #provider (click)="providerEvent()" class="nav-link">
+            <i class="ph ph-user-gear"></i>
+            <span class="nav-label">{{ 'HEADER.ADMIN_LABEL' | translate }}</span>
+          </a>
+        </li>
+
+        <!-- Reports - Only for admin and provider admin roles -->
+        <li
+          class="nav-item"
+          title="{{ 'HEADER.REPORTS_TITLE' | translate }}"
+          *ngIf="hasRole(['ROLE_ADMIN', 'ROLE_PROVIDERADMIN'])"
+        >
+          <a #reports (click)="reportsEvent()" class="nav-link">
+            <i class="ph ph-chart-line-up"></i>
+            <span class="nav-label">{{ 'HEADER.REPORTS_LABEL' | translate }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- User Menu - Only show when authenticated -->
+    <div class="user-menu" *ngIf="isAuthenticated">
+      <!-- Dark mode toggle -->
+      <button
+        class="theme-toggle-btn"
+        (click)="toggleDarkMode(); $event.stopPropagation()"
+        title="{{ isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}"
+        aria-label="Toggle dark mode"
+      >
+        <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
+      </button>
+
+      <div class="user-dropdown">
+        <button class="user-button" (click)="toggleDropdown($event)" (mouseenter)="checkRole()">
+          <div class="user-info">
+            <span class="user-name">{{userName}}</span>
+            <span class="user-role" *ngIf="role === 'ROLE_PROVIDERADMIN'">{{providerName}}</span>
+          </div>
+          <i
+            class="ph"
+            [ngClass]="{'ph-caret-up': isDropdownOpen, 'ph-caret-down': !isDropdownOpen}"
+          ></i>
+        </button>
+
+        <!-- Admin User Dropdown Menu -->
+        <div class="dropdown-panel" *ngIf="role === 'ROLE_ADMIN' && isDropdownOpen">
+          <a [routerLink]="['/profile']" class="dropdown-item">
+            <i class="ph ph-user"></i>
+            <span>{{ 'HEADER.PROFILE' | translate }}</span>
+          </a>
+          <a [routerLink]="['/changePasswordAfterLogin']" class="dropdown-item">
+            <i class="ph ph-key"></i>
+            <span>{{ 'HEADER.CHANGE_PASSWORD' | translate }}</span>
+          </a>
+          <a [routerLink]="['/applicationSettingsComponent']" class="dropdown-item">
+            <i class="ph ph-gear"></i>
+            <span>{{ 'HEADER.APPLICATION_SETTINGS' | translate }}</span>
+          </a>
+          <!-- Add dark mode toggle in dropdown menu too -->
+          <a (click)="toggleDarkMode(); $event.stopPropagation()" class="dropdown-item">
+            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
+            <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a [routerLink]="['/login']" (click)="onLogout()" class="dropdown-item">
+            <i class="ph ph-sign-out"></i>
+            <span>{{ 'HEADER.LOGOUT' | translate }}</span>
+          </a>
+        </div>
+
+        <!-- Provider User Dropdown Menu -->
+        <div class="dropdown-panel" *ngIf="role === 'ROLE_PROVIDERADMIN' && isDropdownOpen">
+          <a [routerLink]="['/profile']" class="dropdown-item">
+            <i class="ph ph-user"></i>
+            <span>{{ 'HEADER.PROFILE' | translate }}</span>
+          </a>
+          <a [routerLink]="['/changePasswordAfterLogin']" class="dropdown-item">
+            <i class="ph ph-key"></i>
+            <span>{{ 'HEADER.CHANGE_PASSWORD' | translate }}</span>
+          </a>
+          <!-- Add dark mode toggle in dropdown menu too -->
+          <a (click)="toggleDarkMode(); $event.stopPropagation()" class="dropdown-item">
+            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
+            <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <a [routerLink]="['/login']" (click)="onLogout()" class="dropdown-item">
+            <i class="ph ph-sign-out"></i>
+            <span>{{ 'HEADER.LOGOUT' | translate }}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
