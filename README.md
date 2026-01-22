@@ -70,22 +70,22 @@ This document was created to meet the requirements enumerated in the U.S. Depart
 
 File List for the `Clearinghouse_Trip_Exchange_Data_Package`  
 
-> 1. Filename: `trip-exchange-front-end/import-export/global-trip-template.xlsx`  
+> 1. Filename: [global-trip-template.xlsx](trip-exchange-front-end/import-export/global-trip-template.xlsx)
 > Short Description:  Global trip template workbook used to structure trip exchange/import/export tabular data.  
 
-> 1. Filename: `data.json`  
+> 1. Filename: [data.json](data.json)
 > Short Description:  DCAT-US v1.1 metadata file for federal search/discovery (data.gov / transportation.data.gov compatibility).  
 
-> 1. Filename: `DATA_DICTIONARY.md`  
+> 1. Filename: [DATA_DICTIONARY.md](DATA_DICTIONARY.md)  
 > Short Description:  Data dictionary describing the columns in the Global Trip Template workbook.  
 
-> 1. Filename: `CODEBOOK.md`  
+> 1. Filename: [CODEBOOK.md](CODEBOOK.md)
 > Short Description:  Codebook / controlled vocabulary notes (e.g., mobility aid code lists referenced by the template).  
 
-> 1. Filename: `DMP.md`  
+> 1. Filename: [DMP.md](DMP.md)
 > Short Description:  Data Management Plan content aligned to USDOT SMART / DOT recipient reporting guidance.  
 
-> 1. Filename: `CODE_SCRIPTS.md`  
+> 1. Filename: [CODE_SCRIPTS.md](CODE_SCRIPTS.md)
 > Short Description:  Inventory of scripts and supporting materials for working with the template and related artifacts.  
 
 

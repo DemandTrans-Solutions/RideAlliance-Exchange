@@ -75,7 +75,15 @@
           "format": "JSON",
           "mediaType": "application/json",
           "conformsTo": "https://spec.openapis.org/oas/v3.0.0"
-        } 
+        } ,
+        {
+          "@type": "dcat:Distribution",
+          "title": "Global Import Template",
+          "description": "An Excel file template used for importing and exporting data.",
+          "downloadURL": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange/blob/main/trip-exchange-front-end/import-export/global-trip-template.xlsx",
+          "format": "XLSX",
+          "mediaType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"          
+        }         
       ],
       "references": [
         "https://resources.data.gov/resources/dcat-us/"

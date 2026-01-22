@@ -1,6 +1,6 @@
 # Data Management Plan (DMP) — Stage 1 (SMART / USDOT)
 
-This file captures the Stage 1 DMP content required by the USDOT SMART recipient reporting guidance (see the reference PDF in [context/Recipient Reporting Guidance_Data Management Plan_022726.pdf](../context/Recipient%20Reporting%20Guidance_Data%20Management%20Plan_022726.pdf)).
+This file captures the Stage 1 DMP content required by the USDOT SMART recipient reporting guidance.
 
 ## 1. Dataset and Contact Information
 
