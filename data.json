@@ -33,22 +33,22 @@
         "fn": "todd.voirol@demandtrans.com",
         "hasEmail": "mailto:todd.voirol@demandtrans.com"
       },
-      "identifier": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+      "identifier": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange",
       "accessLevel": "public",
       "rights": "Open Use per USDOT funding with Attribution (Creative Commons 4.0/CC BY 4.0): This dataset is open access per USDOT funding. No restrictions on access or use. Users may share, copy, and redistribute in any medium with the condition they attribute to this source.",
       "license": "https://creativecommons.org/licenses/by/4.0/",
       "bureauCode": [],
       "programCode": [],
-      "landingPage": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+      "landingPage": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange",
       "language": ["en-US"],
       "accrualPeriodicity": "irregular",
       "theme": ["Transportation"],
       "distribution": [
         {
           "@type": "dcat:Distribution",
-          "accessURL": "https://github.com/DemandTrans-Solutions/trip-exchange-front-end",
+          "accessURL": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange",
           "description": "Source code repository; includes build artifacts and documentation. Data outputs will be posted in open formats (CSV, JSON, XML, TXT, PDF, JPEG, PNG) per project plan.",
-          "format": "API",
+          "format": "Repository",
           "title": "Trip Exchange Front-End Source and Documentation"
         },
         {
@@ -57,7 +57,25 @@
           "description": "Planned preservation location (National Transportation Library) for project datasets; persistent identifier to be registered upon deposit.",
           "format": "Repository",
           "title": "National Transportation Library Archive (planned)"
-        }
+        },
+      {
+          "@type": "dcat:Distribution",
+          "title": "Trip Exchange REST API",
+          "description": "RESTful API providing programmatic access to trip exchange functionality including authentication, provider management, trip tickets, claims, and partnerships.",
+          "accessURL": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange/trip-exchange-services",
+          "format": "API",
+          "mediaType": "application/json",
+          "conformsTo": "https://www.openapis.org/"
+        },
+        {
+          "@type": "dcat:Distribution",
+          "title": "OpenAPI Specification",
+          "description": "Machine-readable API specification in OpenAPI 3.0 format describing all available endpoints, request/response schemas, and authentication requirements.",
+          "downloadURL": "https://github.com/DemandTrans-Solutions/RideAlliance-Exchange/trip-exchange-services/blob/main/api-docs.json",
+          "format": "JSON",
+          "mediaType": "application/json",
+          "conformsTo": "https://spec.openapis.org/oas/v3.0.0"
+        } 
       ],
       "references": [
         "https://resources.data.gov/resources/dcat-us/"

@@ -10,7 +10,7 @@ This file captures the Stage 1 DMP content required by the USDOT SMART recipient
 - **Submitter email / phone:** [todd.voirol@demandtrans.com](mailto:todd.voirol@demandtrans.com) / (TBD)
 - **Submitter organization:** DemandTrans Solutions
 - **Organization email / phone:** (TBD)
-- **Project/repository website:** [https://github.com/DemandTrans-Solutions/trip-exchange-front-end](https://github.com/DemandTrans-Solutions/trip-exchange-front-end)
+- **Project/repository website:** [https://github.com/DemandTrans-Solutions/RideAlliance-Exchange](https://github.com/DemandTrans-Solutions/RideAlliance-Exchange)
 - **Date DMP written:** 2026-01-21
 
 ## 2. Data Description

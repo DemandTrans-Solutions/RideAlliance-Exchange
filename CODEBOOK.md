@@ -4,7 +4,7 @@ This codebook provides controlled vocabularies and code tables for the dataset/t
 
 ## Scope
 
-- Dataset/template: [import-export/global-trip-template.xlsx](../import-export/global-trip-template.xlsx)
+- Dataset/template: [global-trip-template.xlsx](trip-exchange-front-end/import-export/global-trip-template.xlsx)
 - The primary data dictionary for columns is in [DATA_DICTIONARY.md](DATA_DICTIONARY.md).
 - Source: values extracted from the `Instructions` sheet of the template workbook.
 

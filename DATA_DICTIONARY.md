@@ -2,7 +2,7 @@
 
 This data dictionary describes the columns in the global trip template workbook.
 
-- Source: [import-export/global-trip-template.xlsx](../import-export/global-trip-template.xlsx)
+- Source: [global-trip-template.xlsx](trip-exchange-front-end/import-export/global-trip-template.xlsx)
 - Sheet: `Global Trip Template`
 - Convention: fields with `*` in the column header are required.
 - Controlled vocabularies: see [CODEBOOK.md](CODEBOOK.md) for allowed values.
