@@ -85,6 +85,8 @@ File List for the `Clearinghouse_Trip_Exchange_Data_Package`
 > 1. Filename: [CODE_SCRIPTS.md](CODE_SCRIPTS.md)
 > Short Description:  Inventory of scripts and supporting materials for working with the template and related artifacts.  
 
+> 1. Filename: ['Ride Alliance Data Sharing Agreement with Appendices.docx']('trip-exchange-front-end/import-export/Ride Alliance Data Sharing Agreement with Appendices.docx')
+> Short Description:  Data Sharing Agreement.  
 
 ## D. Methodological Information  
 
