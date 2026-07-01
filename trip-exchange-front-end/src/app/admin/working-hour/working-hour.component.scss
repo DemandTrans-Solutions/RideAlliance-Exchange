@@ -1,33 +1,32 @@
 // Add CSS custom properties specific to working-hour component that work with both theme classes
 :root {
-  --working-hour-text-color: #343a40;
-  --working-hour-card-bg: #ffffff;
-  --working-hour-border-color: #e0e0e0;
+  --working-hour-text-color: var(--ink);
+  --working-hour-card-bg: var(--surface);
+  --working-hour-border-color: var(--line);
   --working-hour-table-header-bg: rgba(0, 0, 0, 0.03);
   --working-hour-hover-bg: rgba(52, 152, 219, 0.05);
 }
 
 // Dark theme variables for working-hour component
 html body.dark-theme {
-  --working-hour-text-color: #e9ecef;
-  --working-hour-card-bg: #343a40;
-  --working-hour-border-color: #495057;
-  --working-hour-table-header-bg: #495057;
+  --working-hour-text-color: var(--line);
+  --working-hour-card-bg: var(--ink);
+  --working-hour-border-color: var(--ink-2);
+  --working-hour-table-header-bg: var(--ink-2);
   --working-hour-hover-bg: rgba(95, 158, 255, 0.1);
 }
 
 // Light theme variables for working-hour component
 html body.light-theme {
-  --working-hour-text-color: #343a40;
-  --working-hour-card-bg: #ffffff;
-  --working-hour-border-color: #e0e0e0;
+  --working-hour-text-color: var(--ink);
+  --working-hour-card-bg: var(--surface);
+  --working-hour-border-color: var(--line);
   --working-hour-table-header-bg: rgba(0, 0, 0, 0.03);
   --working-hour-hover-bg: rgba(52, 152, 219, 0.05);
 }
 
 @import '../../../styles/variables';
 @import '../../../styles/mixins';
-@import '../../shared/styles/index';
 
 .admin-module {
   margin: 1rem;
@@ -74,8 +73,11 @@ html body.light-theme {
         padding: var(--space-md);
       }
 
+      // Header bg uses --neutral-200 to match the canonical table styling in
+      // src/styles.css; the rest are working-hour-specific (center align,
+      // 10px padding, 16px font, line-height) and are kept.
       .p-datatable-thead > tr > th {
-        background-color: var(--neutral-100);
+        background-color: var(--neutral-200);
         color: var(--neutral-700);
         font-weight: 600;
         padding: 10px !important;
@@ -251,9 +253,10 @@ html body.light-theme {
       }
 
       &:focus {
-        outline: none;
+        outline: 2px solid var(--blue-strong);
+        outline-offset: 2px;
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        box-shadow: none;
       }
 
       &:disabled {
@@ -332,8 +335,9 @@ html body.light-theme {
   }
 
   &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+    outline: 2px solid var(--blue-strong);
+    outline-offset: 2px;
+    box-shadow: none;
   }
 
   &.btn-edit {
@@ -408,13 +412,13 @@ html body.light-theme .admin-module *:not(.btn):not(.status-indicator):not(i) {
     .p-datatable {
       font-family: var(--font-family) !important;
 
-      /* Header styles */
+      /* Header styles — bg uses --neutral-200 to match canonical styling */
       .p-datatable-thead > tr > th {
         padding: 10px !important;
         font-size: 16px !important;
         line-height: 24px !important;
         font-weight: 600 !important;
-        background-color: var(--neutral-100) !important;
+        background-color: var(--neutral-200) !important;
         border-color: var(--neutral-200) !important;
         text-transform: uppercase !important;
         text-align: center !important;
@@ -447,10 +451,10 @@ html body.light-theme .admin-module *:not(.btn):not(.status-indicator):not(i) {
         padding: 10px !important;
       }
 
-      /* Row hover effects */
+      /* Row hover effects — hover uses --blue-50 to match canonical styling */
       .p-datatable-tbody > tr {
         &:hover {
-          background-color: var(--neutral-100) !important;
+          background-color: var(--blue-50, var(--surface-2)) !important;
         }
 
         &.inactive-row {
@@ -481,4 +485,3 @@ html body.light-theme .admin-module *:not(.btn):not(.status-indicator):not(i) {
 .action-buttons {
   margin-bottom: 15px;
 }
-

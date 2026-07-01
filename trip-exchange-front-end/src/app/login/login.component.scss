@@ -1,226 +1,114 @@
-/* Modern Login Component Styles - 2025 Edition */
+// Login component — only Firebase/MFA-specific overrides.
+// Layout, colours, typography, buttons, forms, alerts all come from
+// ride-alliance-theme.css (.auth-wrap / .auth-aside / .auth-main / .auth-card).
 
-$primaryColor: #00ff00;
+@import '../shared/styles/index';
 
-.login-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--background-color, #f5f7fa);
+:host { display: block; min-height: 100vh; }
+
+// Aside polish — keep brand block above the decorative SVG layer.
+.auth-aside__brand,
+.auth-aside__msg { position: relative; z-index: 2; }
+
+.auth-aside__brand .tx-logo {
+  // The application wordmark uses navy + red on a transparent
+  // background, so it needs a white card to read against the
+  // navy auth-aside gradient.
+  width: auto;
+  height: 56px;
+  max-width: 220px;
+  background: #FFFFFF;
+  border-radius: 10px;
+  padding: 8px 14px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 6px 18px -6px rgba(0, 0, 0, 0.35);
+  object-fit: contain;
+  display: block;
 }
 
-.login-header {
-  text-align: center;
-  padding: 2rem 1rem;
-}
-
-.login-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  padding: 1rem;
-}
-
-.login-box {
-  width: 100%;
-  max-width: 420px;
-  padding: 2rem;
-  background-color: var(--white, #fff);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-
-  h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--text-color, #333);
-  }
-}
-
-.login-form {
-  .input-group {
-    margin-bottom: 1.25rem;
-    width: 100%;
-    max-width: 100%;
-    display: flex;
-
-    .input-group-addon {
-      min-width: 40px;
-      padding: 0.5rem 1rem;
-      background-color: var(--neutral-100, #f1f3f5);
-      border: 1px solid var(--neutral-300, #dee2e6);
-      border-right: none;
-      border-radius: 4px 0 0 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      .glyphicon {
-        font-size: 16px;
-        width: 16px;
-        height: 16px;
-        line-height: 1;
-      }
-    }
-
-    input {
-      flex: 1;
-      width: 100%;
-      max-width: 100%;
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--neutral-300, #dee2e6);
-      border-radius: 0 4px 4px 0;
-      font-size: 16px;
-
-      &:focus {
-        outline: none;
-        border-color: var(--primary-color, #007bff);
-        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
-      }
-    }
-  }
-
-  .login-validation-message {
-    margin-top: -0.75rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-  }
-
-  .login-button {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    font-size: 1.25rem;
-    font-weight: 500;
-    border-radius: 4px;
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-/* Fix for form inputs to ensure they're above the footer */
-.form-control {
+.auth-aside__footnote {
+  color: #7fa6c9;
   position: relative;
-  z-index: 10;
-  width: 100%;
-  max-width: 100%;
+  z-index: 2;
 }
 
-/* Button styles */
-.btn-round {
-  border-radius: 50px;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .login-container {
-    background-color: var(--background-dark, #1a1a1a);
-  }
-
-  .login-box {
-    background-color: var(--surface-dark, #2a2a2a);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
-
-  .login-box h2 {
-    color: var(--text-color-dark, #e1e1e1);
-  }
-
-  .input-group-addon {
-    background-color: var(--neutral-800, #343a40);
-    border-color: var(--neutral-700, #495057);
-  }
-
-  .form-control {
-    background-color: var(--surface-dark, #2a2a2a);
-    border-color: var(--neutral-700, #495057);
-    color: var(--text-color-dark, #e1e1e1);
-  }
-
-  .form-control::placeholder {
-    color: var(--neutral-500, #adb5bd);
+// Google sign-in button — neutral surface with red "G".
+.google-signin-button {
+  .google-g {
+    font-weight: 800;
+    color: #db4437;
+    font-size: 17px;
+    line-height: 1;
   }
 }
 
-/* Loading spinner styles */
-.cssload-loader {
-  display: flex;
-  justify-content: center;
-  margin: 1rem auto;
+// Push the SSO + form apart visually.
+.auth-options { display: block; }
 
-  div {
-    width: 10px;
-    height: 10px;
-    background-color: var(--primary-color, #007bff);
-    border-radius: 50%;
-    margin: 0 5px;
-    animation: cssload-bounce 0.9s infinite alternate;
-
-    &:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-    &:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-    &:nth-child(4) {
-      animation-delay: 0.3s;
-    }
-    &:nth-child(5) {
-      animation-delay: 0.4s;
-    }
-  }
+// Hidden reCAPTCHA anchors. Firebase requires the element to be in the DOM
+// (display:none breaks grecaptcha), so park them offscreen.
+.recaptcha-offscreen {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
-@keyframes cssload-bounce {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-15px);
-  }
-}
-
-/* Phone number input group styling */
+// MFA: phone country-code + number combo.
 .phone-input-group {
-  display: flex;
-  width: 100%;
-
-  .input-group-addon {
-    min-width: 40px;
-    border-right: 1px solid var(--neutral-300, #dee2e6);
-  }
-
   select.form-control {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: none;
-    max-width: 100px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 14px;
     flex: 0 0 100px;
+    border-right: 0;
+    border-radius: 0;
+    text-align: center;
+    font-weight: 700;
   }
-
   input.form-control {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-radius: 0 var(--r) var(--r) 0;
     flex: 1;
-  }
-
-  select.form-control:focus + input.form-control,
-  input.form-control:focus {
-    border-color: var(--primary-color, #007bff);
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
   }
 }
 
 .phone-preview {
   font-size: 12px;
-  color: #6c757d;
-  margin-bottom: 10px;
-  text-align: center;
+  color: var(--ink-2);
+  margin-top: 6px;
   font-family: monospace;
-  background: #f8f9fa;
-  padding: 5px;
-  border-radius: 3px;
-  font-weight: bold;
+  background: var(--surface-2);
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  display: inline-block;
+}
+
+// Note callout under the form (slightly tighter than a regular alert).
+.mfa-note {
+  font-size: 13px;
+}
+
+// Loading spinner used while Firebase is working.
+.cssload-loader {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem auto;
+
+  div {
+    width: 10px;
+    height: 10px;
+    background-color: var(--blue);
+    border-radius: 50%;
+    margin: 0 5px;
+    animation: cssload-bounce 0.9s infinite alternate;
+
+    &:nth-child(2) { animation-delay: 0.1s; }
+    &:nth-child(3) { animation-delay: 0.2s; }
+    &:nth-child(4) { animation-delay: 0.3s; }
+    &:nth-child(5) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes cssload-bounce {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(-15px); }
 }

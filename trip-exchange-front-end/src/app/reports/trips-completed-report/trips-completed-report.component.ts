@@ -3,6 +3,8 @@ import { TripCompletedReportService } from './trips-completed-report.service';
 import { ListService } from '../../shared/service/list.service';
 import { NotificationEmitterService } from '../../shared/service/notification-emitter.service';
 import { LocalStorageService } from '../../shared/service/local-storage.service';
+import { TablePreferencesService } from '../../shared/service/table-preferences.service';
+import { TablePrefsState } from '../../shared/service/table-prefs-state';
 import { ConstantService } from '../../shared/service/constant-service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -65,14 +67,30 @@ export class TripCompletedReportComponent implements OnInit, OnDestroy {
   public gb: any; // Global filter value
   public hourFormat: string = '12';
 
+  private readonly hintStorageKey = 'report-hint-dismissed:trips-completed-report';
+  public hintDismissed: boolean = localStorage.getItem(this.hintStorageKey) === '1';
+
+  dismissHint(): void {
+    this.hintDismissed = true;
+    localStorage.setItem(this.hintStorageKey, '1');
+  }
+
+  // Persisted page-size / sort state for this report's table (assigned in constructor).
+  public prefs!: TablePrefsState;
+  // Note: declared with `!` because it's assigned in the constructor body, not as a field initializer.
+
   constructor(
     private _listService: ListService,
     private _tripCompletedReportService: TripCompletedReportService,
     private _notificationService: NotificationEmitterService,
     private _localStorage: LocalStorageService,
     private _constantService: ConstantService,
-    private translateService: TranslateService
-  ) {}
+    private translateService: TranslateService,
+    private _tablePreferences: TablePreferencesService
+  ) {
+    // Build in the constructor so prefs is populated before the template first renders.
+    this.prefs = new TablePrefsState(this._tablePreferences, 'report:trips-completed');
+  }
 
   ngOnInit(): void {
     this.loadProviders();

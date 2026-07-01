@@ -1,12 +1,12 @@
-import { Component, OnInit, EventEmitter, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Message } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
-import { Table } from 'primeng/table';
 import { NewTripTicketReportService } from './new-trip-ticket-report.service';
 import { ListService } from '../../shared/service/list.service';
 import { NotificationEmitterService } from '../../shared/service/notification-emitter.service';
 import { LocalStorageService } from '../../shared/service/local-storage.service';
+import { TablePreferencesService } from '../../shared/service/table-preferences.service';
+import { TablePrefsState } from '../../shared/service/table-prefs-state';
 import { TokenService } from '../../shared/service/token.service';
 import { Range } from './new-trip-ticket-report';
 import { SummaryReport } from './new-trip-ticket-report';
@@ -63,7 +63,6 @@ interface TicketData {
   providers: [NewTripTicketReportService, ListService],
 })
 export class NewTripTicketReportComponent implements OnInit {
-  @ViewChild('dt') dt!: Table;
   public providerPartnersId: any;
   public pleaseSelect: any = null;
   public toDate: Date = new Date();
@@ -82,6 +81,16 @@ export class NewTripTicketReportComponent implements OnInit {
   public date = new Date();
   public noTickets: boolean = false;
   public loggerRole = this._localStorage.get('Role');
+  private readonly hintStorageKey = 'report-hint-dismissed:new-trip-ticket-report';
+  public hintDismissed: boolean = localStorage.getItem(this.hintStorageKey) === '1';
+
+  // Persisted page-size / sort state for this report's table (assigned in constructor).
+  public prefs!: TablePrefsState;
+
+  dismissHint(): void {
+    this.hintDismissed = true;
+    localStorage.setItem(this.hintStorageKey, '1');
+  }
 
   constructor(
     public _newTripTicketReportService: NewTripTicketReportService,
@@ -90,8 +99,11 @@ export class NewTripTicketReportComponent implements OnInit {
     public _localStorage: LocalStorageService,
     public _confirmationService: ConfirmationService,
     public _tokenService: TokenService,
-    public _router: Router
+    public _router: Router,
+    public _tablePreferences: TablePreferencesService
   ) {
+    // Build before the template first renders so [rows] etc. bind to restored values.
+    this.prefs = new TablePrefsState(this._tablePreferences, 'report:new-trip-ticket');
     this.TicketStatus = [];
     this.claimantProviderList = [];
     this.TicketStatus = [{ value: '0', label: 'Aech' }];
@@ -319,11 +331,6 @@ export class NewTripTicketReportComponent implements OnInit {
       this.ticketList[i].tripDetails = details.join(', ') || ' ';
     }
     this.loading = false;
-  }
-
-  onFilter(event: Event, field: string) {
-    const element = event.target as HTMLInputElement;
-    this.dt.filter(element.value, field, 'contains');
   }
 
   lookupRowStyleClass(ticket: TicketData) {

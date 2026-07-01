@@ -11,7 +11,7 @@ export class TripTicketExportService {
 
   constructor() { }
 
-  // Header list for Trip Exchange Excel template (first sheet)
+  // Header list for Ride Alliance Excel template (first sheet)
   private static readonly TRIP_EXCHANGE_HEADERS: string[] = [
     'Case Number',
     'Actual Provider',
@@ -418,7 +418,7 @@ export class TripTicketExportService {
 
       const ws = XLSX.utils.aoa_to_sheet(aoa);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Trip Exchange Template');
+      XLSX.utils.book_append_sheet(wb, ws, 'Ride Alliance Template');
 
       // Generate Excel file as blob
       const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });

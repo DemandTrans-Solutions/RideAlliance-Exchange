@@ -32,6 +32,13 @@ export class SummaryReportComponent implements OnInit {
   public loggerRole = this._localStorage.get('Role');
   public noTickets: boolean = false;
   public loading: boolean = false;
+  private readonly hintStorageKey = 'report-hint-dismissed:summary-report';
+  public hintDismissed: boolean = localStorage.getItem(this.hintStorageKey) === '1';
+
+  dismissHint(): void {
+    this.hintDismissed = true;
+    localStorage.setItem(this.hintStorageKey, '1');
+  }
 
   constructor(
     public _summaryReportService: SummaryReportService,

@@ -3,7 +3,7 @@
     <!-- Page header with provider info -->
     <div class="page-header">
       <h2 class="section-title">{{ 'WORKING_HOURS.TITLE' | translate }}: {{ providerName }}</h2>
-      <button class="btn-secondary" (click)="goBack()">
+      <button type="button" class="btn-secondary" (click)="goBack()">
         <i class="ph ph-arrow-left" aria-hidden="true"></i> {{ 'WORKING_HOURS.BACK' | translate }}
       </button>
     </div>
@@ -11,7 +11,7 @@
     <!-- Working hours data table -->
     <div class="data-table-container" *ngIf="!isEditMode">
       <div class="action-bar">
-        <button class="btn-primary" (click)="addWorkingHour()">
+        <button type="button" class="btn-primary" (click)="addWorkingHour()">
           <i class="ph ph-plus" aria-hidden="true"></i> {{ 'WORKING_HOURS.ADD_NEW' | translate }}
         </button>
       </div>
@@ -50,17 +50,17 @@
             </td>
             <td class="actions-column">
               <div class="action-icons">
-                <button
+                <button type="button"
                   class="btn-icon btn-edit"
                   (click)="editWorkingHour(hour)"
                   [title]="'WORKING_HOURS.EDIT_TITLE' | translate"
                   [attr.aria-label]="'WORKING_HOURS.EDIT_ARIA' | translate"
                   style="margin-right: 8px"
                 >
-                  <i class="ph ph-pencil-simple"></i>
+                  <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                 </button>
                 <!--
-                <button
+                <button type="button"
                   class="btn-icon"
                   [ngClass]="hour.isActive ? 'btn-warning' : 'btn-success'"
                   (click)="toggleActive(hour)"
@@ -68,16 +68,16 @@
                   [attr.aria-label]="hour.isActive ? ('WORKING_HOURS.DEACTIVATE_ARIA' | translate) : ('WORKING_HOURS.ACTIVATE_ARIA' | translate)"
                   style="margin-right: 8px"
                 >
-                  <i class="ph" [ngClass]="hour.isActive ? 'ph-toggle-right' : 'ph-toggle-left'"></i>
+                  <i class="ph" [ngClass]="hour.isActive ? 'ph-toggle-right' : 'ph-toggle-left'" aria-hidden="true"></i>
                 </button>
                 -->
-                <button
+                <button type="button"
                   class="btn-icon btn-danger"
                   (click)="deleteWorkingHour(hour)"
                   [title]="'WORKING_HOURS.DELETE_TITLE' | translate"
                   [attr.aria-label]="'WORKING_HOURS.DELETE_ARIA' | translate"
                 >
-                  <i class="ph ph-trash"></i>
+                  <i class="ph ph-trash" aria-hidden="true"></i>
                 </button>
               </div>
             </td>
@@ -87,7 +87,7 @@
           <tr>
             <td colspan="6">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>{{ 'WORKING_HOURS.NO_DATA' | translate }}</span>
               </div>
             </td>
@@ -114,7 +114,7 @@
           <tr>
             <td colspan="6">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>{{ 'WORKING_HOURS.NO_DATA' | translate }}</span>
               </div>
             </td>
@@ -139,7 +139,11 @@
               id="day"
               class="form-select"
               formControlName="day"
+              required
+              aria-required="true"
               [ngClass]="{'invalid-input': workingHourForm.get('day').invalid && workingHourForm.get('day').touched}"
+              [attr.aria-invalid]="workingHourForm.get('day').invalid && workingHourForm.get('day').touched"
+              [attr.aria-describedby]="workingHourForm.get('day').invalid && workingHourForm.get('day').touched ? 'day-error' : null"
             >
               <option value="" disabled>{{ 'WORKING_HOURS.SELECT_DAY' | translate }}</option>
               <option *ngFor="let day of daysOfWeek" [value]="day.value">
@@ -147,6 +151,7 @@
               </option>
             </select>
             <div
+              id="day-error"
               class="error-message"
               *ngIf="workingHourForm.get('day').invalid && workingHourForm.get('day').touched"
             >
@@ -165,9 +170,14 @@
               id="startTime"
               class="form-control"
               formControlName="startTime"
+              required
+              aria-required="true"
               [ngClass]="{'invalid-input': workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched}"
+              [attr.aria-invalid]="workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched"
+              [attr.aria-describedby]="workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched ? 'startTime-error' : null"
             />
             <div
+              id="startTime-error"
               class="error-message"
               *ngIf="workingHourForm.get('startTime').invalid && workingHourForm.get('startTime').touched"
             >
@@ -184,9 +194,14 @@
               id="endTime"
               class="form-control"
               formControlName="endTime"
+              required
+              aria-required="true"
               [ngClass]="{'invalid-input': workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched}"
+              [attr.aria-invalid]="workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched"
+              [attr.aria-describedby]="workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched ? 'endTime-error' : null"
             />
             <div
+              id="endTime-error"
               class="error-message"
               *ngIf="workingHourForm.get('endTime').invalid && workingHourForm.get('endTime').touched"
             >

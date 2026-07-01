@@ -3,19 +3,19 @@
   <div *ngIf="role === 'ROLE_ADMIN' && showGrid" class="provider-selector">
     <form novalidate #providerPartnersForm="ngForm">
       <div class="form-group">
-        <label class="col-sm-6 text-primary size-h7">
+        <div class="col-sm-6 text-primary size-h7">
           <u>{{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER_HEADER' | translate }}</u>
-        </label>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-4">
-          <label class="add-ticket-label">
+          <label for="provider-filter" class="add-ticket-label">
             {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER' | translate }}<span class="mandatory-input"
               >*</span
             >
           </label>
           <select
-            id="provider"
+            id="provider-filter"
             class="form-control"
             [(ngModel)]="providerPartnersId"
             name="provider"
@@ -24,7 +24,8 @@
             #provider="ngModel"
             (change)="loadProviderPartnerData(providerPartnersId)"
             [ngClass]="{'invalid-input': !provider.valid && !provider.pristine }"
-          >
+          
+            aria-required="true">
             <option [ngValue]="null">
               {{ 'ADMIN_PROVIDER_PARTNERS.PLEASE_SELECT' | translate }}
             </option>
@@ -57,7 +58,7 @@
 
     <div class="action-bar">
       <div class="action-buttons">
-        <button
+        <button type="button"
           class="btn-primary"
           (click)="addProviderPartner()"
           [attr.aria-label]="'PROVIDER_PARTNERS.ADD_PARTNERSHIP_ARIA' | translate"
@@ -158,73 +159,73 @@
                 <ng-container
                   *ngIf="providerPartners.requesterProviderId == providerPartners.Login"
                 >
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Approved'"
                     class="btn-icon btn-danger"
                     [title]="'PROVIDER_PARTNERS.END_PARTNERSHIP_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.END_PARTNERSHIP_ARIA' | translate"
                     (click)="statusUpdateEndPartnership(providerPartners)"
                   >
-                    <i class="ph ph-hand-palm"></i>
+                    <i class="ph ph-hand-palm" aria-hidden="true"></i>
                   </button>
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Approved'"
                     class="btn-icon btn-edit"
                     [title]="'PROVIDER_PARTNERS.EDIT_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.EDIT_ARIA' | translate"
                     (click)="editProviderPartners(i,providerPartners)"
                   >
-                    <i class="ph ph-pencil-simple"></i>
+                    <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                   </button>
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Pending'"
                     class="btn-icon btn-danger"
                     [title]="'PROVIDER_PARTNERS.CANCEL_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.CANCEL_ARIA' | translate"
                     (click)="statusUpdateCancelled(providerPartners)"
                   >
-                    <i class="ph ph-x"></i>
+                    <i class="ph ph-x" aria-hidden="true"></i>
                   </button>
                 </ng-container>
 
                 <ng-container
                   *ngIf="providerPartners.coordinatorProviderId == providerPartners.Login"
                 >
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Pending'"
                     class="btn-icon btn-success"
                     [title]="'PROVIDER_PARTNERS.APPROVE_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.APPROVE_ARIA' | translate"
                     (click)="statusUpdateApproved(providerPartners)"
                   >
-                    <i class="ph ph-thumbs-up"></i>
+                    <i class="ph ph-thumbs-up" aria-hidden="true"></i>
                   </button>
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Pending'"
                     class="btn-icon btn-danger"
                     [title]="'PROVIDER_PARTNERS.DENY_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.DENY_ARIA' | translate"
                     (click)="statusUpdateDeclined(providerPartners)"
                   >
-                    <i class="ph ph-thumbs-down"></i>
+                    <i class="ph ph-thumbs-down" aria-hidden="true"></i>
                   </button>
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Approved'"
                     class="btn-icon btn-danger"
                     [title]="'PROVIDER_PARTNERS.END_PARTNERSHIP_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.END_PARTNERSHIP_ARIA' | translate"
                     (click)="statusUpdateEndPartnership(providerPartners)"
                   >
-                    <i class="ph ph-hand-palm"></i>
+                    <i class="ph ph-hand-palm" aria-hidden="true"></i>
                   </button>
-                  <button
+                  <button type="button"
                     *ngIf="providerPartners.requestStatus.status === 'Approved'"
                     class="btn-icon btn-edit"
                     [title]="'PROVIDER_PARTNERS.EDIT_TITLE' | translate"
                     [attr.aria-label]="'PROVIDER_PARTNERS.EDIT_ARIA' | translate"
                     (click)="editProviderPartners(i,providerPartners)"
                   >
-                    <i class="ph ph-pencil-simple"></i>
+                    <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                   </button>
                 </ng-container>
               </div>
@@ -236,7 +237,7 @@
           <tr>
             <td colspan="5">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>{{ 'PROVIDER_PARTNERS.NO_RECORDS' | translate }}</span>
               </div>
             </td>
@@ -269,7 +270,8 @@
             #provider="ngModel"
             [ngClass]="{'invalid-input': !provider.valid && !provider.pristine}"
             aria-describedby="provider-error"
-          >
+          
+            aria-required="true">
             <option *ngFor="let provider of providersList" [value]="provider.providerId">
               {{provider.providerName}}
             </option>

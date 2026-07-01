@@ -53,13 +53,13 @@
     }
   },
   "FOOTER": {
-    "COPYRIGHT": "트립 익스체인지 ",
+    "COPYRIGHT": "Ride Alliance ",
     "PRIVACY_POLICY": "개인정보 보호 정책",
     "TERMS_OF_SERVICE": "서비스 약관",
     "CONTACT": "연락처"
   },
   "APP": {
-    "TITLE": "트립 익스체인지",
+    "TITLE": "Ride Alliance",
     "CONFIRMATION_HEADER": "확인"
   },
   "LOGIN": {
@@ -69,7 +69,43 @@
     "PASSWORD_REQUIRED": "비밀번호가 필요합니다",
     "PASSWORD_LENGTH": "비밀번호는 5~10자 사이여야 합니다.",
     "BUTTON": "로그인",
-    "FORGOT_PASSWORD": "비밀번호를 잊으셨나요?"
+    "FORGOT_PASSWORD": "비밀번호를 잊으셨나요?",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LEAD": "Welcome back. Use your provider credentials to continue.",
+    "OR": "or",
+    "SIGN_IN_GOOGLE": "Sign in with Google",
+    "MFA_NOTE": "A 6-digit verification code will be sent to your registered phone for two-factor authentication.",
+    "TAGLINE_HEADING": "One network for every trip.",
+    "TAGLINE_BODY": "Post, claim and coordinate rides across the Ride Alliance partner network — securely, in one place.",
+    "POINT_2FA": "Two-factor secured sign-in",
+    "POINT_PARTNERS": "Trusted partner coordination",
+    "POINT_SERVICE_AREA": "Service-area aware matching",
+    "RIDE_ALLIANCE_FOOTNOTE": "A Ride Alliance service of the Denver Regional Council of Governments",
+    "MFA_HEADING": "Two-Factor Authentication",
+    "MFA_SENT": "We've sent a verification code to your registered phone number.",
+    "MFA_CODE": "Verification code",
+    "MFA_CODE_PLACEHOLDER": "Enter 6-digit verification code",
+    "VERIFY_CODE": "Verify code",
+    "SEND_CODE": "Send verification code",
+    "BACK_TO_LOGIN": "Back to login",
+    "MFA_ENROLL_HEADING": "Multi-Factor Authentication Setup",
+    "MFA_ENROLL_TITLE": "Security update required.",
+    "MFA_ENROLL_BODY": "All users must now use two-factor authentication. Please provide your phone number to receive verification codes.",
+    "PHONE_NUMBER": "Phone number",
+    "PHONE_PLACEHOLDER": "Enter phone number",
+    "FULL_NUMBER": "Full number",
+    "MFA_COMPLETE_SETUP": "Complete MFA setup",
+    "MFA_ONE_TIME_NOTICE": "This is a one-time setup. Your phone number will be used only for security verification.",
+    "MFA_VERIFY_BODY": "Please verify your identity with the code sent to your registered phone number.",
+    "VERIFY_AND_SIGNIN": "Verify and sign in",
+    "MFA_RESEND_PROMPT": "Didn't receive a code?",
+    "RESEND": "Resend",
+    "EMAIL_VERIFICATION_REQUIRED": "Email Verification Required",
+    "SEND_VERIFICATION_EMAIL": "Send new verification email",
+    "ACCESS_REQUIRED": "Access Required",
+    "ACCESS_REQUEST_BODY": "You are not authorized to access this application. Please contact an administrator to request access.",
+    "RIDE_ALLIANCE": "Ride Alliance"
   },
   "ACTIVATE_ACCOUNT": {
     "TITLE": "계정 활성화",
@@ -244,8 +280,8 @@
     "BUTTON": "비밀번호 변경"
   },
   "HEADER": {
-    "LOGO_ALT": "트립 익스체인지",
-    "LOGO_TEXT": "트립 익스체인지",
+    "LOGO_ALT": "Ride Alliance",
+    "LOGO_TEXT": "Ride Alliance",
     "TICKETS_TITLE": "트립 티켓",
     "TICKETS_LABEL": "트립 티켓",
     "ADMIN_TITLE": "관리자",
@@ -255,7 +291,14 @@
     "PROFILE": "프로필",
     "CHANGE_PASSWORD": "비밀번호 변경",
     "APPLICATION_SETTINGS": "애플리케이션 설정",
-    "LOGOUT": "로그아웃"
+    "LOGOUT": "로그아웃",
+    "HOME_TITLE": "Home dashboard",
+    "HOME_LABEL": "Home",
+    "SWITCH_TO_LIGHT_MODE": "Switch to Light Mode",
+    "SWITCH_TO_DARK_MODE": "Switch to Dark Mode",
+    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "LIGHT_MODE": "Light Mode",
+    "DARK_MODE": "Dark Mode"
   },
   "PROFILE": {
     "TITLE": "내 프로필",
@@ -496,12 +539,50 @@
     "UPDATE_USER_ARIA": "사용자 업데이트"
   },
   "HOME": {
-    "TITLE": "트립 익스체인지에 오신 것을 환영합니다",
+    "TITLE": "Welcome to Ride Alliance",
     "DATE_FORMAT_EXAMPLE": "날짜 형식 예제",
     "NUMBER_FORMAT_EXAMPLE": "숫자 형식 예제",
     "CURRENCY_FORMAT_EXAMPLE": "통화 형식 예제",
     "DATEPICKER_LABEL": "날짜 선택",
-    "BOOTSTRAP_GREETING": "안녕하세요. ng2-부트스트랩에서"
+    "BOOTSTRAP_GREETING": "안녕하세요. ng2-부트스트랩에서",
+    "OVERVIEW": "Overview",
+    "DEFAULT_USER": "there",
+    "GREETING_MORNING": "Good morning, {{name}}",
+    "GREETING_AFTERNOON": "Good afternoon, {{name}}",
+    "GREETING_EVENING": "Good evening, {{name}}",
+    "SUBTITLE": "Here is what is happening across your trips today — {{date}}.",
+    "GO_TO_TRIP_TICKETS": "Go to trip tickets",
+    "RECENT_ACTIVITY": "Recent activity",
+    "VIEW_ALL": "View all",
+    "QUICK_ACTIONS": "Quick actions",
+    "FIND_TRIPS": "Find trips to claim",
+    "UPLOAD_TRIP_TICKETS": "Upload trip tickets",
+    "RUN_SUMMARY_REPORT": "Run summary report",
+    "NETWORK_STATUS": "Network status",
+    "ONLINE": "Online",
+    "PARTNERS_ACTIVE": "6 partner providers active",
+    "NETWORK_STATUS_COPY": "Trusted partners can claim your trips without approval. Manage partnerships in Admin.",
+    "STATS": {
+      "AVAILABLE_TO_CLAIM": "Available to claim",
+      "IN_SERVICE_AREA": "in your service area",
+      "AWAITING_APPROVAL": "Awaiting your approval",
+      "CLAIMS_ON_TICKETS": "claims on your tickets",
+      "TRIPS_TODAY": "Your trips today",
+      "TRIPS_TODAY_DELTA": "14 completed · 9 upcoming",
+      "EXPIRING_SOON": "Expiring soon",
+      "EXPIRING_DELTA": "within 2 hours"
+    },
+    "ACTIVITY": {
+      "CLAIM_APPROVED": "Mile High Rides approved your claim on trip #48213 — Eleanor Briggs",
+      "NEW_TICKET": "Front Range Transit posted a new ticket in North Metro",
+      "CHANGE_REQUEST": "Change request from Boulder County Ride awaiting your response on #48190",
+      "EXPIRING_TICKET": "Ticket #48155 will expire at 7:00 a.m. if unclaimed",
+      "TRIP_COMPLETED": "Trip #48102 marked completed — Carol Whitman",
+      "EIGHT_MINUTES_AGO": "8 minutes ago",
+      "TWENTY_SIX_MINUTES_AGO": "26 minutes ago",
+      "ONE_HOUR_AGO": "1 hour ago",
+      "TWO_HOURS_AGO": "2 hours ago"
+    }
   },
   "TRIP_TICKET": {
     "FILTERS_TITLE": "여행 티켓 필터링",
@@ -666,6 +747,7 @@
     "PROVIDER_SUBMITTED_COST": "제출한 제공업체가 현재 지불할 의사가 있는 여행 요금",
     "TRUSTED_PROVIDER_NOTE": "참고- 이 여행은 신뢰할 수 있는 파트너 중 하나인 제공업체가 제공하는 것이 아닙니다.클레임이 검증되려면 해당 제공업체의 승인을 받아야 합니다.승인될 때까지 보류 중 상태로 유지됩니다.",
     "SEND_TO_UBER": "우버로 보내기",
+    "SEND_TO_MEDRIDE": "MedRide로 보내기",
     "PICKUP_LOCATION": "픽업 위치",
     "UBER_PICKUP_TIME": "픽업 시간",
     "UBER_AVAILABLE_OPTIONS": "사용 가능한 Uber 옵션",

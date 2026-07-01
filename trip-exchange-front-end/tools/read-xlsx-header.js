@@ -1,9 +1,6 @@
 const XLSX = require('xlsx');
 const path = require('path');
-const argPath = process.argv[2];
-const fp = argPath
-  ? path.resolve(process.cwd(), argPath)
-  : path.resolve(__dirname, '..', 'import-export', 'trip-export.xlsx');
+const fp = path.resolve(__dirname, '..', 'import-export', 'trip-export.xlsx');
 try {
   const wb = XLSX.readFile(fp, { cellDates: true });
   const firstSheetName = wb.SheetNames[0];

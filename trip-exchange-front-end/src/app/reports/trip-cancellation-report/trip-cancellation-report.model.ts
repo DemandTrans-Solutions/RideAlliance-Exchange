@@ -51,6 +51,10 @@ export interface TripCancellationReport {
   dropoffDateTime?: string;
   submittedDateTime?: string;
   tripDetails?: string;
+
+  status: {
+    type: string;
+  };
 }
 
 export interface ShowTicketOption {

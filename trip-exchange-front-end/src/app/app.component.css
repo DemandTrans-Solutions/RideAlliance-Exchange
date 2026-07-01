@@ -1,3 +1,60 @@
+.body-container {
+  height: 100dvh;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.body-container > .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.app-header-shell,
+.app-footer-shell {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+
+.app-header-shell {
+  flex: 0 0 auto;
+}
+
+.app-route-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  margin-left: 0;
+  margin-right: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.app-route-shell > router-outlet {
+  display: none;
+}
+
+.app-route-shell > router-outlet + * {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}
+
+.app-footer-shell {
+  flex: 0 0 auto;
+}
+
 .container-custompadding {
-  padding-top: 30px;
+  padding-top: 0;
+}
+
+/* Auth screens (login, forgot-password, etc.) render their own full-screen layout. */
+.body-container.is-auth-route {
+  display: block;
+  height: auto;
+  min-height: 100dvh;
+  overflow: visible;
 }

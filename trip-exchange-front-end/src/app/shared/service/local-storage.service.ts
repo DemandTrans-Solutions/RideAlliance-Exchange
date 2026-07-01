@@ -6,6 +6,9 @@ import { Injectable } from '@angular/core';
 export class LocalStorageService {
   constructor() {}
 
+  private readonly themeStorageKey = 'tx-theme';
+  private readonly tablePrefsStorageKey = 'table-prefs';
+
   /**
    * Stores an item in local storage
    * @param key The key to store the value under
@@ -32,6 +35,13 @@ export class LocalStorageService {
         return null;
       }
 
+      // Normalize ROLE_SUPERADMIN to ROLE_ADMIN so the two roles are functionally
+      // equivalent everywhere the app gates UI on role === 'ROLE_ADMIN'.
+      // Use getRawRole() when the true persisted role is needed (e.g. badges).
+      if (key === 'Role' && item === 'ROLE_SUPERADMIN') {
+        return 'ROLE_ADMIN';
+      }
+
       // Try to parse as JSON, if not, return the string value
       try {
         return JSON.parse(item);
@@ -40,6 +50,19 @@ export class LocalStorageService {
       }
     } catch (error) {
       console.error('Error retrieving item from localStorage:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Returns the un-normalized role string as persisted at login
+   * (ROLE_SUPERADMIN is preserved here, unlike get('Role')).
+   */
+  getRawRole(): string | null {
+    try {
+      return localStorage.getItem('Role');
+    } catch (error) {
+      console.error('Error reading raw role from localStorage:', error);
       return null;
     }
   }
@@ -74,4 +97,24 @@ export class LocalStorageService {
   getUserRoles(): any {
     return this.get('Role');
   }
+
+  getLocalStorageToKeep(): Record<string, string> {
+    const keep: Record<string, string> = {};
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith(this.tablePrefsStorageKey)) keep[k] = localStorage.getItem(k)!;
+      }
+
+      const savedTheme = this.get(this.themeStorageKey) || this.get('theme');
+      if (savedTheme) {
+        keep[this.themeStorageKey] = savedTheme;
+      }
+    } catch (e) {
+      console.error('Error in getLocalStorageToKeep:', e);
+    }
+
+    return keep;
+  }
+
 }

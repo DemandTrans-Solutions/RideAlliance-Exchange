@@ -1,12 +1,21 @@
 <div class="report-container">
+  <div class="page-head">
+    <div>
+      <div class="crumbs">
+        <i class="ph ph-chart-line-up" aria-hidden="true"></i>
+        Reports
+      </div>
+      <h2 class="report-title">{{ 'REPORTS.CANCELLED_TRIPS_REPORT' | translate }}</h2>
+      <div class="sub">{{ 'REPORTS.CANCELLED_TRIPS_REPORT_DESC' | translate }}</div>
+    </div>
+  </div>
   <header class="report-header">
-    <h2 class="report-title">{{ 'REPORTS.CANCELLED_TRIPS_REPORT' | translate }}</h2>
     <div class="export-buttons">
-      <button class="btn btn-secondary" (click)="exportToExcel()" aria-label="{{ 'REPORTS.EXPORT_EXCEL_ARIA' | translate }}">
+      <button type="button" class="btn btn-secondary" (click)="exportToExcel()" aria-label="{{ 'REPORTS.EXPORT_EXCEL_ARIA' | translate }}">
         <i class="ph ph-file-xls" aria-hidden="true"></i>
         {{ 'REPORTS.EXPORT_EXCEL' | translate }}
       </button>
-      <button class="btn btn-secondary" (click)="exportToCSV()" aria-label="{{ 'REPORTS.EXPORT_CSV_ARIA' | translate }}">
+      <button type="button" class="btn btn-secondary" (click)="exportToCSV()" aria-label="{{ 'REPORTS.EXPORT_CSV_ARIA' | translate }}">
         <i class="ph ph-file-csv" aria-hidden="true"></i>
         {{ 'REPORTS.EXPORT_CSV' | translate }}
       </button>
@@ -14,9 +23,9 @@
   </header>
 
   <!-- Instructions: brief summary and how-to for this report -->
-  <div class="instruction-panel" role="region" aria-label="{{ 'REPORTS.CANCELLED_TRIPS_REPORT_INSTRUCTIONS_ARIA' | translate }}">
+  <div *ngIf="!hintDismissed" class="instruction-panel" role="region" aria-label="{{ 'REPORTS.CANCELLED_TRIPS_REPORT_INSTRUCTIONS_ARIA' | translate }}">
     <div class="instruction-content">
-      <i class="ph ph-info" aria-hidden="true" aria-hidden="true"></i>
+      <i class="ph ph-info" aria-hidden="true"></i>
       <div class="instruction-copy">
         <!--<h3 class="instruction-title">{{ 'REPORTS.CANCELLED_TRIPS_REPORT' | translate }}</h3>-->
         <p class="instruction-text">{{ 'REPORTS.CANCELLED_TRIPS_REPORT_DESC' | translate }}</p>
@@ -27,6 +36,9 @@
         </p>
       </div>
     </div>
+    <button type="button" class="instruction-dismiss" (click)="dismissHint()" aria-label="Dismiss hint">
+      <i class="ph ph-x" aria-hidden="true"></i>
+    </button>
   </div>
 
   <div class="filter-panel">
@@ -34,17 +46,19 @@
       <div class="filter-row">
         <!-- Provider selection (admin only) -->
         <div *ngIf="loggerRole === 'ROLE_ADMIN'" class="filter-group">
-          <label class="filter-label">
+          <label for="cancellation-report-provider" class="filter-label">
             {{ 'COMMON.PROVIDER' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
             <p-dropdown
+              inputId="cancellation-report-provider"
               [options]="providersList"
               [(ngModel)]="providerPartnersId"
               optionLabel="providerName"
               optionValue="providerId"
               placeholder="{{ 'COMMON.PLEASE_SELECT' | translate }}"
               [required]="true"
+              aria-required="true"
               styleClass="w-full"
             >
             </p-dropdown>
@@ -53,18 +67,21 @@
 
         <!-- From Date -->
         <div class="filter-group">
-          <label class="filter-label">
+          <label for="cancellation-report-from-date" class="filter-label">
             {{ 'COMMON.FROM_DATE' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
             <p-calendar
+              inputId="cancellation-report-from-date"
               [(ngModel)]="fromDate"
               [showTime]="true"
               [hourFormat]="hourFormat"
               dateFormat="mm/dd/yy"
               (ngModelChange)="dateChange()"
               [required]="true"
+              aria-required="true"
               [style]="{'width':'100%'}"
+              appendTo="body"
             >
             </p-calendar>
           </div>
@@ -72,21 +89,26 @@
 
         <!-- To Date -->
         <div class="filter-group">
-          <label class="filter-label">
+          <label for="cancellation-report-to-date" class="filter-label">
             {{ 'COMMON.TO_DATE' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
             <p-calendar
+              inputId="cancellation-report-to-date"
               [(ngModel)]="toDate"
               [showTime]="true"
               [hourFormat]="hourFormat"
               dateFormat="mm/dd/yy"
               (ngModelChange)="maxDate()"
               [required]="true"
+              aria-required="true"
+              [attr.aria-invalid]="minRange"
+              [attr.aria-describedby]="minRange ? 'cancellation-report-to-date-error' : null"
               [style]="{'width':'100%'}"
+              appendTo="body"
             >
             </p-calendar>
-            <div *ngIf="minRange" class="error-message">
+            <div id="cancellation-report-to-date-error" *ngIf="minRange" class="error-message">
               {{ 'REPORTS.TO_DATE_GREATER_THAN_FROM' | translate }}
             </div>
           </div>
@@ -94,7 +116,7 @@
 
 
         <div class="filter-group filter-actions">
-          <button
+          <button type="button"
             class="btn btn-primary"
             [disabled]="!maxRange"
             (click)="filter()"
@@ -109,9 +131,10 @@
       <!-- Show Tickets filters -->
       <div class="filter-row">
         <div class="filter-group filter-group-wide">
-          <label class="filter-label">{{ 'REPORTS.SELECT_TICKET_TYPES' | translate }}</label>
+          <label for="cancellation-report-ticket-types" class="filter-label">{{ 'REPORTS.SELECT_TICKET_TYPES' | translate }}</label>
           <div class="filter-control">
             <p-multiSelect
+              inputId="cancellation-report-ticket-types"
               [options]="ShowTickets"
               [(ngModel)]="showTicket"
               placeholder="{{ 'REPORTS.SELECT_TICKET_TYPES' | translate }}"
@@ -126,7 +149,7 @@
   </div>
 
   <!-- Loading spinner -->
-  <div class="report-loading" *ngIf="loading">
+  <div class="report-loading" *ngIf="loading" role="status" aria-live="polite">
     <div class="loading-spinner">
       <div class="spinner-item"></div>
       <div class="spinner-item"></div>
@@ -154,8 +177,12 @@
       #dt
       [value]="ticketList"
       [paginator]="true"
-      [rows]="10"
+      [rows]="prefs.rows"
       [rowsPerPageOptions]="[10,25,50]"
+      [sortField]="prefs.sortField"
+      [sortOrder]="prefs.sortOrder ?? 1"
+      (onPage)="prefs.onPage($event)"
+      (onSort)="prefs.onSort($event)"
       [globalFilterFields]="['_customerName', 'claimantProviders', 'pickup', 'dropoff']"
       styleClass="p-datatable-sm responsive-table"
       [rowHover]="true"
@@ -193,6 +220,9 @@
           <th pSortableColumn="dropoff">
             {{ 'REPORTS.DROPOFF_ADDRESS' | translate }} <p-sortIcon field="dropoff"></p-sortIcon>
           </th>
+          <th pSortableColumn="status">
+            {{ 'TRIP_TICKET.STATUS' | translate }} <p-sortIcon field="status"></p-sortIcon>
+          </th>
         </tr>
       </ng-template>
 
@@ -225,6 +255,15 @@
           <td>
             <span class="p-column-title">{{ 'REPORTS.DROPOFF_ADDRESS' | translate }}</span>
             {{ ticket.dropoff }}
+          </td>
+          <td>
+            <span class="p-column-title">{{ 'TRIP_TICKET.STATUS' | translate }}</span>
+            <span
+              class="status-badge-new"
+              [ngClass]="'status-' + ticket.status.type.toLowerCase().replace(' ', '-')"
+            >
+              {{ ticket.status.type }}
+            </span>
           </td>
         </tr>
       </ng-template>

@@ -1,10 +1,17 @@
 <div class="report-container">
-  <header class="report-header">
-    <h2 class="report-title">{{ 'SUMMARY_REPORT.TITLE' | translate }}</h2>
-  </header>
+  <div class="page-head">
+    <div>
+      <div class="crumbs">
+        <i class="ph ph-chart-line-up" aria-hidden="true"></i>
+        Reports
+      </div>
+      <h2 class="report-title">{{ 'SUMMARY_REPORT.TITLE' | translate }}</h2>
+      <div class="sub">{{ 'REPORTS.SUMMARY_REPORTS_DESC' | translate }}</div>
+    </div>
+  </div>
 
 
-  <div class="instruction-panel" role="region" aria-label="{{ 'SUMMARY_REPORT.TITLE' | translate }}">
+  <div *ngIf="!hintDismissed" class="instruction-panel" role="region" aria-label="{{ 'SUMMARY_REPORT.TITLE' | translate }}">
     <div class="instruction-content">
       <i class="ph ph-info" aria-hidden="true"></i>
       <div class="instruction-copy">
@@ -17,32 +24,36 @@
         </p>
       </div>
     </div>
+    <button type="button" class="instruction-dismiss" (click)="dismissHint()" aria-label="Dismiss hint">
+      <i class="ph ph-x" aria-hidden="true"></i>
+    </button>
   </div>
 
   <div class="filter-panel">
     <div class="filter-container">
       <div class="filter-row">
         <div class="filter-group" *ngIf="loggerRole === 'ROLE_ADMIN'">
-          <label for="pro" class="filter-label">
+          <label for="summary-report-provider" class="filter-label">
             {{ 'SUMMARY_REPORT.PROVIDER' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
-            <select
-              id="pro"
-              class="form-control"
+            <p-dropdown
+              inputId="summary-report-provider"
+              [options]="providersList"
               [(ngModel)]="providerPartnersId"
               name="provider"
+              optionLabel="providerName"
+              optionValue="providerId"
+              placeholder="{{ 'SUMMARY_REPORT.PLEASE_SELECT' | translate }}"
               [required]="true"
+              aria-required="true"
+              [showClear]="false"
+              styleClass="w-full"
+              appendTo="body"
               (ngModelChange)="getDate(providerPartnersId)"
               aria-describedby="provider-error"
             >
-              <option [ngValue]="PleaseSelect">
-                {{ 'SUMMARY_REPORT.PLEASE_SELECT' | translate }}
-              </option>
-              <option *ngFor="let provider of providersList" [ngValue]="provider.providerId">
-                {{provider.providerName}}
-              </option>
-            </select>
+            </p-dropdown>
             <div
               id="provider-error"
               class="error-message"
@@ -54,48 +65,54 @@
         </div>
 
         <div class="filter-group">
-          <label for="fromDateTime" class="filter-label">
+          <label for="summary-report-from-date" class="filter-label">
             {{ 'SUMMARY_REPORT.FROM_DATE' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
             <p-calendar
               [(ngModel)]="fromDate"
               [showTime]="true"
-              id="fromDateTime"
               hourFormat="12"
               [style]="{'width':'100%'}"
-              inputId="fromDateTime"
+              inputId="summary-report-from-date"
+              [required]="true"
+              aria-required="true"
               aria-label="{{ 'SUMMARY_REPORT.FROM_DATE_ARIA' | translate }}"
+              appendTo="body"
             >
             </p-calendar>
           </div>
         </div>
 
         <div class="filter-group">
-          <label for="ToDateTime" class="filter-label">
+          <label for="summary-report-to-date" class="filter-label">
             {{ 'SUMMARY_REPORT.TO_DATE' | translate }} <span class="required-indicator">*</span>
           </label>
           <div class="filter-control">
             <p-calendar
               [(ngModel)]="toDate"
               [showTime]="true"
-              id="ToDateTime"
               hourFormat="12"
               [style]="{'width':'100%'}"
               [minDate]="range.fromDate"
               (ngModelChange)="maxDate()"
-              inputId="ToDateTime"
+              inputId="summary-report-to-date"
+              [required]="true"
+              aria-required="true"
+              [attr.aria-invalid]="minRange"
+              [attr.aria-describedby]="minRange ? 'summary-report-to-date-error' : null"
               aria-label="{{ 'SUMMARY_REPORT.TO_DATE_ARIA' | translate }}"
+              appendTo="body"
             >
             </p-calendar>
-            <div class="error-message" *ngIf="minRange">
+            <div id="summary-report-to-date-error" class="error-message" *ngIf="minRange">
               {{ 'SUMMARY_REPORT.TO_DATE_ERROR' | translate }}
             </div>
           </div>
         </div>
 
         <div class="filter-group filter-actions">
-          <button
+          <button type="button"
             class="btn btn-primary"
             [disabled]="!maxRange"
             (click)="filter(toDate,providerPartnersId)"
@@ -109,7 +126,7 @@
     </div>
   </div>
 
-  <div class="report-loading" *ngIf="loading">
+  <div class="report-loading" *ngIf="loading" role="status" aria-live="polite">
     <div class="loading-spinner">
       <div class="spinner-item"></div>
       <div class="spinner-item"></div>

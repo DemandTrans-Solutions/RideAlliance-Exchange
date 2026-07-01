@@ -4,13 +4,13 @@
     <div *ngIf="role === 'ROLE_ADMIN'" class="provider-selection-section">
       <form novalidate #providerPartnersForm="ngForm" class="provider-form">
         <div class="form-group">
-          <label class="section-subtitle">
+          <div class="section-subtitle">
             {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER_HEADER' | translate }}
-          </label>
+          </div>
         </div>
         <div class="provider-select-container">
           <div class="select-container">
-            <label class="provider-label">
+            <label for="provider" class="provider-label">
               {{ 'ADMIN_PROVIDER_PARTNERS.SELECT_PROVIDER' | translate }}
               <span class="mandatory-input">*</span>
             </label>
@@ -24,7 +24,8 @@
               #provider="ngModel"
               (change)="onProviderChange(providerPartnersId)"
               [ngClass]="{'invalid-input': !provider.valid && !provider.pristine }"
-            >
+            
+            aria-required="true">
               <option [ngValue]="null">
                 {{ 'ADMIN_PROVIDER_PARTNERS.PLEASE_SELECT' | translate }}
               </option>
@@ -76,7 +77,7 @@
           <span>{{ 'SERVICE_AREA.CANCEL' | translate }}</span>
         </button>
         -->
-        <button
+        <button type="button"
           class="btn-primary"
           (click)="addServiceArea()"
           [attr.aria-label]="'SERVICE_AREA.ADD_SERVICE_AREA_ARIA' | translate"
@@ -102,7 +103,7 @@
         <ng-template pTemplate="caption">
           <div class="table-header">
             <span class="search-input-container">
-              <i class="pi pi-search"></i>
+              <i class="pi pi-search" aria-hidden="true"></i>
               <input
                 type="text"
                 pInputText
@@ -158,16 +159,16 @@
                 >{{ 'SERVICE_AREA.MOBILE_HEADER_ACTIONS' | translate }}</span
               >
               <div class="action-icons">
-                <button
+                <button type="button"
                   class="btn-icon btn-edit"
                   [title]="'SERVICE_AREA.EDIT_SERVICE_TITLE' | translate"
                   [attr.aria-label]="'SERVICE_AREA.EDIT_SERVICE_ARIA' | translate"
                   (click)="editservice(service)"
                 >
-                  <i class="ph ph-pencil-simple"></i>
+                  <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                 </button>
 
-                <button
+                <button type="button"
                   class="btn-icon"
                   [ngClass]="{'btn-success': !service.isActive, 'btn-danger': service.isActive}"
                   [title]="service.isActive ? ('SERVICE_AREA.DEACTIVATE_TITLE' | translate) : ('SERVICE_AREA.ACTIVATE_TITLE' | translate)"
@@ -177,16 +178,16 @@
                   <i
                     class="ph"
                     [ngClass]="{'ph-toggle-right': !service.isActive, 'ph-toggle-left': service.isActive}"
-                  ></i>
+                   aria-hidden="true"></i>
                 </button>
 
-                <button
+                <button type="button"
                   class="btn-icon btn-download"
                   [title]="'SERVICE_AREA.DOWNLOAD_GEOJSON_TITLE' | translate"
                   [attr.aria-label]="'SERVICE_AREA.DOWNLOAD_GEOJSON_ARIA' | translate"
                   (click)="downloadGeoJSON(service)"
                 >
-                  <i class="ph ph-download-simple"></i>
+                  <i class="ph ph-download-simple" aria-hidden="true"></i>
                 </button>
               </div>
             </td>
@@ -197,7 +198,7 @@
           <tr>
             <td colspan="4">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>{{ 'SERVICE_AREA.NO_RECORDS' | translate }}</span>
               </div>
             </td>
@@ -264,7 +265,7 @@
                 {{ 'SERVICE_AREA.UPLOAD_GEO_FILE' | translate }}
               </label>
               <div class="file-upload-container">
-                <i class="ph ph-upload"></i>
+                <i class="ph ph-upload" aria-hidden="true"></i>
                 <input
                   type="file"
                   id="geoFile"
@@ -286,7 +287,7 @@
                 <span class="mandatory-input">*</span>
               </label>
               <div class="file-upload-container">
-                <i class="ph ph-upload"></i>
+                <i class="ph ph-upload" aria-hidden="true"></i>
                 <input
                   type="file"
                   id="prjFile"
@@ -482,7 +483,7 @@
                 [title]="'SERVICE_AREA.DOWNLOAD_GEOJSON_TITLE' | translate"
                 [attr.aria-label]="'SERVICE_AREA.DOWNLOAD_GEOJSON_ARIA' | translate"
               >
-                <i class="ph ph-download-simple"></i>
+                <i class="ph ph-download-simple" aria-hidden="true"></i>
               </button>
               <button
                 type="button"
@@ -509,18 +510,15 @@
         <!-- Map section (right side) -->
         <div class="service-form-map">
           <div class="map-instructions-container">
-            <button
+            <button type="button"
               class="instructions-toggle"
               (click)="toggleMapInstructions()"
               [attr.aria-expanded]="showMapInstructions"
               [attr.aria-controls]="'map-instructions-content'"
             >
-              <i class="ph ph-info"></i>
+              <i class="ph ph-info" aria-hidden="true"></i>
               <span>{{ 'SERVICE_AREA.MAP_INSTRUCTIONS_TITLE' | translate }}</span>
-              <i
-                class="fas"
-                [ngClass]="showMapInstructions ? 'ph-caret-up' : 'ph-caret-down'"
-              ></i>
+              <i class="fas" [ngClass]="showMapInstructions ? 'ph-caret-up' : 'ph-caret-down'" aria-hidden="true"></i>
             </button>
             <div
               id="map-instructions-content"
@@ -529,18 +527,18 @@
             >
               <ul>
                 <li>
-                  <i class="ph ph-polygon"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DRAW' |
+                  <i class="ph ph-polygon" aria-hidden="true"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DRAW' |
                   translate }}
                 </li>
                 <li>
-                  <i class="ph ph-pencil"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_EDIT' | translate }}
+                  <i class="ph ph-pencil" aria-hidden="true"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_EDIT' | translate }}
                 </li>
                 <li>
-                  <i class="ph ph-eraser"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DELETE' |
+                  <i class="ph ph-eraser" aria-hidden="true"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_DELETE' |
                   translate }}
                 </li>
                 <li>
-                  <i class="ph ph-upload"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_UPLOAD' |
+                  <i class="ph ph-upload" aria-hidden="true"></i> {{ 'SERVICE_AREA.MAP_INSTRUCTIONS_UPLOAD' |
                   translate }}
                 </li>
               </ul>

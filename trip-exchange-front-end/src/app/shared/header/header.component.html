@@ -5,36 +5,21 @@
     <div class="logo-section">
       <div class="app-logo">
         <img
-          src="assets/images/logos/trip-exchange-logo.svg"
+          src="assets/images/ride-alliance-logo.png"
           alt="{{ 'HEADER.LOGO_ALT' | translate }}"
           class="logo-image"
           [class.clickable]="isAuthenticated"
           *ngIf="!isAuthenticated; else clickableLogoImg"
         />
         <ng-template #clickableLogoImg>
-          <img
-            src="assets/images/logos/trip-exchange-logo.svg"
-            alt="{{ 'HEADER.LOGO_ALT' | translate }}"
-            class="logo-image clickable"
-            (click)="ticketEvent()"
-            style="cursor:pointer;"
-          />
-        </ng-template>
-        <span
-          class="logo-text"
-          [class.clickable]="isAuthenticated"
-          *ngIf="!isAuthenticated; else clickableLogoText"
-        >
-          {{ 'HEADER.LOGO_TEXT' | translate }}
-        </span>
-        <ng-template #clickableLogoText>
-          <span
-            class="logo-text clickable"
-            (click)="ticketEvent()"
-            style="cursor:pointer;"
-          >
-            {{ 'HEADER.LOGO_TEXT' | translate }}
-          </span>
+          <button type="button" class="logo-button" (click)="homeEvent()" aria-label="Go to home">
+            <img
+              src="assets/images/ride-alliance-logo.png"
+              alt=""
+              class="logo-image clickable"
+              aria-hidden="true"
+            />
+          </button>
         </ng-template>
       </div>
     </div>
@@ -42,12 +27,19 @@
     <!-- Main Navigation - Only show when authenticated and not on login page -->
     <nav class="main-nav" *ngIf="isAuthenticated ">
       <ul class="nav-list">
+        <li class="nav-item" title="{{ 'HEADER.HOME_TITLE' | translate }}">
+          <button type="button" (click)="homeEvent()" class="nav-link" [class.active]="isRouteActive('/home')">
+            <i class="ph ph-squares-four" aria-hidden="true"></i>
+            <span class="nav-label">{{ 'HEADER.HOME_LABEL' | translate }}</span>
+          </button>
+        </li>
+
         <!-- Tickets - Available to all authenticated users -->
         <li class="nav-item" title="{{ 'HEADER.TICKETS_TITLE' | translate }}">
-          <a #ticket (click)="ticketEvent()" class="nav-link">
-            <i class="ph ph-ticket"></i>
+          <button type="button" #ticket (click)="ticketEvent()" class="nav-link" [class.active]="isRouteActive('/tripTicket')">
+            <i class="ph ph-ticket" aria-hidden="true"></i>
             <span class="nav-label">{{ 'HEADER.TICKETS_LABEL' | translate }}</span>
-          </a>
+          </button>
         </li>
 
         <!-- Admin - Only for admin role -->
@@ -56,10 +48,10 @@
           title="{{ 'HEADER.ADMIN_TITLE' | translate }}"
           *ngIf="hasRole(['ROLE_ADMIN','ROLE_PROVIDERADMIN'])"
         >
-          <a #provider (click)="providerEvent()" class="nav-link">
-            <i class="ph ph-user-gear"></i>
+          <button type="button" #provider (click)="providerEvent()" class="nav-link" [class.active]="isRouteActive('/admin')">
+            <i class="ph ph-user-gear" aria-hidden="true"></i>
             <span class="nav-label">{{ 'HEADER.ADMIN_LABEL' | translate }}</span>
-          </a>
+          </button>
         </li>
 
         <!-- Reports - Only for admin and provider admin roles -->
@@ -68,10 +60,10 @@
           title="{{ 'HEADER.REPORTS_TITLE' | translate }}"
           *ngIf="hasRole(['ROLE_ADMIN', 'ROLE_PROVIDERADMIN'])"
         >
-          <a #reports (click)="reportsEvent()" class="nav-link">
-            <i class="ph ph-chart-line-up"></i>
+          <button type="button" #reports (click)="reportsEvent()" class="nav-link" [class.active]="isRouteActive('/reports')">
+            <i class="ph ph-chart-line-up" aria-hidden="true"></i>
             <span class="nav-label">{{ 'HEADER.REPORTS_LABEL' | translate }}</span>
-          </a>
+          </button>
         </li>
       </ul>
     </nav>
@@ -80,70 +72,100 @@
     <div class="user-menu" *ngIf="isAuthenticated">
       <!-- Dark mode toggle -->
       <button
+        type="button"
         class="theme-toggle-btn"
         (click)="toggleDarkMode(); $event.stopPropagation()"
-        title="{{ isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}"
-        aria-label="Toggle dark mode"
+        title="{{ (isDarkMode ? 'HEADER.SWITCH_TO_LIGHT_MODE' : 'HEADER.SWITCH_TO_DARK_MODE') | translate }}"
+        [attr.aria-label]="'HEADER.TOGGLE_DARK_MODE' | translate"
+        [attr.aria-pressed]="isDarkMode"
       >
-        <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
+        <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}" aria-hidden="true"></i>
       </button>
 
       <div class="user-dropdown">
-        <button class="user-button" (click)="toggleDropdown($event)" (mouseenter)="checkRole()">
+        <button
+          type="button"
+          class="user-button"
+          (click)="toggleDropdown($event)"
+          (mouseenter)="checkRole()"
+          [attr.aria-expanded]="isDropdownOpen"
+          aria-haspopup="true"
+          aria-controls="user-menu-panel"
+        >
           <div class="user-info">
             <span class="user-name">{{userName}}</span>
-            <span class="user-role" *ngIf="role === 'ROLE_PROVIDERADMIN'">{{providerName}}</span>
+            <span
+              *ngIf="roleLabelKey"
+              class="role-chip"
+              [ngClass]="'role-chip--' + roleTier"
+              [title]="roleLabelKey | translate"
+              [attr.aria-label]="roleLabelKey | translate"
+            >
+              <i [ngClass]="roleIcon" aria-hidden="true"></i>
+              <span class="role-chip-label">{{ roleLabelKey | translate }}</span>
+            </span>
+            <span class="provider-line" *ngIf="rawRole === 'ROLE_PROVIDERADMIN' && providerName">{{ providerName }}</span>
           </div>
           <i
             class="ph"
             [ngClass]="{'ph-caret-up': isDropdownOpen, 'ph-caret-down': !isDropdownOpen}"
-          ></i>
+           aria-hidden="true"></i>
         </button>
 
         <!-- Admin User Dropdown Menu -->
-        <div class="dropdown-panel" *ngIf="role === 'ROLE_ADMIN' && isDropdownOpen">
+        <div id="user-menu-panel" class="dropdown-panel" *ngIf="role === 'ROLE_ADMIN' && isDropdownOpen">
           <a [routerLink]="['/profile']" class="dropdown-item">
-            <i class="ph ph-user"></i>
+            <i class="ph ph-user" aria-hidden="true"></i>
             <span>{{ 'HEADER.PROFILE' | translate }}</span>
           </a>
           <a [routerLink]="['/changePasswordAfterLogin']" class="dropdown-item">
-            <i class="ph ph-key"></i>
+            <i class="ph ph-key" aria-hidden="true"></i>
             <span>{{ 'HEADER.CHANGE_PASSWORD' | translate }}</span>
           </a>
           <a [routerLink]="['/applicationSettingsComponent']" class="dropdown-item">
-            <i class="ph ph-gear"></i>
+            <i class="ph ph-gear" aria-hidden="true"></i>
             <span>{{ 'HEADER.APPLICATION_SETTINGS' | translate }}</span>
           </a>
           <!-- Add dark mode toggle in dropdown menu too -->
-          <a (click)="toggleDarkMode(); $event.stopPropagation()" class="dropdown-item">
-            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
-            <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
-          </a>
+          <button
+            type="button"
+            (click)="toggleDarkMode(); $event.stopPropagation()"
+            class="dropdown-item"
+            [attr.aria-pressed]="isDarkMode"
+          >
+            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}" aria-hidden="true"></i>
+            <span>{{ (isDarkMode ? 'HEADER.LIGHT_MODE' : 'HEADER.DARK_MODE') | translate }}</span>
+          </button>
           <div class="dropdown-divider"></div>
           <a [routerLink]="['/login']" (click)="onLogout()" class="dropdown-item">
-            <i class="ph ph-sign-out"></i>
+            <i class="ph ph-sign-out" aria-hidden="true"></i>
             <span>{{ 'HEADER.LOGOUT' | translate }}</span>
           </a>
         </div>
 
         <!-- Provider User Dropdown Menu -->
-        <div class="dropdown-panel" *ngIf="role === 'ROLE_PROVIDERADMIN' && isDropdownOpen">
+        <div id="user-menu-panel" class="dropdown-panel" *ngIf="role === 'ROLE_PROVIDERADMIN' && isDropdownOpen">
           <a [routerLink]="['/profile']" class="dropdown-item">
-            <i class="ph ph-user"></i>
+            <i class="ph ph-user" aria-hidden="true"></i>
             <span>{{ 'HEADER.PROFILE' | translate }}</span>
           </a>
           <a [routerLink]="['/changePasswordAfterLogin']" class="dropdown-item">
-            <i class="ph ph-key"></i>
+            <i class="ph ph-key" aria-hidden="true"></i>
             <span>{{ 'HEADER.CHANGE_PASSWORD' | translate }}</span>
           </a>
           <!-- Add dark mode toggle in dropdown menu too -->
-          <a (click)="toggleDarkMode(); $event.stopPropagation()" class="dropdown-item">
-            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}"></i>
-            <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
-          </a>
+          <button
+            type="button"
+            (click)="toggleDarkMode(); $event.stopPropagation()"
+            class="dropdown-item"
+            [attr.aria-pressed]="isDarkMode"
+          >
+            <i class="ph" [ngClass]="{'ph-sun': isDarkMode, 'ph-moon': !isDarkMode}" aria-hidden="true"></i>
+            <span>{{ (isDarkMode ? 'HEADER.LIGHT_MODE' : 'HEADER.DARK_MODE') | translate }}</span>
+          </button>
           <div class="dropdown-divider"></div>
           <a [routerLink]="['/login']" (click)="onLogout()" class="dropdown-item">
-            <i class="ph ph-sign-out"></i>
+            <i class="ph ph-sign-out" aria-hidden="true"></i>
             <span>{{ 'HEADER.LOGOUT' | translate }}</span>
           </a>
         </div>

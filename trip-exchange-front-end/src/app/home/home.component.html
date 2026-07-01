@@ -1,16 +1,88 @@
-<h2>{{ 'HOME.TITLE' | translate }}</h2>
+<main id="main-content" tabindex="-1" class="route-page animate-fade-in">
+  <div class="page-head">
+    <div>
+      <div class="crumbs">
+        <i class="ph ph-squares-four" aria-hidden="true"></i>
+        {{ 'HOME.OVERVIEW' | translate }}
+      </div>
+      <h1>{{ greetingKey | translate:{ name: userName || ('HOME.DEFAULT_USER' | translate) } }}</h1>
+      <div class="sub">
+        {{ 'HOME.SUBTITLE' | translate:{ date: (today | date:'fullDate') } }}
+        <span class="last-updated" *ngIf="!loading">
+          Updated {{ dashboardLastUpdated | date:'shortTime' }}
+        </span>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="navigateTo('/tripTicket')">
+      <i class="ph ph-ticket" aria-hidden="true"></i>
+      {{ 'HOME.GO_TO_TRIP_TICKETS' | translate }}
+    </button>
+  </div>
 
-<div>
-  {{ 'HOME.DATE_FORMAT_EXAMPLE' | translate }}: {{mydate | date}} <br />
-  {{ 'HOME.NUMBER_FORMAT_EXAMPLE' | translate }}: {{myamount | number}} <br />
-  {{ 'HOME.CURRENCY_FORMAT_EXAMPLE' | translate }}: {{myamount | currency}} <br />
-</div>
+  <div class="stat-grid mb-lg">
+    <div class="stat" *ngFor="let stat of stats" [ngClass]="'is-' + stat.tone">
+      <div class="stat__label">
+        <i class="ph" [ngClass]="stat.icon" aria-hidden="true"></i>
+        {{ stat.labelKey | translate }}
+      </div>
+      <div class="stat__value">{{ stat.value }}</div>
+      <div class="stat__delta">{{ stat.delta }}</div>
+    </div>
+  </div>
 
-<alert type="info">{{ 'HOME.BOOTSTRAP_GREETING' | translate }} {{ mydate.toDateString() }}</alert>
-<div style="display: inline-block; min-height: 290px">
-  <datepicker
-    [(ngModel)]="mydate"
-    showWeeks="true"
-    [attr.aria-label]="'HOME.DATEPICKER_LABEL' | translate"
-  ></datepicker>
-</div>
+  <div class="home-grid">
+    <div class="card home-card">
+      <div class="card-header">
+        <h3>{{ 'HOME.RECENT_ACTIVITY' | translate }}</h3>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="navigateTo('/tripTicket')">
+          {{ 'HOME.VIEW_ALL' | translate }}
+        </button>
+      </div>
+      <div class="card-pad activity-list" [class.is-loading]="loading">
+        <div class="activity-state" *ngIf="loading">
+          Loading recent trip activity...
+        </div>
+        <div class="activity-state" *ngIf="!loading && activities.length === 0">
+          No recent trip activity was returned.
+        </div>
+        <div class="act" *ngFor="let activity of activities">
+          <span class="ic" [ngClass]="activity.tone">
+            <i class="ph" [ngClass]="activity.icon" aria-hidden="true"></i>
+          </span>
+          <div>
+            <div class="tt">{{ activity.text }}</div>
+            <div class="tm">{{ activity.time }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="panel-group">
+      <div class="card">
+        <h3 class="home-side-title">{{ 'HOME.QUICK_ACTIONS' | translate }}</h3>
+        <div class="qa">
+          <button type="button" class="btn btn-primary btn-block" (click)="navigateTo('/tripTicket')">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+            {{ 'HOME.FIND_TRIPS' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary btn-block" (click)="navigateTo('/tripTicket')">
+            <i class="ph ph-upload-simple" aria-hidden="true"></i>
+            {{ 'HOME.UPLOAD_TRIP_TICKETS' | translate }}
+          </button>
+          <button type="button" class="btn btn-secondary btn-block" (click)="navigateTo('/reports/summaryReport')">
+            <i class="ph ph-chart-bar" aria-hidden="true"></i>
+            {{ 'HOME.RUN_SUMMARY_REPORT' | translate }}
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="home-side-title compact">{{ 'HOME.NETWORK_STATUS' | translate }}</h3>
+        <div class="network-row">
+          <span class="status-badge" [ngClass]="networkStatusClass">{{ networkStatusLabel }}</span>
+          <span class="muted small">{{ activePartnerCount }} partner{{ activePartnerCount === 1 ? '' : 's' }} active</span>
+        </div>
+        <p class="muted small">{{ networkStatusCopy }}</p>
+      </div>
+    </aside>
+  </div>
+</main>

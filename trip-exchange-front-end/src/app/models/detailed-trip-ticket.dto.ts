@@ -63,6 +63,23 @@ export interface TripClaimDTO {
   formattedTime?: string;
 }
 
+export interface TripChangeRequestDTO {
+	id?: number;
+	trip_ticket_id?: number;
+	requested_by_provider_id?: number;
+	requested_by_provider_name?: string;
+	requested_by_user_id?: number;
+	target_provider_id?: number;
+	target_provider_name?: string;
+	status?: string;        // 'Pending' | 'Approved' | 'Denied' | 'Applied'
+	status_id?: number;     // 1=pending, 2=approved, 3=denied, 4=applied
+	message?: string;
+	proposed_changes?: { [field: string]: string };
+	response_message?: string;
+	created_at?: string;
+	updated_at?: string;
+}
+
 export interface TripResultDTO {
 	id?: number;
 	tripTicketId?: number;
@@ -120,6 +137,7 @@ export interface TripTicketCommentDTO {
 	name_of_provider?: string;
 	created_at?: string;
 	updated_at?: string;
+  is_new: boolean;
 }
 
 export interface DetailedTripTicketDTO {
@@ -248,4 +266,9 @@ export interface TripTicketWithUIProperties extends DetailedTripTicketDTO {
   myTicket?: boolean;
   selected?: boolean;
   claimantProviders?: string;
+  claimantProviderDisplayItems?: {
+    providerName: string;
+    tripTicketId: string | null;
+  }[];
+  hasNewComments: boolean;
 }

@@ -1,8 +1,11 @@
-// Import shared styles with corrected path
-@import '../../shared/styles/index';
-
 // Component-specific styles
+.admin-provider-partners-form {
+  max-height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
 th,
 td {
-  text-align: center !important;
+  text-align: center;
 }

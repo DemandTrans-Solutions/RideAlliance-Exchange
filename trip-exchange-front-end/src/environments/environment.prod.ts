@@ -17,7 +17,7 @@ export const environment = {
    * - Firebase App Check validation
    *
    * Key: 6LeU-M0rAAAAADixTIDh_W_USDqyqVhzHIIJ_nbS
-   * Type: Trip Exchange Production (Web)
+   * Type: Ride Alliance Production (Web)
    * Configuration: allowedDomains = exchange.demandtrans-apis.com
    *
    * ⚠️ Updated to use the production-specific key for proper domain validation

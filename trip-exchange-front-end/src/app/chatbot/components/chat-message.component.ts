@@ -182,7 +182,8 @@ import { ChatMessage } from '../models/chatbot.interfaces';
       font-size: 13px;
       margin: 4px 0 0 0;
       padding: 0;
-      outline: none;
+      outline: 2px solid var(--blue-strong);
+      outline-offset: 2px;
       text-decoration: underline;
     }
     .collapse-btn:hover {

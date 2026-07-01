@@ -9,8 +9,8 @@ const routes: Routes = [
     path: '',
     component: TripTicketComponent,
     canActivate: [AuthGuard],
+    title: 'Trip Tickets',
     data: {
-      title: 'Trip Tickets',
       roles: ['ROLE_ADMIN', 'ROLE_PROVIDERADMIN', 'ROLE_PROVIDERUSER']
     }
   }

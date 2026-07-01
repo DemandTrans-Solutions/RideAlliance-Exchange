@@ -112,9 +112,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       // Preserve redirect flag & debug logs while clearing auth/session data
       const redirectFlag = localStorage.getItem(LoginComponent.REDIRECT_FLAG_KEY);
       const savedDebug = localStorage.getItem('debug-auth-logs');
+      const savedTheme = localStorage.getItem('tx-theme') || localStorage.getItem('theme');
+      // Also preserve durable per-user table preferences (and theme), which clearAll() below would otherwise wipe.
+      const keep: Record<string, string> = this._localStorage.getLocalStorageToKeep();
+
       this._tokenService.clearAll();
       // DO NOT clear entire local storage because we need redirect flag & debug logs
       // this._localStorage.clearAll();  (commented out)
+      Object.entries(keep).forEach(([k, v]) => localStorage.setItem(k, v));
       if (redirectFlag) {
         localStorage.setItem(LoginComponent.REDIRECT_FLAG_KEY, redirectFlag);
         this.pendingRedirect = true;
@@ -123,6 +128,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
       if (savedDebug) {
         localStorage.setItem('debug-auth-logs', savedDebug);
+      }
+      if (savedTheme) {
+        localStorage.setItem('tx-theme', savedTheme);
       }
     }
 
@@ -685,7 +693,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.resetAuthState(msg);
         } else if (error.status === 401) {
           // More user-friendly message for unauthorized users
-          const msg = 'You are not authorized to use the Trip Exchange. Please contact support.';
+          const msg = 'You are not authorized to use Ride Alliance. Please contact support.';
           this.addDebugLog(`🚫 401 Unauthorized: ${msg}`);
           this.resetAuthState(msg);
           // Special handling for access request message if needed, though resetAuthState is cleaner
@@ -722,18 +730,18 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.addDebugLog('📡 Header emit signal sent');
       this._logger.log('📡 Header emit signal sent');
 
-      this.addDebugLog('🧭 Navigating to /tripTicket...');
-      this._logger.log('🧭 Navigating to /tripTicket...');
+      this.addDebugLog('Navigating to /home...');
+      this._logger.log('Navigating to /home...');
       // Navigate immediately and clear loading once navigation completes (or fails)
       this.addDebugLog('🚀 Attempting navigation now...');
-      this._router.navigate(['/tripTicket']).then(
+      this._router.navigate(['/home']).then(
         (success) => {
           if (success) {
-            this.addDebugLog('✅ Navigation to /tripTicket successful');
-            this._logger.log('✅ Navigation to /tripTicket successful');
+            this.addDebugLog('Navigation to /home successful');
+            this._logger.log('Navigation to /home successful');
           } else {
-            this.addDebugLog('❌ Navigation to /tripTicket failed - router returned false');
-            this._logger.error('❌ Navigation to /tripTicket failed');
+            this.addDebugLog('Navigation to /home failed - router returned false');
+            this._logger.error('Navigation to /home failed');
           }
           // In case the component is still present, clear loading state
           try {

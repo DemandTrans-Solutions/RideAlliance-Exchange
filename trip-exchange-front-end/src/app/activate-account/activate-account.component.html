@@ -1,14 +1,13 @@
-<body id="app">
-  <div class="auth-container">
+<div class="auth-container">
     <header class="auth-header">
       <div class="logo">
-        <h1 class="style">{{ 'APP.TITLE' | translate }}</h1>
+        <div class="style">{{ 'APP.TITLE' | translate }}</div>
       </div>
     </header>
 
-    <main class="auth-content">
+    <main id="main-content" tabindex="-1" class="auth-content">
       <div class="auth-card">
-        <h2 class="auth-title">{{ 'ACTIVATE_ACCOUNT.TITLE' | translate }}</h2>
+        <h1 class="auth-title">{{ 'ACTIVATE_ACCOUNT.TITLE' | translate }}</h1>
 
         <form [formGroup]="ngForm" (ngSubmit)="onSubmit(ngForm)" class="auth-form">
           <div class="form-group">
@@ -17,7 +16,7 @@
             >
             <div class="input-wrapper">
               <span class="input-icon">
-                <i class="ph ph-user"></i>
+                <i class="ph ph-user" aria-hidden="true"></i>
               </span>
               <input
                 type="text"
@@ -28,7 +27,9 @@
                 formControlName="Text"
                 [placeholder]="'ACTIVATE_ACCOUNT.USERNAME_PLACEHOLDER' | translate"
                 [required]="true"
-                aria-describedby="username-help"
+                [attr.aria-describedby]="ngForm.get('Text')?.touched && ngForm.get('Text')?.invalid ? 'username-help' : null"
+                [attr.aria-invalid]="ngForm.get('Text')?.touched && ngForm.get('Text')?.invalid"
+                aria-required="true"
               />
             </div>
             <small
@@ -46,7 +47,7 @@
             >
             <div class="input-wrapper">
               <span class="input-icon">
-                <i class="ph ph-lock"></i>
+                <i class="ph ph-lock" aria-hidden="true"></i>
               </span>
               <input
                 type="password"
@@ -57,7 +58,9 @@
                 formControlName="Password"
                 [placeholder]="'ACTIVATE_ACCOUNT.TEMP_PASSWORD_PLACEHOLDER' | translate"
                 [required]="true"
-                aria-describedby="password-help"
+                [attr.aria-describedby]="ngForm.get('Password')?.touched && ngForm.get('Password')?.invalid ? 'password-help' : null"
+                [attr.aria-invalid]="ngForm.get('Password')?.touched && ngForm.get('Password')?.invalid"
+                aria-required="true"
               />
             </div>
             <small
@@ -81,5 +84,4 @@
         </form>
       </div>
     </main>
-  </div>
-</body>
+</div>

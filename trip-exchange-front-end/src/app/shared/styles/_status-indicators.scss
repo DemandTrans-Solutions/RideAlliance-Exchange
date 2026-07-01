@@ -1,8 +1,8 @@
 // Status indicators
 .active {
-  color: #34a853;
+  color: var(--ok);
 }
 
 .deactive {
-  color: #ea4335;
+  color: var(--danger);
 }

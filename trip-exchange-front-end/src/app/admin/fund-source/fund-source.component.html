@@ -8,12 +8,19 @@
     <div class="action-bar">
       <div class="search-section">
         <div class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input #globalFilter type="text" pInputText class="form-control" placeholder="Search..." />
+          <i class="pi pi-search" aria-hidden="true"></i>
+          <input
+            #globalFilter
+            type="text"
+            pInputText
+            class="form-control"
+            placeholder="Search..."
+            aria-label="Search fund sources"
+          />
         </div>
       </div>
       <div class="action-buttons">
-        <button
+        <button type="button"
           *ngIf="loggerRole === 'ROLE_ADMIN'"
           class="btn-primary"
           (click)="addFundSource()"
@@ -58,34 +65,34 @@
             </td>
             <td class="column-actions">
               <div class="action-icons">
-                <button
+                <button type="button"
                   class="btn-icon btn-edit"
                   title="Edit"
                   aria-label="Edit funding source"
                   (click)="editFund(fund)"
                 >
-                  <i class="ph ph-pencil-simple"></i>
+                  <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                 </button>
 
                 <ng-container *ngIf="loggerRole === 'ROLE_ADMIN'">
-                  <button
+                  <button type="button"
                     *ngIf="fund.status"
                     class="btn-icon btn-success"
                     title="Click to deactivate"
                     aria-label="Deactivate funding source"
                     (click)="updateStatus(fund)"
                   >
-                    <i class="ph ph-check-circle"></i>
+                    <i class="ph ph-check-circle" aria-hidden="true"></i>
                   </button>
 
-                  <button
+                  <button type="button"
                     *ngIf="!fund.status"
                     class="btn-icon btn-danger"
                     title="Click to activate"
                     aria-label="Activate funding source"
                     (click)="updateStatus(fund)"
                   >
-                    <i class="ph ph-x-circle"></i>
+                    <i class="ph ph-x-circle" aria-hidden="true"></i>
                   </button>
                 </ng-container>
               </div>
@@ -97,7 +104,7 @@
           <tr>
             <td colspan="3">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>No funding sources found.</span>
               </div>
             </td>
@@ -130,7 +137,9 @@
             (keypress)="omit_special_char($event)"
             #fundName="ngModel"
             [ngClass]="{'invalid-input': !fundName.valid && !fundName.pristine}"
-            aria-describedby="fundName-error"
+            [attr.aria-invalid]="!fundName.valid && !fundName.pristine"
+            [attr.aria-describedby]="!fundName.valid && !fundName.pristine ? 'fundName-error' : null"
+            aria-required="true"
           />
           <div
             id="fundName-error"

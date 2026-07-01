@@ -8,6 +8,13 @@ export const AppRoutes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: '404', redirectTo: '/login', pathMatch: 'full' },
 
+  {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+    title: 'Home',
+  },
+
   // Auth module - lazy loaded
   {
     path: '',
@@ -19,11 +26,13 @@ export const AppRoutes: Routes = [
     path: 'profile',
     component: ProfileComponent,
     canActivate: [AuthGuard],
+    title: 'Profile',
   },
   {
     path: 'applicationSettingsComponent',
     component: ApplicationSettingsComponent,
     canActivate: [AuthGuard],
+    title: 'Application Settings',
   },
 
   // Trip Ticket module - lazy loaded

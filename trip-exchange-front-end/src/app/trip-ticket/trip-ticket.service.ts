@@ -5,6 +5,7 @@ import { ConstantService } from '../shared/service/constant-service';
 import { SharedHttpClientService } from '../shared/service/shared-http-client.service';
 import { LocalStorageService } from '../shared/service/local-storage.service';
 import { UberBookingResponse, UberCancellationResponse, UberRequest, UberResponse, UberRideRequest } from './uber-request';
+import { MedrideRideRequest } from './medride-request';
 
 export interface TripResultRequestDTO {
   id?: number;
@@ -106,6 +107,7 @@ export class TripTicketService {
   private webServiceURLToUploadTickets: string;
   private webServiceURLForUber: string;
   private webServiceURLForTripResultCompleted: string;
+  private webServiceURLForMedride: string;
 
   constructor(
     private _constantService: ConstantService,
@@ -135,6 +137,7 @@ export class TripTicketService {
     this.webServiceURLForFilters = this._constantService.WEBSERVICE_URL + 'ticket_filters';
     this.webServiceURLForUber = this._constantService.WEBSERVICE_URL + 'uber';
     this.webServiceURLForTripResultCompleted = this._constantService.WEBSERVICE_URL + 'trip_tickets/trip_result/completed';
+    this.webServiceURLForMedride = this._constantService.WEBSERVICE_URL + 'medride';
 
   }
 
@@ -419,6 +422,74 @@ export class TripTicketService {
   }
 
   /**
+   * Get change requests for a ticket
+   */
+  public getChangeRequests(ticketId: any): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests';
+    return this._httpClient.get(url).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
+   * Create a change request on a claimed ticket.
+   * body: { message: string, proposed_changes?: { [field: string]: string } }
+   */
+  public createChangeRequest(ticketId: any, body: any): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests';
+    return this._httpClient.post(url, body).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
+   * Update an existing (pending) change request.
+   * body: { message: string, proposed_changes?: { [field: string]: string } }
+   */
+  public updateChangeRequest(ticketId: any, requestId: any, body: any): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests/' + requestId;
+    return this._httpClient.put(url, body).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
+   * Cancel (withdraw) a pending change request.
+   */
+  public cancelChangeRequest(ticketId: any, requestId: any): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests/' + requestId + '/cancel';
+    return this._httpClient.put(url, {}).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
+   * Approve a change request (target provider). body: { response_message?: string }
+   */
+  public approveChangeRequest(ticketId: any, requestId: any, body: any = {}): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests/' + requestId + '/approve';
+    return this._httpClient.put(url, body).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
+   * Deny a change request (target provider). body: { response_message?: string }
+   */
+  public denyChangeRequest(ticketId: any, requestId: any, body: any = {}): Observable<any> {
+    const url = this._constantService.WEBSERVICE_URL + 'trip_tickets/' + ticketId + '/change_requests/' + requestId + '/deny';
+    return this._httpClient.put(url, body).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
+
+  /**
    * Get comments for a ticket
    */
   public getComments(id: any): Observable<any> {
@@ -577,7 +648,7 @@ export class TripTicketService {
     if (sortField && sortOrder) {
       url += '&sortField=' + sortField + '&sortOrder=' + sortOrder;
     }
-    console.debug('Fetching all tickets with URL:', url);
+    console.debug('22 Fetching all tickets with URL:', url);
     return this._httpClient.get(url).pipe(
       map(this._constantService.extractData),
       catchError(this._constantService.handleError)
@@ -671,7 +742,7 @@ export class TripTicketService {
 
 
   /**
-   * Book Uber option
+   * Cancel Uber option
    */
   public cancelUberTrip(tripTicketId: string): Observable<UberCancellationResponse> {
     const url = this.webServiceURLForUber + '/cancelUberTrip/' + tripTicketId;
@@ -682,7 +753,31 @@ export class TripTicketService {
   }
 
 
+  /**
+   * Have Medride claim a trip
+   */
+  public haveMedrideClaimTrip(requestBody: MedrideRideRequest): Observable<void> {
+    const url = this.webServiceURLForMedride + '/claim';
+    return this._httpClient.post(url, requestBody).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+  }
 
+  /**
+   * Cancel MedRide option
+   */
+  public cancelMedrideTrip(tripTicketId: string): Observable<UberCancellationResponse> {
+    /*
+    const url = this.webServiceURLForUber + '/cancelUberTrip/' + tripTicketId;
+    return this._httpClient.put(url, {}).pipe(
+      map(this._constantService.extractData),
+      catchError(this._constantService.handleError)
+    );
+     */
+
+    return throwError(() => new Error('MedRide trip cancellation not implemented yet'));
+  }
 
   /**
   * Get current ride status for a trip ticket

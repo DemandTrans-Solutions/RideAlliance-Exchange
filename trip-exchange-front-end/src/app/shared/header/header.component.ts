@@ -12,6 +12,8 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+  private readonly themeStorageKey = 'tx-theme';
+
   // Class properties
   public logo: string;
   public provider = false;
@@ -19,6 +21,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   public showGrid: boolean;
   public isPasswordExpired: any;
   public role: string;
+  public rawRole: string;
   public userName: string;
   public providerName: string;
   public isLoginPage = false;
@@ -46,6 +49,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {
     // Initialize properties from localStorage
     this.role = this._localStorage.get('Role');
+    this.rawRole = this._localStorage.getRawRole() || '';
     this.userName = this._localStorage.get('name');
     this.providerName = this._localStorage.get('providerName');
 
@@ -53,7 +57,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.checkIfLoginPage(this._router.url);
     this.checkAuthStatus();
 
-    // Initialize theme from localStorage or default to system preference
+    // Initialize theme from localStorage or default to the reference light theme
     this.initializeTheme();
   }
 
@@ -77,30 +81,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initialize theme based on localStorage setting or system preferences
+   * Initialize theme based on localStorage setting or the reference light theme
    */
   private initializeTheme(): void {
     // Check if user has a saved theme preference
-    const savedTheme = this._localStorage.get('theme');
+    const savedTheme = this._localStorage.get(this.themeStorageKey) || this._localStorage.get('theme');
 
     if (savedTheme === 'dark') {
       this.isDarkMode = true;
       this.applyDarkMode();
-    } else if (savedTheme === 'light') {
+    } else {
       this.isDarkMode = false;
       this.applyLightMode();
-    } else {
-      // No saved preference, check if we can detect system preference
-      // This keeps the default behavior when no manual choice is made
-      this.isDarkMode =
-        window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      // Set initial state based on system preference
-      if (this.isDarkMode) {
-        this.applyDarkMode();
-      } else {
-        this.applyLightMode();
-      }
     }
   }
 
@@ -108,17 +100,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
    * Toggle between light and dark mode
    */
   public toggleDarkMode(): void {
-    console.log('Toggle dark mode clicked. Current state:', this.isDarkMode);
     this.isDarkMode = !this.isDarkMode;
 
     if (this.isDarkMode) {
-      console.log('Applying dark mode');
       this.applyDarkMode();
-      this._localStorage.set('theme', 'dark');
+      this._localStorage.set(this.themeStorageKey, 'dark');
     } else {
-      console.log('Applying light mode');
       this.applyLightMode();
-      this._localStorage.set('theme', 'light');
+      this._localStorage.set(this.themeStorageKey, 'light');
     }
   }
 
@@ -130,7 +119,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     document.body.classList.remove('light-theme');
     // Then add dark-theme class
     document.body.classList.add('dark-theme');
-    console.log('Body classes after dark mode applied:', document.body.className);
   }
 
   /**
@@ -141,13 +129,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     document.body.classList.remove('dark-theme');
     // Then add light-theme class
     document.body.classList.add('light-theme');
-    console.log('Body classes after light mode applied:', document.body.className);
   }
 
   onLogout(): void {
+    const keep: Record<string, string> = this._localStorage.getLocalStorageToKeep();
 
     this._tokenService.clearAll();
     this._localStorage.clearAll();
+
+    console.log("keep", keep);
+    if (keep) {
+      Object.entries(keep).forEach(([k, v]) => {console.log('keep2: ',k,v);  localStorage.setItem(k, v);});
+    }
+
     this._router.navigate(['/login']);
     this._headerEmitter.header.emit(true);
   }
@@ -163,6 +157,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   checkRole(): void {
     this.role = this._localStorage.get('Role');
+    this.rawRole = this._localStorage.getRawRole() || '';
   }
 
   displayName(): void {
@@ -183,6 +178,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.userName = this._localStorage.get('name');
       this.providerName = this._localStorage.get('providerName');
       this.role = this._localStorage.get('Role');
+      this.rawRole = this._localStorage.getRawRole() || '';
       this.isAuthenticated = true;
     }
 
@@ -197,6 +193,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
     } else {
       this._router.navigate(['/changePasswordAfterLogin']);
     }
+  }
+
+  homeEvent(): void {
+    this.checkPasswordAndNavigate(['/home']);
+  }
+
+  isRouteActive(routePrefix: string): boolean {
+    return this._router.url.startsWith(routePrefix);
   }
 
   ticketEvent(): void {
@@ -263,8 +267,62 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.isAuthenticated) {
       // Refresh role and user info when authenticated
       this.role = this._localStorage.get('Role');
+      this.rawRole = this._localStorage.getRawRole() || '';
       this.userName = this._localStorage.get('name');
       this.providerName = this._localStorage.get('providerName');
+    }
+  }
+
+  // i18n key for the user's role label (shown in the chip under their name).
+  // Uses the RAW role so SUPERADMIN and ADMIN remain visually distinct
+  // even though they are functionally equivalent app-wide.
+  public get roleLabelKey(): string {
+    const knownRoles = [
+      'ROLE_SUPERADMIN',
+      'ROLE_ADMIN',
+      'ROLE_PROVIDERADMIN',
+      'ROLE_PROVIDERUSER',
+      'ROLE_READONLY',
+      'ROLE_USER',
+    ];
+    return knownRoles.indexOf(this.rawRole) !== -1 ? `HEADER.${this.rawRole}` : '';
+  }
+
+  // Phosphor icon for the user's role chip
+  public get roleIcon(): string {
+    switch (this.rawRole) {
+      case 'ROLE_SUPERADMIN':
+        return 'ph-fill ph-shield-star';
+      case 'ROLE_ADMIN':
+        return 'ph-fill ph-shield-check';
+      case 'ROLE_PROVIDERADMIN':
+        return 'ph-fill ph-buildings';
+      case 'ROLE_PROVIDERUSER':
+        return 'ph ph-user-circle';
+      case 'ROLE_READONLY':
+        return 'ph ph-eye';
+      case 'ROLE_USER':
+        return 'ph ph-user';
+      default:
+        return 'ph ph-user';
+    }
+  }
+
+  // Visual tier of the role chip — same chip shape across all roles,
+  // hue ramps with privilege:
+  //   elevated = gold (SUPERADMIN + ADMIN — full system authority; the
+  //                    two roles are functionally equivalent, so they share a tier)
+  //   moderate = teal (PROVIDERADMIN — scoped authority)
+  //   baseline = slate (regular users / read-only)
+  public get roleTier(): 'elevated' | 'moderate' | 'baseline' {
+    switch (this.rawRole) {
+      case 'ROLE_SUPERADMIN':
+      case 'ROLE_ADMIN':
+        return 'elevated';
+      case 'ROLE_PROVIDERADMIN':
+        return 'moderate';
+      default:
+        return 'baseline';
     }
   }
 

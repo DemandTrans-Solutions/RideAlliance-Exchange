@@ -28,8 +28,12 @@
                 min="1"
                 max="365"
                 #futureDays="ngModel"
+                aria-required="true"
+                [attr.aria-invalid]="futureDays.invalid && (futureDays.dirty || futureDays.touched)"
+                [attr.aria-describedby]="futureDays.invalid && (futureDays.dirty || futureDays.touched) ? 'futureDays-error' : null"
               />
               <div
+                id="futureDays-error"
                 *ngIf="futureDays.invalid && (futureDays.dirty || futureDays.touched)"
                 class="text-danger"
               >
@@ -56,11 +60,15 @@
                 [(ngModel)]="criteria.dayOfWeek"
                 required
                 #dayOfWeek="ngModel"
+                aria-required="true"
+                [attr.aria-invalid]="dayOfWeek.invalid && (dayOfWeek.dirty || dayOfWeek.touched)"
+                [attr.aria-describedby]="dayOfWeek.invalid && (dayOfWeek.dirty || dayOfWeek.touched) ? 'dayOfWeek-error' : null"
               >
                 <option value="" disabled>{{ 'COMMON.SELECT' | translate }}</option>
                 <option *ngFor="let day of weekDays" [value]="day">{{ day }}</option>
               </select>
               <div
+                id="dayOfWeek-error"
                 *ngIf="dayOfWeek.invalid && (dayOfWeek.dirty || dayOfWeek.touched)"
                 class="text-danger"
               >
@@ -87,8 +95,12 @@
                 [(ngModel)]="criteria.timeOfDay"
                 required
                 #timeOfDay="ngModel"
+                aria-required="true"
+                [attr.aria-invalid]="timeOfDay.invalid && (timeOfDay.dirty || timeOfDay.touched)"
+                [attr.aria-describedby]="timeOfDay.invalid && (timeOfDay.dirty || timeOfDay.touched) ? 'timeOfDay-error' : null"
               />
               <div
+                id="timeOfDay-error"
                 *ngIf="timeOfDay.invalid && (timeOfDay.dirty || timeOfDay.touched)"
                 class="text-danger"
               >
@@ -112,6 +124,9 @@
                 [(ngModel)]="criteria.fundingSourceId"
                 required
                 #fundingSource="ngModel"
+                aria-required="true"
+                [attr.aria-invalid]="fundingSource.invalid && (fundingSource.dirty || fundingSource.touched)"
+                [attr.aria-describedby]="fundingSource.invalid && (fundingSource.dirty || fundingSource.touched) ? 'fundingSource-error' : null"
               >
                 <option value="" disabled selected>{{ 'COMMON.SELECT' | translate }}</option>
                 <option *ngFor="let source of fundingSources" [value]="source.id">
@@ -119,6 +134,7 @@
                 </option>
               </select>
               <div
+                id="fundingSource-error"
                 *ngIf="fundingSource.invalid && (fundingSource.dirty || fundingSource.touched)"
                 class="text-danger"
               >
@@ -146,13 +162,16 @@
       <div *ngIf="existingCriteria.length > 0; else noCriteria">
         <div class="table-responsive">
           <table class="table table-striped">
+            <caption class="visually-hidden">
+              Existing trip acceptance criteria
+            </caption>
             <thead>
               <tr>
-                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.FUTURE_DAYS' | translate }}</th>
-                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.DAY_OF_WEEK' | translate }}</th>
-                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.TIME_OF_DAY' | translate }}</th>
-                <th>{{ 'ADMIN.TRIP_ACCEPTANCE.FUNDING_SOURCE' | translate }}</th>
-                <th>{{ 'COMMON.STATUS' | translate }}</th>
+                <th scope="col">{{ 'ADMIN.TRIP_ACCEPTANCE.FUTURE_DAYS' | translate }}</th>
+                <th scope="col">{{ 'ADMIN.TRIP_ACCEPTANCE.DAY_OF_WEEK' | translate }}</th>
+                <th scope="col">{{ 'ADMIN.TRIP_ACCEPTANCE.TIME_OF_DAY' | translate }}</th>
+                <th scope="col">{{ 'ADMIN.TRIP_ACCEPTANCE.FUNDING_SOURCE' | translate }}</th>
+                <th scope="col">{{ 'COMMON.STATUS' | translate }}</th>
               </tr>
             </thead>
             <tbody>

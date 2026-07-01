@@ -53,13 +53,13 @@
     }
   },
   "FOOTER": {
-    "COPYRIGHT": "旅行交流 ",
+    "COPYRIGHT": "Ride Alliance ",
     "PRIVACY_POLICY": "隐私政策",
     "TERMS_OF_SERVICE": "服务条款",
     "CONTACT": "联系我们"
   },
   "APP": {
-    "TITLE": "旅行交流",
+    "TITLE": "Ride Alliance",
     "CONFIRMATION_HEADER": "确认"
   },
   "LOGIN": {
@@ -69,7 +69,43 @@
     "PASSWORD_REQUIRED": "密码为必填项",
     "PASSWORD_LENGTH": "密码必须介于 5-10 个字符之间",
     "BUTTON": "登录",
-    "FORGOT_PASSWORD": "忘记密码了吗？"
+    "FORGOT_PASSWORD": "忘记密码了吗？",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LEAD": "Welcome back. Use your provider credentials to continue.",
+    "OR": "or",
+    "SIGN_IN_GOOGLE": "Sign in with Google",
+    "MFA_NOTE": "A 6-digit verification code will be sent to your registered phone for two-factor authentication.",
+    "TAGLINE_HEADING": "One network for every trip.",
+    "TAGLINE_BODY": "Post, claim and coordinate rides across the Ride Alliance partner network — securely, in one place.",
+    "POINT_2FA": "Two-factor secured sign-in",
+    "POINT_PARTNERS": "Trusted partner coordination",
+    "POINT_SERVICE_AREA": "Service-area aware matching",
+    "RIDE_ALLIANCE_FOOTNOTE": "A Ride Alliance service of the Denver Regional Council of Governments",
+    "MFA_HEADING": "Two-Factor Authentication",
+    "MFA_SENT": "We've sent a verification code to your registered phone number.",
+    "MFA_CODE": "Verification code",
+    "MFA_CODE_PLACEHOLDER": "Enter 6-digit verification code",
+    "VERIFY_CODE": "Verify code",
+    "SEND_CODE": "Send verification code",
+    "BACK_TO_LOGIN": "Back to login",
+    "MFA_ENROLL_HEADING": "Multi-Factor Authentication Setup",
+    "MFA_ENROLL_TITLE": "Security update required.",
+    "MFA_ENROLL_BODY": "All users must now use two-factor authentication. Please provide your phone number to receive verification codes.",
+    "PHONE_NUMBER": "Phone number",
+    "PHONE_PLACEHOLDER": "Enter phone number",
+    "FULL_NUMBER": "Full number",
+    "MFA_COMPLETE_SETUP": "Complete MFA setup",
+    "MFA_ONE_TIME_NOTICE": "This is a one-time setup. Your phone number will be used only for security verification.",
+    "MFA_VERIFY_BODY": "Please verify your identity with the code sent to your registered phone number.",
+    "VERIFY_AND_SIGNIN": "Verify and sign in",
+    "MFA_RESEND_PROMPT": "Didn't receive a code?",
+    "RESEND": "Resend",
+    "EMAIL_VERIFICATION_REQUIRED": "Email Verification Required",
+    "SEND_VERIFICATION_EMAIL": "Send new verification email",
+    "ACCESS_REQUIRED": "Access Required",
+    "ACCESS_REQUEST_BODY": "You are not authorized to access this application. Please contact an administrator to request access.",
+    "RIDE_ALLIANCE": "Ride Alliance"
   },
   "ACTIVATE_ACCOUNT": {
     "TITLE": "激活账户",
@@ -244,8 +280,8 @@
     "BUTTON": "更改密码"
   },
   "HEADER": {
-    "LOGO_ALT": "旅行交流",
-    "LOGO_TEXT": "旅行交流",
+    "LOGO_ALT": "Ride Alliance",
+    "LOGO_TEXT": "Ride Alliance",
     "TICKETS_TITLE": "旅行门票",
     "TICKETS_LABEL": "旅行门票",
     "ADMIN_TITLE": "管理员",
@@ -255,7 +291,14 @@
     "PROFILE": "概况",
     "CHANGE_PASSWORD": "更改密码",
     "APPLICATION_SETTINGS": "应用程序设置",
-    "LOGOUT": "登出"
+    "LOGOUT": "登出",
+    "HOME_TITLE": "Home dashboard",
+    "HOME_LABEL": "Home",
+    "SWITCH_TO_LIGHT_MODE": "Switch to Light Mode",
+    "SWITCH_TO_DARK_MODE": "Switch to Dark Mode",
+    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "LIGHT_MODE": "Light Mode",
+    "DARK_MODE": "Dark Mode"
   },
   "PROFILE": {
     "TITLE": "我的个人资料",
@@ -496,12 +539,50 @@
     "UPDATE_USER_ARIA": "更新用户"
   },
   "HOME": {
-    "TITLE": "欢迎来到旅行交易所",
+    "TITLE": "Welcome to Ride Alliance",
     "DATE_FORMAT_EXAMPLE": "日期格式示例",
     "NUMBER_FORMAT_EXAMPLE": "数字格式示例",
     "CURRENCY_FORMAT_EXAMPLE": "货币格式示例",
     "DATEPICKER_LABEL": "选择一个日期",
-    "BOOTSTRAP_GREETING": "来自 ng2-bootstrap 的问候"
+    "BOOTSTRAP_GREETING": "来自 ng2-bootstrap 的问候",
+    "OVERVIEW": "Overview",
+    "DEFAULT_USER": "there",
+    "GREETING_MORNING": "Good morning, {{name}}",
+    "GREETING_AFTERNOON": "Good afternoon, {{name}}",
+    "GREETING_EVENING": "Good evening, {{name}}",
+    "SUBTITLE": "Here is what is happening across your trips today — {{date}}.",
+    "GO_TO_TRIP_TICKETS": "Go to trip tickets",
+    "RECENT_ACTIVITY": "Recent activity",
+    "VIEW_ALL": "View all",
+    "QUICK_ACTIONS": "Quick actions",
+    "FIND_TRIPS": "Find trips to claim",
+    "UPLOAD_TRIP_TICKETS": "Upload trip tickets",
+    "RUN_SUMMARY_REPORT": "Run summary report",
+    "NETWORK_STATUS": "Network status",
+    "ONLINE": "Online",
+    "PARTNERS_ACTIVE": "6 partner providers active",
+    "NETWORK_STATUS_COPY": "Trusted partners can claim your trips without approval. Manage partnerships in Admin.",
+    "STATS": {
+      "AVAILABLE_TO_CLAIM": "Available to claim",
+      "IN_SERVICE_AREA": "in your service area",
+      "AWAITING_APPROVAL": "Awaiting your approval",
+      "CLAIMS_ON_TICKETS": "claims on your tickets",
+      "TRIPS_TODAY": "Your trips today",
+      "TRIPS_TODAY_DELTA": "14 completed · 9 upcoming",
+      "EXPIRING_SOON": "Expiring soon",
+      "EXPIRING_DELTA": "within 2 hours"
+    },
+    "ACTIVITY": {
+      "CLAIM_APPROVED": "Mile High Rides approved your claim on trip #48213 — Eleanor Briggs",
+      "NEW_TICKET": "Front Range Transit posted a new ticket in North Metro",
+      "CHANGE_REQUEST": "Change request from Boulder County Ride awaiting your response on #48190",
+      "EXPIRING_TICKET": "Ticket #48155 will expire at 7:00 a.m. if unclaimed",
+      "TRIP_COMPLETED": "Trip #48102 marked completed — Carol Whitman",
+      "EIGHT_MINUTES_AGO": "8 minutes ago",
+      "TWENTY_SIX_MINUTES_AGO": "26 minutes ago",
+      "ONE_HOUR_AGO": "1 hour ago",
+      "TWO_HOURS_AGO": "2 hours ago"
+    }
   },
   "TRIP_TICKET": {
     "SERVICE_ANIMALS": "服务性动物",
@@ -667,6 +748,7 @@
     "PROVIDER_SUBMITTED_COST": "提交的提供商目前愿意支付的行程价格",
     "TRUSTED_PROVIDER_NOTE": "注意-此行程不是来自您的可信合作伙伴之一的提供商。您的索赔需要得到该提供商的批准才能得到验证。在获得批准之前，它将保持待定状态",
     "SEND_TO_UBER": "发送给优步",
+    "SEND_TO_MEDRIDE": "发送到 MedRide",
     "PICKUP_LOCATION": "取件地点",
     "UBER_PICKUP_TIME": "取件时间",
     "UBER_AVAILABLE_OPTIONS": "可用的优步选项",

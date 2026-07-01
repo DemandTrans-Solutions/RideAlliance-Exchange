@@ -211,13 +211,14 @@
       line-height: 1.4;
       resize: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      outline: none;
+      outline: 2px solid var(--blue-strong);
+      outline-offset: 2px;
       background: var(--input-bg);
       color: var(--input-text);
 
       &:focus {
         border-color: var(--input-focus-border);
-        box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        box-shadow: none;
       }
 
       &:disabled {
@@ -296,16 +297,6 @@
 
 .chatbot-window {
   animation: slideInUp 0.3s ease-out;
-}
-
-/* Dark mode support using established theme system */
-@media (prefers-color-scheme: dark) {
-  .chatbot-window {
-    background: var(--neutral-900) !important; // dark background for dark mode
-    color: var(--white) !important; // light text for dark mode
-    border-color: var(--neutral-700) !important;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
-  }
 }
 
 html body.dark-theme .chatbot-window {

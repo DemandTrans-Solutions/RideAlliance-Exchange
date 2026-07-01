@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate {
           'Error Message',
           'Sorry, you are not authorized for that page'
         );
-        this._router.navigate(['/tripTicket']);
+        this._router.navigate(['/home']);
         return false;
       }
     }
@@ -65,7 +65,7 @@ export class AuthGuard implements CanActivate {
         'Error Message',
         'Sorry, you are not authorized for that page'
       );
-      this._router.navigate(['/tripTicket']);
+      this._router.navigate(['/home']);
       return false;
     }
 

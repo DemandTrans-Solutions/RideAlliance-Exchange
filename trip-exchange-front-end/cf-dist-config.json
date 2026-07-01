@@ -1,0 +1,57 @@
+{
+  "CallerReference": "deploy-ride-alliance-1781372187",
+  "Comment": "Distribution for ride-alliance.demandtrans-apis.com",
+  "Origins": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "Id": "S3Origin",
+        "DomainName": "ride-alliance.demandtrans-apis.com.s3.amazonaws.com",
+        "S3OriginConfig": {
+          "OriginAccessIdentity": "origin-access-identity/cloudfront/E14ABNA82TVK8Q"
+        }
+      }
+    ]
+  },
+  "DefaultRootObject": "index.html",
+  "Aliases": {
+    "Quantity": 1,
+    "Items": ["ride-alliance.demandtrans-apis.com"]
+  },
+  "DefaultCacheBehavior": {
+    "TargetOriginId": "S3Origin",
+    "ViewerProtocolPolicy": "redirect-to-https",
+    "AllowedMethods": {
+      "Quantity": 2,
+      "Items": ["GET", "HEAD"],
+      "CachedMethods": { "Quantity": 2, "Items": ["GET", "HEAD"] }
+    },
+    "ForwardedValues": {
+      "QueryString": false,
+      "Cookies": { "Forward": "none" }
+    },
+    "TrustedSigners": { "Enabled": false, "Quantity": 0 },
+    "Compress": true,
+    "DefaultTTL": 86400,
+    "MinTTL": 0,
+    "MaxTTL": 31536000
+  },
+  "CustomErrorResponses": {
+    "Quantity": 1,
+    "Items": [
+      {
+        "ErrorCode": 404,
+        "ResponsePagePath": "/index.html",
+        "ResponseCode": "200",
+        "ErrorCachingMinTTL": 300
+      }
+    ]
+  },
+  "ViewerCertificate": {
+    "ACMCertificateArn": "arn:aws:acm:us-east-1:750446117464:certificate/51a77d7a-8f3d-4c5a-befe-bb6d6a7a07b9",
+    "SSLSupportMethod": "sni-only",
+    "MinimumProtocolVersion": "TLSv1.2_2021"
+  },
+  "Enabled": true,
+  "PriceClass": "PriceClass_100"
+}

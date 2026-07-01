@@ -10,13 +10,17 @@ import { SetPasswordComponent } from '../activate-account/set-password/set-passw
 import { ResetPasswordComponent } from '../reset-password/reset-password.component';
 
 const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'reset-password', component: ResetPasswordComponent },
-  { path: 'changePassword', component: ChangePasswordComponent },
-  { path: 'changePasswordAfterLogin', component: ChangePasswordAfterLoginComponent },
-  { path: 'activateAccount', component: ActivateAccountComponent },
-  { path: 'setPasswordComponent', component: SetPasswordComponent },
+  { path: 'login', component: LoginComponent, title: 'Login' },
+  { path: 'forgotPassword', component: ForgotPasswordComponent, title: 'Forgot Password' },
+  { path: 'reset-password', component: ResetPasswordComponent, title: 'Reset Password' },
+  { path: 'changePassword', component: ChangePasswordComponent, title: 'Change Password' },
+  {
+    path: 'changePasswordAfterLogin',
+    component: ChangePasswordAfterLoginComponent,
+    title: 'Change Password After Login',
+  },
+  { path: 'activateAccount', component: ActivateAccountComponent, title: 'Activate Account' },
+  { path: 'setPasswordComponent', component: SetPasswordComponent, title: 'Set Password' },
 ];
 
 @NgModule({

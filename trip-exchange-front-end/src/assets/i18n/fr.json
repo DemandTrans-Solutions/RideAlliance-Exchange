@@ -53,13 +53,13 @@
     }
   },
   "FOOTER": {
-    "COPYRIGHT": "Échange de voyages ",
+    "COPYRIGHT": "Ride Alliance ",
     "PRIVACY_POLICY": "Politique de confidentialité",
     "TERMS_OF_SERVICE": "Conditions générales d'utilisation",
     "CONTACT": "Contacter"
   },
   "APP": {
-    "TITLE": "Échange de voyages",
+    "TITLE": "Ride Alliance",
     "CONFIRMATION_HEADER": "Confirmation"
   },
   "LOGIN": {
@@ -69,7 +69,43 @@
     "PASSWORD_REQUIRED": "Le mot de passe est obligatoire",
     "PASSWORD_LENGTH": "Le mot de passe doit contenir entre 5 et 10 caractères",
     "BUTTON": "Se connecter",
-    "FORGOT_PASSWORD": "Vous avez oublié votre mot de passe ?"
+    "FORGOT_PASSWORD": "Vous avez oublié votre mot de passe ?",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LEAD": "Welcome back. Use your provider credentials to continue.",
+    "OR": "or",
+    "SIGN_IN_GOOGLE": "Sign in with Google",
+    "MFA_NOTE": "A 6-digit verification code will be sent to your registered phone for two-factor authentication.",
+    "TAGLINE_HEADING": "One network for every trip.",
+    "TAGLINE_BODY": "Post, claim and coordinate rides across the Ride Alliance partner network — securely, in one place.",
+    "POINT_2FA": "Two-factor secured sign-in",
+    "POINT_PARTNERS": "Trusted partner coordination",
+    "POINT_SERVICE_AREA": "Service-area aware matching",
+    "RIDE_ALLIANCE_FOOTNOTE": "A Ride Alliance service of the Denver Regional Council of Governments",
+    "MFA_HEADING": "Two-Factor Authentication",
+    "MFA_SENT": "We've sent a verification code to your registered phone number.",
+    "MFA_CODE": "Verification code",
+    "MFA_CODE_PLACEHOLDER": "Enter 6-digit verification code",
+    "VERIFY_CODE": "Verify code",
+    "SEND_CODE": "Send verification code",
+    "BACK_TO_LOGIN": "Back to login",
+    "MFA_ENROLL_HEADING": "Multi-Factor Authentication Setup",
+    "MFA_ENROLL_TITLE": "Security update required.",
+    "MFA_ENROLL_BODY": "All users must now use two-factor authentication. Please provide your phone number to receive verification codes.",
+    "PHONE_NUMBER": "Phone number",
+    "PHONE_PLACEHOLDER": "Enter phone number",
+    "FULL_NUMBER": "Full number",
+    "MFA_COMPLETE_SETUP": "Complete MFA setup",
+    "MFA_ONE_TIME_NOTICE": "This is a one-time setup. Your phone number will be used only for security verification.",
+    "MFA_VERIFY_BODY": "Please verify your identity with the code sent to your registered phone number.",
+    "VERIFY_AND_SIGNIN": "Verify and sign in",
+    "MFA_RESEND_PROMPT": "Didn't receive a code?",
+    "RESEND": "Resend",
+    "EMAIL_VERIFICATION_REQUIRED": "Email Verification Required",
+    "SEND_VERIFICATION_EMAIL": "Send new verification email",
+    "ACCESS_REQUIRED": "Access Required",
+    "ACCESS_REQUEST_BODY": "You are not authorized to access this application. Please contact an administrator to request access.",
+    "RIDE_ALLIANCE": "Ride Alliance"
   },
   "ACTIVATE_ACCOUNT": {
     "TITLE": "Activer le compte",
@@ -244,8 +280,8 @@
     "BUTTON": "Changer le mot de passe"
   },
   "HEADER": {
-    "LOGO_ALT": "Échange de voyages",
-    "LOGO_TEXT": "Échange de voyages",
+    "LOGO_ALT": "Ride Alliance",
+    "LOGO_TEXT": "Ride Alliance",
     "TICKETS_TITLE": "Billets de voyage",
     "TICKETS_LABEL": "Billets de voyage",
     "ADMIN_TITLE": "Administrateur",
@@ -255,7 +291,14 @@
     "PROFILE": "Profil",
     "CHANGE_PASSWORD": "Changer le mot de passe",
     "APPLICATION_SETTINGS": "Paramètres de l'application",
-    "LOGOUT": "Déconnectez-vous"
+    "LOGOUT": "Déconnectez-vous",
+    "HOME_TITLE": "Home dashboard",
+    "HOME_LABEL": "Home",
+    "SWITCH_TO_LIGHT_MODE": "Switch to Light Mode",
+    "SWITCH_TO_DARK_MODE": "Switch to Dark Mode",
+    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "LIGHT_MODE": "Light Mode",
+    "DARK_MODE": "Dark Mode"
   },
   "PROFILE": {
     "TITLE": "Mon profil",
@@ -496,12 +539,50 @@
     "UPDATE_USER_ARIA": "Mettre à jour l'utilisateur"
   },
   "HOME": {
-    "TITLE": "Bienvenue sur Trip Exchange",
+    "TITLE": "Welcome to Ride Alliance",
     "DATE_FORMAT_EXAMPLE": "Exemple de format de date",
     "NUMBER_FORMAT_EXAMPLE": "Exemple de format numérique",
     "CURRENCY_FORMAT_EXAMPLE": "Exemple de format de devise",
     "DATEPICKER_LABEL": "Sélectionnez une date",
-    "BOOTSTRAP_GREETING": "Bonjour de ng2-bootstrap"
+    "BOOTSTRAP_GREETING": "Bonjour de ng2-bootstrap",
+    "OVERVIEW": "Overview",
+    "DEFAULT_USER": "there",
+    "GREETING_MORNING": "Good morning, {{name}}",
+    "GREETING_AFTERNOON": "Good afternoon, {{name}}",
+    "GREETING_EVENING": "Good evening, {{name}}",
+    "SUBTITLE": "Here is what is happening across your trips today — {{date}}.",
+    "GO_TO_TRIP_TICKETS": "Go to trip tickets",
+    "RECENT_ACTIVITY": "Recent activity",
+    "VIEW_ALL": "View all",
+    "QUICK_ACTIONS": "Quick actions",
+    "FIND_TRIPS": "Find trips to claim",
+    "UPLOAD_TRIP_TICKETS": "Upload trip tickets",
+    "RUN_SUMMARY_REPORT": "Run summary report",
+    "NETWORK_STATUS": "Network status",
+    "ONLINE": "Online",
+    "PARTNERS_ACTIVE": "6 partner providers active",
+    "NETWORK_STATUS_COPY": "Trusted partners can claim your trips without approval. Manage partnerships in Admin.",
+    "STATS": {
+      "AVAILABLE_TO_CLAIM": "Available to claim",
+      "IN_SERVICE_AREA": "in your service area",
+      "AWAITING_APPROVAL": "Awaiting your approval",
+      "CLAIMS_ON_TICKETS": "claims on your tickets",
+      "TRIPS_TODAY": "Your trips today",
+      "TRIPS_TODAY_DELTA": "14 completed · 9 upcoming",
+      "EXPIRING_SOON": "Expiring soon",
+      "EXPIRING_DELTA": "within 2 hours"
+    },
+    "ACTIVITY": {
+      "CLAIM_APPROVED": "Mile High Rides approved your claim on trip #48213 — Eleanor Briggs",
+      "NEW_TICKET": "Front Range Transit posted a new ticket in North Metro",
+      "CHANGE_REQUEST": "Change request from Boulder County Ride awaiting your response on #48190",
+      "EXPIRING_TICKET": "Ticket #48155 will expire at 7:00 a.m. if unclaimed",
+      "TRIP_COMPLETED": "Trip #48102 marked completed — Carol Whitman",
+      "EIGHT_MINUTES_AGO": "8 minutes ago",
+      "TWENTY_SIX_MINUTES_AGO": "26 minutes ago",
+      "ONE_HOUR_AGO": "1 hour ago",
+      "TWO_HOURS_AGO": "2 hours ago"
+    }
   },
   "TRIP_TICKET": {
     "FILTERS_TITLE": "Filtrer les billets de voyage",
@@ -666,6 +747,7 @@
     "PROVIDER_SUBMITTED_COST": "Prix du voyage que le fournisseur soumissionnaire est actuellement prêt à payer",
     "TRUSTED_PROVIDER_NOTE": "Remarque : ce voyage ne provient pas d'un fournisseur qui est l'un de vos partenaires de confiance. Votre réclamation devra être approuvée par ce fournisseur pour être validée. Il restera en statut En attente jusqu'à ce qu'il soit approuvé",
     "SEND_TO_UBER": "Envoyer à Uber",
+    "SEND_TO_MEDRIDE": "Envoyer à MedRide",
     "PICKUP_LOCATION": "Lieu de prise en charge",
     "UBER_PICKUP_TIME": "Heure de prise en charge",
     "UBER_AVAILABLE_OPTIONS": "Options Uber disponibles",

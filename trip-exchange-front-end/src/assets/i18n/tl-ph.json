@@ -53,13 +53,13 @@
     }
   },
   "FOOTER": {
-    "COPYRIGHT": "Palitan ng Paglalakbay ",
+    "COPYRIGHT": "Ride Alliance ",
     "PRIVACY_POLICY": "Patakaran sa Privacy",
     "TERMS_OF_SERVICE": "Mga Tuntunin ng Serbisyo",
     "CONTACT": "Makipag-ugnay"
   },
   "APP": {
-    "TITLE": "Palitan ng Paglalakbay",
+    "TITLE": "Ride Alliance",
     "CONFIRMATION_HEADER": "Kumpirmasyon"
   },
   "LOGIN": {
@@ -69,7 +69,43 @@
     "PASSWORD_REQUIRED": "Kinakailangan ang password",
     "PASSWORD_LENGTH": "Ang password ay dapat na nasa pagitan ng 5-10 character",
     "BUTTON": "Mag-login",
-    "FORGOT_PASSWORD": "Nakalimutan ang iyong password?"
+    "FORGOT_PASSWORD": "Nakalimutan ang iyong password?",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "LEAD": "Welcome back. Use your provider credentials to continue.",
+    "OR": "or",
+    "SIGN_IN_GOOGLE": "Sign in with Google",
+    "MFA_NOTE": "A 6-digit verification code will be sent to your registered phone for two-factor authentication.",
+    "TAGLINE_HEADING": "One network for every trip.",
+    "TAGLINE_BODY": "Post, claim and coordinate rides across the Ride Alliance partner network — securely, in one place.",
+    "POINT_2FA": "Two-factor secured sign-in",
+    "POINT_PARTNERS": "Trusted partner coordination",
+    "POINT_SERVICE_AREA": "Service-area aware matching",
+    "RIDE_ALLIANCE_FOOTNOTE": "A Ride Alliance service of the Denver Regional Council of Governments",
+    "MFA_HEADING": "Two-Factor Authentication",
+    "MFA_SENT": "We've sent a verification code to your registered phone number.",
+    "MFA_CODE": "Verification code",
+    "MFA_CODE_PLACEHOLDER": "Enter 6-digit verification code",
+    "VERIFY_CODE": "Verify code",
+    "SEND_CODE": "Send verification code",
+    "BACK_TO_LOGIN": "Back to login",
+    "MFA_ENROLL_HEADING": "Multi-Factor Authentication Setup",
+    "MFA_ENROLL_TITLE": "Security update required.",
+    "MFA_ENROLL_BODY": "All users must now use two-factor authentication. Please provide your phone number to receive verification codes.",
+    "PHONE_NUMBER": "Phone number",
+    "PHONE_PLACEHOLDER": "Enter phone number",
+    "FULL_NUMBER": "Full number",
+    "MFA_COMPLETE_SETUP": "Complete MFA setup",
+    "MFA_ONE_TIME_NOTICE": "This is a one-time setup. Your phone number will be used only for security verification.",
+    "MFA_VERIFY_BODY": "Please verify your identity with the code sent to your registered phone number.",
+    "VERIFY_AND_SIGNIN": "Verify and sign in",
+    "MFA_RESEND_PROMPT": "Didn't receive a code?",
+    "RESEND": "Resend",
+    "EMAIL_VERIFICATION_REQUIRED": "Email Verification Required",
+    "SEND_VERIFICATION_EMAIL": "Send new verification email",
+    "ACCESS_REQUIRED": "Access Required",
+    "ACCESS_REQUEST_BODY": "You are not authorized to access this application. Please contact an administrator to request access.",
+    "RIDE_ALLIANCE": "Ride Alliance"
   },
   "ACTIVATE_ACCOUNT": {
     "TITLE": "Isaaktibo ang Account",
@@ -244,8 +280,8 @@
     "BUTTON": "Baguhin ang Password"
   },
   "HEADER": {
-    "LOGO_ALT": "Palitan ng Paglalakbay",
-    "LOGO_TEXT": "Palitan ng Paglalakbay",
+    "LOGO_ALT": "Ride Alliance",
+    "LOGO_TEXT": "Ride Alliance",
     "TICKETS_TITLE": "Tiket sa Paglalakbay",
     "TICKETS_LABEL": "Tiket sa Paglalakbay",
     "ADMIN_TITLE": "Admin",
@@ -255,7 +291,14 @@
     "PROFILE": "Profile",
     "CHANGE_PASSWORD": "Baguhin ang Password",
     "APPLICATION_SETTINGS": "Mga Setting ng Application",
-    "LOGOUT": "Mag-log out"
+    "LOGOUT": "Mag-log out",
+    "HOME_TITLE": "Home dashboard",
+    "HOME_LABEL": "Home",
+    "SWITCH_TO_LIGHT_MODE": "Switch to Light Mode",
+    "SWITCH_TO_DARK_MODE": "Switch to Dark Mode",
+    "TOGGLE_DARK_MODE": "Toggle dark mode",
+    "LIGHT_MODE": "Light Mode",
+    "DARK_MODE": "Dark Mode"
   },
   "PROFILE": {
     "TITLE": "Ang Aking Profile",
@@ -496,12 +539,50 @@
     "UPDATE_USER_ARIA": "I-update ang gumagamit"
   },
   "HOME": {
-    "TITLE": "Maligayang pagdating sa Trip Exchange",
+    "TITLE": "Welcome to Ride Alliance",
     "DATE_FORMAT_EXAMPLE": "Halimbawa ng format ng petsa",
     "NUMBER_FORMAT_EXAMPLE": "Halimbawa ng format ng numero",
     "CURRENCY_FORMAT_EXAMPLE": "Halimbawa ng format ng pera",
     "DATEPICKER_LABEL": "Pumili ng petsa",
-    "BOOTSTRAP_GREETING": "Kumusta mula sa ng2-bootstrap"
+    "BOOTSTRAP_GREETING": "Kumusta mula sa ng2-bootstrap",
+    "OVERVIEW": "Overview",
+    "DEFAULT_USER": "there",
+    "GREETING_MORNING": "Good morning, {{name}}",
+    "GREETING_AFTERNOON": "Good afternoon, {{name}}",
+    "GREETING_EVENING": "Good evening, {{name}}",
+    "SUBTITLE": "Here is what is happening across your trips today — {{date}}.",
+    "GO_TO_TRIP_TICKETS": "Go to trip tickets",
+    "RECENT_ACTIVITY": "Recent activity",
+    "VIEW_ALL": "View all",
+    "QUICK_ACTIONS": "Quick actions",
+    "FIND_TRIPS": "Find trips to claim",
+    "UPLOAD_TRIP_TICKETS": "Upload trip tickets",
+    "RUN_SUMMARY_REPORT": "Run summary report",
+    "NETWORK_STATUS": "Network status",
+    "ONLINE": "Online",
+    "PARTNERS_ACTIVE": "6 partner providers active",
+    "NETWORK_STATUS_COPY": "Trusted partners can claim your trips without approval. Manage partnerships in Admin.",
+    "STATS": {
+      "AVAILABLE_TO_CLAIM": "Available to claim",
+      "IN_SERVICE_AREA": "in your service area",
+      "AWAITING_APPROVAL": "Awaiting your approval",
+      "CLAIMS_ON_TICKETS": "claims on your tickets",
+      "TRIPS_TODAY": "Your trips today",
+      "TRIPS_TODAY_DELTA": "14 completed · 9 upcoming",
+      "EXPIRING_SOON": "Expiring soon",
+      "EXPIRING_DELTA": "within 2 hours"
+    },
+    "ACTIVITY": {
+      "CLAIM_APPROVED": "Mile High Rides approved your claim on trip #48213 — Eleanor Briggs",
+      "NEW_TICKET": "Front Range Transit posted a new ticket in North Metro",
+      "CHANGE_REQUEST": "Change request from Boulder County Ride awaiting your response on #48190",
+      "EXPIRING_TICKET": "Ticket #48155 will expire at 7:00 a.m. if unclaimed",
+      "TRIP_COMPLETED": "Trip #48102 marked completed — Carol Whitman",
+      "EIGHT_MINUTES_AGO": "8 minutes ago",
+      "TWENTY_SIX_MINUTES_AGO": "26 minutes ago",
+      "ONE_HOUR_AGO": "1 hour ago",
+      "TWO_HOURS_AGO": "2 hours ago"
+    }
   },
   "TRIP_TICKET": {
     "SERVICE_ANIMALS": "Mga Hayop Serbisyo",
@@ -667,6 +748,7 @@
     "PROVIDER_SUBMITTED_COST": "Presyo para sa paglalakbay na kasalukuyang handang bayaran ang nagsusumite ng Provider",
     "TRUSTED_PROVIDER_NOTE": "Tandaan- Ang paglalakbay na ito ay hindi mula sa isang Provider na isa sa iyong Mga Pinagkakatiwalaang Kasosyo. Ang iyong claim ay kailangang maaprubahan ng Tagabigay na ito upang mapatunayan ito. Mananatili ito sa nakababing katayuan hanggang sa maaprubahan ito",
     "SEND_TO_UBER": "Ipadala sa Uber",
+    "SEND_TO_MEDRIDE": "Ipadala sa MedRide",
     "PICKUP_LOCATION": "Lokasyon ng Pagkuha",
     "UBER_PICKUP_TIME": "Oras ng Pagkuha",
     "UBER_AVAILABLE_OPTIONS": "Magagamit na Mga Pagpipilian sa",

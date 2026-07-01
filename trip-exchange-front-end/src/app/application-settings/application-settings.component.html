@@ -1,4 +1,4 @@
-<div class="settings-container">
+<main id="main-content" tabindex="-1" class="settings-container">
   <div class="view-container">
     <section id="content" class="animate-fade-up">
       <div class="page-container">
@@ -25,7 +25,10 @@
                     id="email"
                     class="form-control"
                     formControlName="Email"
-                    aria-describedby="email-error"
+                    required
+                    aria-required="true"
+                    [attr.aria-invalid]="emailControl?.invalid && emailControl?.touched"
+                    [attr.aria-describedby]="emailControl?.invalid && emailControl?.touched ? 'email-error' : null"
                   />
                   <div
                     id="email-error"
@@ -48,7 +51,10 @@
                     id="password"
                     class="form-control"
                     formControlName="Password"
-                    aria-describedby="password-error"
+                    required
+                    aria-required="true"
+                    [attr.aria-invalid]="passwordControl?.invalid && passwordControl?.touched"
+                    [attr.aria-describedby]="passwordControl?.invalid && passwordControl?.touched ? 'password-error' : null"
                   />
                   <div
                     id="password-error"
@@ -71,7 +77,10 @@
                     class="form-control"
                     min="1"
                     formControlName="passwrodExpiredAfterDays"
-                    aria-describedby="days-error"
+                    required
+                    aria-required="true"
+                    [attr.aria-invalid]="daysControl?.invalid && daysControl?.touched"
+                    [attr.aria-describedby]="daysControl?.invalid && daysControl?.touched ? 'days-error' : null"
                   />
                   <span class="form-control-suffix"
                     >{{ 'APPLICATION_SETTINGS.DAYS' | translate }}</span
@@ -98,7 +107,10 @@
                     min="1"
                     formControlName="claimApprovalTimeInHours"
                     (ngModelChange)="changeClaimApprovalTimeInHours($event)"
-                    aria-describedby="hours-error"
+                    required
+                    aria-required="true"
+                    [attr.aria-invalid]="hoursControl?.invalid && hoursControl?.touched"
+                    [attr.aria-describedby]="hoursControl?.invalid && hoursControl?.touched ? 'hours-error' : null"
                   />
                   <span class="form-control-suffix"
                     >{{ 'APPLICATION_SETTINGS.HOURS' | translate }}</span
@@ -138,4 +150,4 @@
       </div>
     </section>
   </div>
-</div>
+</main>

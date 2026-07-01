@@ -197,46 +197,7 @@
   }
 }
 
-/* Dark mode support using established theme system */
-@media (prefers-color-scheme: dark) {
-  .bot-message .message-bubble {
-    background: var(--neutral-800);
-    border-color: var(--neutral-700);
-    color: var(--neutral-100);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .message-avatar {
-    .user-message & {
-      background: var(--neutral-700);
-      color: var(--neutral-300);
-    }
-  }
-
-  .error-message .message-bubble {
-    background: var(--error-900);
-    border-color: var(--error-700);
-    color: var(--error-100);
-  }
-
-  .message-metadata {
-    .bot-message & {
-      border-color: var(--neutral-700);
-    }
-  }
-
-  .message-text ::ng-deep {
-    .bot-message & a {
-      color: var(--primary-light);
-    }
-  }
-
-  .message-time {
-    color: var(--neutral-400);
-  }
-}
-
-/* Manual theme class support */
+/* Theme class support */
 html body.dark-theme {
   .bot-message .message-bubble {
     background: var(--neutral-800) !important;

@@ -43,6 +43,16 @@ export class SetPasswordComponent {
     this.maxlength = false;
   }
 
+  getSetPasswordDescriptionIds(): string | null {
+    const ids: string[] = [];
+    if (this.ngForm.get('Password')?.touched && this.ngForm.get('Password')?.invalid) {
+      ids.push('new-password-help');
+    }
+    if (this.wrongPassword) ids.push('wrong-password-error');
+    if (this.maxlength) ids.push('password-length-error');
+    return ids.length ? ids.join(' ') : null;
+  }
+
   onSubmit(form: FormGroup) {
     event.preventDefault();
     if (this.activateAccount.new_password == this.activateAccount.confirm_password) {

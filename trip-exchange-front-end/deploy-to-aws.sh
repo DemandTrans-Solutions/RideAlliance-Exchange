@@ -11,6 +11,7 @@ CLOUDFRONT_DIST_ID="E3LB7OLLAWQ9C4"
 BUILD_DIR="dist/"
 ROUTE53_ZONE_ID="Z1Y3EX40BAJ1XV"
 DOMAIN_NAME="exchange-demo.demandtrans.com"
+DIST_ID_FILE=".cloudfront_dist_id"
 
 # Check for AWS CLI
 if ! command -v aws &> /dev/null; then
@@ -33,6 +34,7 @@ sync_s3() {
 
 # Invalidate CloudFront
 invalidate_cloudfront() {
+  load_dist_id
   if [ "$CLOUDFRONT_DIST_ID" = "YOUR_CLOUDFRONT_DISTRIBUTION_ID" ]; then
     echo "Please set your CloudFront distribution ID in the script."
     exit 1
@@ -112,6 +114,15 @@ load_oai_id() {
     echo "Loaded OAI_ID from $OAI_ID_FILE: $OAI_ID"
   else
     OAI_ID=""
+  fi
+}
+
+# Helper to load CloudFront distribution ID from file if it exists
+load_dist_id() {
+  if [ -f "$DIST_ID_FILE" ]; then
+    CLOUDFRONT_DIST_ID=$(cat "$DIST_ID_FILE")
+    export CLOUDFRONT_DIST_ID
+    echo "Loaded CloudFront Distribution ID from $DIST_ID_FILE: $CLOUDFRONT_DIST_ID"
   fi
 }
 
@@ -238,8 +249,9 @@ EOF
   DIST_ID=$(cat cf-dist-output.json | grep -o '"Id": *"[^"]*"' | head -1 | cut -d '"' -f4)
   CLOUDFRONT_DIST_ID="$DIST_ID"
   export CLOUDFRONT_DIST_ID
+  echo "$DIST_ID" > "$DIST_ID_FILE"
   echo "CloudFront distribution created with ID: $DIST_ID"
-  echo "Set CLOUDFRONT_DIST_ID=\"$DIST_ID\" in this script for future deployments."
+  echo "CloudFront distribution ID saved to $DIST_ID_FILE."
   rm -f cf-dist-config.json cf-dist-output.json
   # Wait for distribution to be deployed
   echo "Waiting for CloudFront distribution $DIST_ID to be deployed..."
@@ -249,6 +261,7 @@ EOF
 
 # Create Route53 DNS record for CloudFront
 create_route53_record() {
+  load_dist_id
   if [ -z "$ROUTE53_ZONE_ID" ] || [ -z "$DOMAIN_NAME" ]; then
     echo "Please set ROUTE53_ZONE_ID and DOMAIN_NAME in the script."
     exit 1

@@ -112,24 +112,7 @@
   }
 }
 
-/* Dark mode support using established theme system */
-@media (prefers-color-scheme: dark) {
-  .typing-bubble {
-    background: var(--neutral-800);
-    border-color: var(--neutral-700);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .typing-text {
-    color: var(--neutral-400);
-  }
-
-  .typing-dots .dot {
-    background: var(--primary-light);
-  }
-}
-
-/* Manual theme class support */
+/* Theme class support */
 html body.dark-theme {
   .typing-bubble {
     background: var(--neutral-800) !important;

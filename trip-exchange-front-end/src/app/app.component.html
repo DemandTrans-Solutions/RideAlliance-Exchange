@@ -1,13 +1,22 @@
-<div class="container-fluid body-container">
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<div class="container-fluid body-container" [class.is-auth-route]="isAuthRoute">
   <p-toast position="bottom-right"></p-toast>
   <p-confirmDialog
     header="{{ 'APP.CONFIRMATION_HEADER' | translate }}"
     icon="pi pi-exclamation-triangle"
   ></p-confirmDialog>
-  <div class="container-fluid"><app-header></app-header></div>
-  <div class="container-fluid"><router-outlet></router-outlet></div>
-  <div class="container-fluid container-custompadding"><app-footer></app-footer></div>
 
-  <!-- Chatbot Integration -->
-  <app-chatbot></app-chatbot>
+  <ng-container *ngIf="!isAuthRoute">
+    <div class="container-fluid app-header-shell"><app-header></app-header></div>
+    <div class="container-fluid app-route-shell"><router-outlet></router-outlet></div>
+    <div class="container-fluid container-custompadding app-footer-shell">
+      <app-footer></app-footer>
+    </div>
+    <!-- Do not use chatbot for now
+    <app-chatbot></app-chatbot>
+    -->
+  </ng-container>
+
+  <router-outlet *ngIf="isAuthRoute"></router-outlet>
 </div>

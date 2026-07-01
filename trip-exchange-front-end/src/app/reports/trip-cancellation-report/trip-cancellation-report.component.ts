@@ -3,6 +3,8 @@ import { TripCancellationReportService } from './trip-cancellation-report.servic
 import { ListService } from '../../shared/service/list.service';
 import { NotificationEmitterService } from '../../shared/service/notification-emitter.service';
 import { LocalStorageService } from '../../shared/service/local-storage.service';
+import { TablePreferencesService } from '../../shared/service/table-preferences.service';
+import { TablePrefsState } from '../../shared/service/table-prefs-state';
 import { ConstantService } from '../../shared/service/constant-service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -65,14 +67,29 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
   public gb: any; // Global filter value
   public hourFormat: string = '12';
 
+  private readonly hintStorageKey = 'report-hint-dismissed:trip-cancellation-report';
+  public hintDismissed: boolean = localStorage.getItem(this.hintStorageKey) === '1';
+
+  dismissHint(): void {
+    this.hintDismissed = true;
+    localStorage.setItem(this.hintStorageKey, '1');
+  }
+
+  // Persisted page-size / sort state for this report's table (assigned in constructor).
+  public prefs!: TablePrefsState;
+
   constructor(
     private _listService: ListService,
     private _tripCancellationReportService: TripCancellationReportService,
     private _notificationService: NotificationEmitterService,
     private _localStorage: LocalStorageService,
     private _constantService: ConstantService,
-    private translateService: TranslateService
-  ) {}
+    private translateService: TranslateService,
+    private _tablePreferences: TablePreferencesService
+  ) {
+    // Build in the constructor so prefs is populated before the template first renders.
+    this.prefs = new TablePrefsState(this._tablePreferences, 'report:trip-cancellation');
+  }
 
   ngOnInit(): void {
     this.loadProviders();
@@ -169,7 +186,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
     }
 
     // Set API request parameters
-    this.cancel.reportTicketFilterStatus = ['11','4']; // Status code for cancelled tickets or no shows
+    this.cancel.reportTicketFilterStatus = ['11','4', '19', '20']; // Status code for cancelled tickets or no shows
 
     console.log("Filtering cancelled tickets with params:", this.cancel);
 
@@ -190,7 +207,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
             );
             return;
           }
-
+          console.log("ticketList:", this.ticketList);
           // Process data for display
           this.processTicketList();
         },
@@ -258,6 +275,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
         ticket.submittedDateTime = '-';
       }
 
+      ticket
       // Format trip details
       this.formatTripDetails(ticket);
     }
@@ -379,6 +397,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
       'Dropoff Date/Time': ticket.dropoffDateTime || '',
       'Pickup Address': ticket.pickup || '',
       'Dropoff Address': ticket.dropoff || '',
+      'Status': ticket.status?.type || '',
       'Cancellation Reason': ticket.cancellation_reason || '',
       'Cancelled By': ticket.cancelled_by || '',
       'Cancelled Date': ticket.cancelled_date || '',
@@ -412,6 +431,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
       'Dropoff Date/Time': string;
       'Pickup Address': string;
       'Dropoff Address': string;
+      'Status': string;
       'Cancellation Reason': string;
       'Cancelled By': string;
       'Cancelled Date': string;
@@ -426,6 +446,7 @@ export class TripCancellationReportComponent implements OnInit, OnDestroy {
       'Dropoff Date/Time': ticket.dropoffDateTime || '',
       'Pickup Address': ticket.pickup || '',
       'Dropoff Address': ticket.dropoff || '',
+      'Status': ticket.status?.type || '',
       'Cancellation Reason': ticket.cancellation_reason || '',
       'Cancelled By': ticket.cancelled_by || '',
       'Cancelled Date': ticket.cancelled_date || '',

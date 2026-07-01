@@ -14,10 +14,22 @@ const routes: Routes = [
     component: ReportsComponent,
     children: [
       { path: '', redirectTo: 'summaryReport', pathMatch: 'full' },
-      { path: 'summaryReport', component: SummaryReportComponent },
-      { path: 'newTripTicketReport', component: NewTripTicketReportComponent },
-      { path: 'tripCompletedReport', component: TripCompletedReportComponent },
-      { path: 'tripCancellationReport', component: TripCancellationReportComponent },
+      { path: 'summaryReport', component: SummaryReportComponent, title: 'Summary Report' },
+      {
+        path: 'newTripTicketReport',
+        component: NewTripTicketReportComponent,
+        title: 'New Trip Ticket Report',
+      },
+      {
+        path: 'tripCompletedReport',
+        component: TripCompletedReportComponent,
+        title: 'Trip Completed Report',
+      },
+      {
+        path: 'tripCancellationReport',
+        component: TripCancellationReportComponent,
+        title: 'Trip Cancellation Report',
+      },
     ],
   },
 ];

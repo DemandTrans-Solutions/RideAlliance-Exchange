@@ -1,59 +1,28 @@
-// Colors
-$primary-color: #0056b3;
-$secondary-color: #6c757d;
-$success-color: #28a745;
-$danger-color: #dc3545;
-$warning-color: #ffc107;
-$info-color: #17a2b8;
-$muted-color: #6c757d;
-$dark-muted-color: #adb5bd;
+// Ride Alliance brand tokens — mirrors ride-alliance-theme.css CSS variables.
+// Used by component SCSS files that reference $vars before CSS vars are available.
 
-// Text colors
-$text-color-dark: #333333;
-$text-color-light: #ffffff;
+$navy:          #003B76;
+$navy-deep:     #00244D;
+$blue:          #05A4E1;
+$blue-strong:   #0079C1;
+$blue-soft:     #6BC4E8;
 
-// Background colors
-$light-bg-color: #f8f9fa;
-$dark-bg-color: #343a40;
-$dark-bg-color-lighter: #454d55;
+$ok:            #3f5e00;
+$pending:       #8a4500;
+$danger:        #b5341a;
+$done:          #005551;
 
-// Border colors
-$border-color: #dee2e6;
-$dark-border-color: #495057;
+$ink:           #16202e;
+$ink-2:         #535d6b;
+$ink-3:         #737d8b;
+$line:          #e2e7ee;
+$line-2:        #9aa6b4;
+$surface:       #ffffff;
+$bg:            #eef2f6;
 
-// Table styles
-$table-header-bg: #e9ecef;
-$table-border-color: #dee2e6;
+$font-display:  'Oswald', 'Arial Narrow', Arial, sans-serif;
+$font-body:     Arial, 'Helvetica Neue', Helvetica, system-ui, sans-serif;
 
-// Form styles
-$input-border-color: #ced4da;
-$input-focus-border-color: #80bdff;
-$input-focus-box-shadow-color: rgba(0, 123, 255, 0.25);
-$disabled-bg: #e9ecef;
-
-// Spacing
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 3rem;
-
-// Breakpoints
-$breakpoint-sm: 576px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 992px;
-$breakpoint-xl: 1200px;
-
-// Shadows
-$box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-$box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-$box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-
-// Z-indexes
-$z-index-dropdown: 1000;
-$z-index-sticky: 1020;
-$z-index-fixed: 1030;
-$z-index-modal-backdrop: 1040;
-$z-index-modal: 1050;
-$z-index-popover: 1060;
-$z-index-tooltip: 1070;
+$r:             7px;
+$r-lg:          11px;
+$header-h:      62px;

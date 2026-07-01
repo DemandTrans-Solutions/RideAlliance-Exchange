@@ -19,7 +19,7 @@
       </div> -->
 
       <div class="action-buttons">
-        <button
+        <button type="button"
           class="btn-primary"
           (click)="addUser()"
           [attr.aria-label]="'USERS.ADD_USER_ARIA' | translate"
@@ -45,7 +45,7 @@
         <ng-template pTemplate="caption">
           <div class="table-header">
             <span class="search-input-container">
-              <i class="ph ph-magnifying-glass"></i>
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
               <input
                 type="text"
                 pInputText
@@ -90,17 +90,17 @@
             <td class="column-phone">{{user.phoneNumber}}</td>
             <td class="column-actions">
               <div class="action-icons">
-                <button
+                <button type="button"
                   class="btn-icon btn-edit"
                   [title]="'USERS.EDIT_USER_TITLE' | translate"
                   [attr.aria-label]="'USERS.EDIT_USER_ARIA' | translate"
                   (click)="editUser(user)"
                   style="margin-right: 8px"
                 >
-                  <i class="ph ph-pencil-simple"></i>
+                  <i class="ph ph-pencil-simple" aria-hidden="true"></i>
                 </button>
 
-                <button
+                <button type="button"
                   class="btn-icon"
                   [ngClass]="{'btn-success': !user.isActive, 'btn-danger': user.isActive}"
                   [title]="(user.isActive ? 'USERS.DEACTIVATE_TITLE' : 'USERS.ACTIVATE_TITLE') | translate"
@@ -110,7 +110,7 @@
                   <i
                     class="ph"
                     [ngClass]="{'ph-check-circle': !user.isActive, 'ph-x-circle': user.isActive}"
-                  ></i>
+                   aria-hidden="true"></i>
                 </button>
               </div>
             </td>
@@ -121,7 +121,7 @@
           <tr>
             <td colspan="6">
               <div class="empty-message">
-                <i class="ph ph-info"></i>
+                <i class="ph ph-info" aria-hidden="true"></i>
                 <span>{{ 'USERS.NO_RECORDS' | translate }}</span>
               </div>
             </td>
@@ -155,7 +155,8 @@
                 pattern="[^@]+@[^@]+\.[a-zA-Z]{2,}"
                 [ngClass]="{'invalid-input': !email.valid && !email.pristine}"
                 aria-describedby="email-error"
-              />
+              
+            aria-required="true"/>
               <div id="email-error" class="error-message" *ngIf="!email.valid && !email.pristine">
                 {{ 'USERS.VALID_EMAIL_ERROR' | translate }}
               </div>
@@ -177,7 +178,8 @@
                 #name="ngModel"
                 [ngClass]="{'invalid-input': !name.valid && !name.pristine}"
                 aria-describedby="name-error"
-              />
+              
+            aria-required="true"/>
               <div id="name-error" class="error-message" *ngIf="!name.valid && !name.pristine">
                 {{ 'USERS.VALID_NAME_ERROR' | translate }}
               </div>
@@ -199,7 +201,8 @@
                 #jobTitle="ngModel"
                 [ngClass]="{'invalid-input': !jobTitle.valid && !jobTitle.pristine}"
                 aria-describedby="jobTitle-error"
-              />
+              
+            aria-required="true"/>
               <div
                 id="jobTitle-error"
                 class="error-message"
@@ -252,7 +255,8 @@
                 #provider="ngModel"
                 [ngClass]="{'invalid-input': !provider.valid && !provider.pristine}"
                 aria-describedby="provider-error"
-              >
+              
+            aria-required="true">
                 <option value="">{{ 'USERS.PLEASE_SELECT' | translate }}</option>
                 <option *ngFor="let provider of providersList" [value]="provider.providerId">
                   {{provider.providerName}}
@@ -283,7 +287,8 @@
                 [ngClass]="{'invalid-input': !provider.valid && !provider.pristine}"
                 [disabled]="true"
                 aria-describedby="provider-error"
-              >
+              
+            aria-required="true">
                 <option value="">{{ 'USERS.PLEASE_SELECT' | translate }}</option>
                 <option *ngFor="let provider of providersList" [value]="provider.providerId">
                   {{provider.providerName}}
@@ -311,7 +316,8 @@
                 #position="ngModel"
                 [ngClass]="{'invalid-input': !position.valid && !position.pristine}"
                 aria-describedby="position-error"
-              >
+              
+            aria-required="true">
                 <option value="">{{ 'USERS.PLEASE_SELECT' | translate }}</option>
                 <option *ngFor="let role of rolesList" [value]="role.roleName | uppercase">{{ role.roleName }}</option>
               </select>
@@ -337,7 +343,7 @@
               (click)="toggleNotifications()"
               [attr.aria-label]="notifyAllSelected ? 'Deselect all notifications' : 'Select all notifications'"
             >
-              <i class="ph" [ngClass]="notifyAllSelected ? 'ph-square' : 'ph-check-square'"></i>
+              <i class="ph" [ngClass]="notifyAllSelected ? 'ph-square' : 'ph-check-square'" aria-hidden="true"></i>
               <span style="margin-left:6px">{{ notifyAllSelected ? 'Deselect all' : 'Select all' }}</span>
             </button>
           </div>

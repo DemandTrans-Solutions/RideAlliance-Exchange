@@ -43,8 +43,9 @@ import { TypingIndicatorComponent } from './typing-indicator.component';
         (click)="toggleChatbot()"
         pTooltip="Open Chat Assistant"
         tooltipPosition="left"
-        type="button">
-        <i class="pi pi-comments"></i>
+        type="button"
+        aria-label="Open chat assistant">
+        <i class="pi pi-comments" aria-hidden="true"></i>
       </button>
 
       <!-- Chatbot Window -->
@@ -52,44 +53,52 @@ import { TypingIndicatorComponent } from './typing-indicator.component';
         <!-- Header -->
         <div class="chatbot-header">
           <div class="header-content">
-            <i class="pi pi-android"></i>
+            <i class="pi pi-android" aria-hidden="true"></i>
             <span class="title">AI Assistant</span>
-            <div class="status-indicator" [class.online]="!isLoading"></div>
+            <div
+              class="status-indicator"
+              [class.online]="!isLoading"
+              [attr.aria-label]="isLoading ? 'Assistant is busy' : 'Assistant is online'">
+            </div>
           </div>
           <div class="header-actions">
             <button
               class="header-btn"
               (click)="minimizeChat()"
               pTooltip="Minimize"
-              type="button">
-              <i class="pi" [class.pi-window-minimize]="!isMinimized" [class.pi-window-maximize]="isMinimized"></i>
+              type="button"
+              [attr.aria-label]="isMinimized ? 'Restore chat' : 'Minimize chat'">
+              <i class="pi" [class.pi-window-minimize]="!isMinimized" [class.pi-window-maximize]="isMinimized" aria-hidden="true"></i>
             </button>
             <button
               class="header-btn"
               (click)="newChat()"
               pTooltip="New Chat"
-              type="button">
-              <i class="pi pi-plus"></i>
+              type="button"
+              aria-label="Start new chat">
+              <i class="pi pi-plus" aria-hidden="true"></i>
             </button>
             <button
               class="header-btn"
               (click)="clearChat()"
               pTooltip="Clear Chat"
-              type="button">
-              <i class="pi pi-trash"></i>
+              type="button"
+              aria-label="Clear chat">
+              <i class="pi pi-trash" aria-hidden="true"></i>
             </button>
             <button
               class="header-btn close-btn"
               (click)="closeChat()"
               pTooltip="Close"
-              type="button">
-              <i class="pi pi-times"></i>
+              type="button"
+              aria-label="Close chat">
+              <i class="pi pi-times" aria-hidden="true"></i>
             </button>
           </div>
         </div>
 
         <!-- Error Message -->
-        <div class="error-container" *ngIf="error">
+        <div class="error-container" *ngIf="error" role="alert">
           <p-message
             severity="error"
             [text]="error"
@@ -125,27 +134,30 @@ import { TypingIndicatorComponent } from './typing-indicator.component';
                 [disabled]="isLoading"
                 placeholder="Type your message here..."
                 class="message-input"
-                autocomplete="off">
+                autocomplete="off"
+                aria-label="Chat message">
 
               <button
                 class="send-button"
                 (click)="sendMessage()"
                 [disabled]="!newMessage.trim() || isLoading"
-                type="button">
-                <i class="pi pi-send" *ngIf="!isLoading"></i>
-                <i class="pi pi-spin pi-spinner" *ngIf="isLoading"></i>
+                type="button"
+                aria-label="Send message">
+                <i class="pi pi-send" *ngIf="!isLoading" aria-hidden="true"></i>
+                <i class="pi pi-spin pi-spinner" *ngIf="isLoading" aria-hidden="true"></i>
               </button>
             </div>
 
             <!-- Toggle for response type -->
-            <div class="toggle-container">
-              <label>
-                <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="TEXT"> Text
+            <fieldset class="toggle-container">
+              <legend class="visually-hidden">Response type</legend>
+              <label for="chatbot-inline-query-type-text">
+                <input id="chatbot-inline-query-type-text" type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="TEXT"> Text
               </label>
-              <label>
-                <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="REPORTING_CHARTING"> Report/Chart
+              <label for="chatbot-inline-query-type-reporting">
+                <input id="chatbot-inline-query-type-reporting" type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="REPORTING_CHARTING"> Report/Chart
               </label>
-            </div>
+            </fieldset>
 
             <div class="input-footer">
               <small class="input-hint">Press Enter to send, Shift+Enter for new line</small>

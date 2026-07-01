@@ -16,17 +16,45 @@ import { ProviderPartnersService } from '../admin/provider-partners/provider-par
 import { Subject, timer } from 'rxjs';
 import { takeUntil, finalize, throttleTime } from 'rxjs/operators';
 import { Table } from 'primeng/table';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import moment from 'moment-timezone';
 // Declare Leaflet Maps API globally
 import * as L from 'leaflet';
 import { TripTicketExportData } from '../models/trip-export-data.dto';
 import { UberRequest, UberRideOption, UberRideRequest, UberGuest, CoordinatesWithPlace, Scheduling, TripSummary } from './uber-request';
+import { MedrideRideRequest } from './medride-request';
 import { TripResultRequestDTO } from './trip-ticket.service';
 import { TripTicketExportService } from './trip-ticket-export.service';
 import { TripTicketUploadService, TripTicketUploadRecord } from './trip-ticket-upload.service';
 import { TripTicketWithUIProperties } from '../models/detailed-trip-ticket.dto';
+import { TablePreferencesService } from '../shared/service/table-preferences.service';
 import { tick } from '@angular/core/testing';
+
+interface TripTicketSummaryCard {
+  className: string;
+  value: number;
+  label: string;
+}
+
+interface TripTicketAction {
+  id: string;
+  label: string;
+  icon: string;
+  tone: 'neutral' | 'info' | 'success' | 'warning' | 'danger';
+  request?: any;
+}
+
+interface TripTicketActionGroups {
+  view: TripTicketAction | null;
+  primary: TripTicketAction | null;
+  overflow: TripTicketAction[];
+}
+
+interface RideStatusDetailEntry {
+  key: string;
+  label: string;
+  value: string;
+}
 
 
 
@@ -119,7 +147,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   // Activity related properties
   activity: boolean = false;
   // Local UI state for overflow menu in the action column
-  overflowMenuOpen: boolean = false;
+  overflowMenuOpenForTicket: string | number | null = null;
   update: boolean = false;
   createClaims: boolean = false;
   updateClaim: boolean = false;
@@ -329,6 +357,9 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   // Dropdown state for summary report
   showSummaryDropdown: boolean = false;
 
+  now = new Date();
+  twentyFourHoursAgo = new Date(this.now.getTime() - (24 * 60 * 60 * 1000));
+
   // ViewChild for the trip note input field
   @ViewChild('tripNoteInput') tripNoteInput!: ElementRef;
 
@@ -418,7 +449,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   public uploadResult: any = null;
   public allowedFileTypes = '.csv,.xlsx,.xls';
   public maxFileSize = 10 * 1024 * 1024; // 10MB
-  // Path to the actual Excel template used for trip exchange import/export
+  // Path to the actual Excel template used for Ride Alliance import/export
   // Previously pointed to a CSV which caused an .xlsx download with CSV content (Excel error)
   private readonly uploadTemplatePath = 'assets/templates/trip-exchange-import-export-template.xlsx';
 
@@ -432,6 +463,49 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   showTripResultStep: boolean = false;
   tripResultForm!: FormGroup;
   completedStatusId: string | null = null;
+
+  // ---- Change-request workflow (claimed trip edits) -------------------------
+  // Dialog for the requesting provider to send a change request to the other party.
+  showChangeRequestDialog: boolean = false;
+  changeRequestForm!: FormGroup;
+  changeRequestTicket: any = null;
+  isSubmittingChangeRequest: boolean = false;
+  // When editing an existing pending request, holds its id; null when creating a new one.
+  editingChangeRequestId: number | null = null;
+  // The structured fields a requester can propose changes to.
+  // type drives the input control: 'datetime' -> combined date+time calendar (like the edit-trip
+  // form), 'location' -> address autocomplete, 'text' -> text input.
+  // For 'datetime', the single control is stored as two proposed_changes keys (dateKey + timeKey)
+  // so the email/details rendering keeps showing separate date and time lines.
+  changeRequestFields: Array<{
+    key: string; label: string;
+    type: 'datetime' | 'location' | 'text';
+    dateKey?: string; timeKey?: string;
+  }> = [
+    // Location fields hidden for now — the Edit Trip form has no location fields to apply an
+    // approved location change, so requesting one can't be carried out in the TE. Re-enable when
+    // the edit path supports editing pickup/dropoff locations.
+    // { key: 'pickup_location', label: 'Pickup location', type: 'location' },
+    // { key: 'dropoff_location', label: 'Dropoff location', type: 'location' },
+    { key: 'pickup_datetime', label: 'Pickup date/time', type: 'datetime',
+      dateKey: 'requested_pickup_date', timeKey: 'requested_pickup_time' },
+    { key: 'dropoff_datetime', label: 'Dropoff date/time', type: 'datetime',
+      dateKey: 'requested_dropoff_date', timeKey: 'requested_dropoff_time' },
+    { key: 'customer_seats_required', label: 'Seats required', type: 'text' },
+    { key: 'trip_notes', label: 'Trip notes', type: 'text' }
+  ];
+  // Address suggestions for the change-request location autocompletes (kept separate from the
+  // trip create/edit form's selectedPickupAddress/filteredPickupAddresses state).
+  crFilteredAddresses: { [key: string]: any[] } = {};
+  // Per-ticket change requests keyed by trip ticket id (latest-first list).
+  changeRequestsByTicket: { [ticketId: number]: any[] } = {};
+  // Dialog for the target provider to respond (approve/deny) with an optional message.
+  showRespondDialog: boolean = false;
+  respondRequest: any = null;
+  respondTicket: any = null;
+  respondApprove: boolean = true;
+  respondMessage: string = '';
+  isRespondingToChangeRequest: boolean = false;
 
   ticketCollection: TripTicketUploadRecord[] = [];
 
@@ -475,6 +549,33 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     center: L.latLng(39.0, -77.0)
   };
 
+  // Medride integration state
+  showMedrideDialog: boolean = false;
+  medrideLoading: boolean = false;
+  medrideBookingInProgress: boolean = false;
+  medrideBookingConfirmed: boolean = false;
+  medrideBookingReference: string = '';
+  medrideError: string | null = null;
+
+  medridePickupDateTimeISO: string = '';
+  medridePromisedDropOff: boolean = false;
+  medrideMinDateTime: string = '';
+  showMedrideOptions: boolean = false;
+  medrideRideOptions: UberRideOption[] = []; // TODO: JH: What do we do here?
+  selectedMedrideOption: UberRideOption | null = null; // TODO: JH: What do we do here?
+  medrideMapLayer: 'standard' | 'satellite' = 'standard';
+  medrideLeafletMap: L.Map | null = null;
+  medridePickupMarker: L.Marker | null = null;
+  medrideDropoffMarker: L.Marker | null = null;
+  medrideRouteLine: L.Polyline | null = null;
+  medrideLeafletOptions: any = {
+    layers: [
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' })
+    ],
+    zoom: 14,
+    center: L.latLng(39.0, -77.0)
+  };
+
   // Selection properties for export functionality
   selectedTickets: any[] = [];
   selectAll: boolean = false;
@@ -507,6 +608,9 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     center: L.latLng(39.0, -77.0)
   };
 
+  public cancelStatusList: any[] = [{ name: 'No Show', statusId: 4 }, { name: 'Cancelled by Client', statusId: 19 }, { name: 'Cancelled by Provider', statusId: 20 }];
+  public cancelStatusId: number = -1;
+
   constructor(
     private _tripTicketService: TripTicketService,
     private _listService: ListService,
@@ -523,7 +627,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private _domSanitizer: DomSanitizer,
     private _exportService: TripTicketExportService,
-    private _uploadService: TripTicketUploadService
+    private _uploadService: TripTicketUploadService,
+    private _tablePreferences: TablePreferencesService
   ) {
 
     this.pageName = "Trip Tickets";
@@ -625,8 +730,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     // otherwise fall back to (now + 15m)
     let defaultPickupDate: Date | null = null;
     try {
-      const reqDate = ticket?.requested_pickup_date || ticket?.requestedPickupDate || ticket?.requested_dropoff_date ||  null;
-      const reqTime =   (ticket?.requested_dropoff_date && ticket?.requested_dropoff_time) ? ticket?.requested_dropoff_time : (ticket?.requested_pickup_time || ticket?.requestedPickupTime || null);
+      const reqDate = ticket?.requested_pickup_date || ticket?.requestedPickupDate || ticket?.requested_dropoff_date || null;
+      const reqTime = (ticket?.requested_dropoff_date && ticket?.requested_dropoff_time) ? ticket?.requested_dropoff_time : (ticket?.requested_pickup_time || ticket?.requestedPickupTime || null);
 
       if (reqDate) {
         // Prefer raw date string from backend (likely YYYY-MM-DD or ISO). Use time if available.
@@ -646,7 +751,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     }
     this.uberPickupDateTimeISO = this.toLocalDateTimeInputValue(defaultPickupDate);
     this.uberMinDateTime = this.toLocalDateTimeInputValue(new Date());
-    this.uberPromisedDropOff = ticket?.requested_dropoff_date ? true :  false;
+    this.uberPromisedDropOff = ticket?.requested_dropoff_date ? true : false;
     console.log('uberPromisedDropOff:', this.uberPromisedDropOff);
     setTimeout(() => {
       if (this.uberLeafletMap) {
@@ -883,7 +988,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
           estimatedPickupTime: typeof opt.estimatedPickupTime === 'string'
             ? new Date(opt.estimatedPickupTime)
             : opt.estimatedPickupTime,
-            estimatedDropoffTime: opt.estimatedDropoffTime && typeof opt.estimatedDropoffTime === 'string'
+          estimatedDropoffTime: opt.estimatedDropoffTime && typeof opt.estimatedDropoffTime === 'string'
             ? new Date(opt.estimatedDropoffTime)
             : opt.estimatedDropoffTime,
         }));
@@ -1015,6 +1120,88 @@ export class TripTicketComponent implements OnInit, OnDestroy {
         this._notification.error("Error", "Failed to request Uber trip");
         this.uberBookingInProgress = false;
         this.uberError = "Failed to book Uber ride. Please try again.";
+      }
+    );
+  }
+  // -----------------------------------------------------------
+
+
+  // ---------------- MedRide Integration Methods ----------------
+  resetMedrideConfig(): void {
+    this.showMedrideOptions = false;
+    this.selectedMedrideOption = null;
+    this.medrideRideOptions = [];
+    this.medrideBookingInProgress = false;
+    this.medrideBookingConfirmed = false;
+    this.medrideError = null;
+  }
+
+  /**
+   * Transform the selected Ticket into an MedrideRideRequest object
+   * Maps data according to the Java API requirements
+   */
+  private transformToMedrideRideRequest(ticket: any): MedrideRideRequest {
+
+    let defaultPickupDate: Date | null = null;
+    try {
+      const reqDate = ticket?.requested_pickup_date || ticket?.requestedPickupDate || ticket?.requested_dropoff_date || null;
+      const reqTime = (ticket?.requested_dropoff_date && ticket?.requested_dropoff_time) ? ticket?.requested_dropoff_time : (ticket?.requested_pickup_time || ticket?.requestedPickupTime || null);
+
+      if (reqDate) {
+        // Prefer raw date string from backend (likely YYYY-MM-DD or ISO). Use time if available.
+        const timePart = (typeof reqTime === 'string' && reqTime.length >= 5) ? reqTime.slice(0, 5) : '00:00';
+        const iso = `${reqDate}T${timePart}`;
+        const parsed = new Date(iso);
+        if (!isNaN(parsed.getTime())) {
+          defaultPickupDate = parsed;
+        }
+      }
+    } catch (e) {
+      // ignore and fall back
+      defaultPickupDate = null;
+    }
+    if (!defaultPickupDate) {
+      defaultPickupDate = new Date(Date.now() + 15 * 60 * 1000);
+    }
+    this.medridePickupDateTimeISO = this.toLocalDateTimeInputValue(defaultPickupDate);
+    this.medrideMinDateTime = this.toLocalDateTimeInputValue(new Date());
+    this.medridePromisedDropOff = ticket?.requested_dropoff_date ? true : false;
+
+
+    // Build the complete MedrideRideRequest
+    const medrideRideRequest: MedrideRideRequest = {
+      trip_ticket_id: ticket.id,
+      pickup_time: (this.medridePromisedDropOff ? null : defaultPickupDate.getTime()),
+      dropoff_time: (this.medridePromisedDropOff ? defaultPickupDate.getTime() : null)
+    };
+
+    return medrideRideRequest;
+  }
+
+  haveMedrideClaimTrip(): void {
+    if (!this.Ticket) return;
+
+    this.medrideBookingInProgress = true;
+    this.medrideError = null;
+
+    // Transform the ticket and selected option to UberRideRequest
+    const medrideRideRequest = this.transformToMedrideRideRequest(this.Ticket);
+
+
+    // Send the MedrideRideRequest to the bookMedrideOption endpoint
+    this._tripTicketService.haveMedrideClaimTrip(medrideRideRequest).pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(
+      response => {
+        this.medrideBookingInProgress = false;
+        this.medrideBookingConfirmed = true;
+        this._notification.success('Success', 'MedRide has been set as the trip claimant.');
+      },
+      _error => {
+        console.error('Error having MedRide claim ride:', _error);
+        this._notification.error("Error", "Failed to have MedRide claim trip");
+        this.medrideBookingInProgress = false;
+        this.medrideError = "Failed to have Medride claim ride. Please try again.";
       }
     );
   }
@@ -1323,6 +1510,82 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     return stars;
   }
 
+  getVehicleDisplayName(vehicle: any): string {
+    if (!vehicle) return 'Vehicle assigned';
+
+    const parts = [
+      this.getStringValue(vehicle['year']),
+      this.getStringValue(vehicle['make']),
+      this.getStringValue(vehicle['model'])
+    ].filter(Boolean);
+
+    return parts.length > 0 ? parts.join(' ') : 'Vehicle assigned';
+  }
+
+  getVehicleDetailEntries(vehicle: any): RideStatusDetailEntry[] {
+    if (!vehicle || typeof vehicle !== 'object') return [];
+
+    return Object.entries(vehicle)
+      .filter(([key, value]) => !this.isVehicleMediaKey(key) && this.hasDisplayValue(value))
+      .map(([key, value]) => ({
+        key,
+        label: this.toDisplayLabel(key),
+        value: this.formatRideStatusValue(value)
+      }));
+  }
+
+  getVehicleMediaEntries(vehicle: any): RideStatusDetailEntry[] {
+    if (!vehicle || typeof vehicle !== 'object') return [];
+
+    return Object.entries(vehicle)
+      .filter(([key, value]) => this.isVehicleMediaKey(key) && this.hasDisplayValue(value))
+      .map(([key, value]) => ({
+        key,
+        label: this.toDisplayLabel(key),
+        value: String(value)
+      }));
+  }
+
+  private getStringValue(value: any): string {
+    return typeof value === 'string' ? value.trim() : '';
+  }
+
+  private hasDisplayValue(value: any): boolean {
+    if (value === null || value === undefined) return false;
+    if (typeof value === 'string') return value.trim().length > 0;
+    if (Array.isArray(value)) return value.length > 0;
+    if (typeof value === 'object') return Object.keys(value).length > 0;
+    return true;
+  }
+
+  private isVehicleMediaKey(key: string): boolean {
+    const normalizedKey = key.toLowerCase();
+    return normalizedKey.includes('picture')
+      || normalizedKey.includes('photo')
+      || normalizedKey.includes('image')
+      || normalizedKey.includes('media')
+      || normalizedKey.includes('thumbnail');
+  }
+
+  private toDisplayLabel(key: string): string {
+    return key
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+  private formatRideStatusValue(value: any): string {
+    if (Array.isArray(value)) {
+      return value.map((item) => this.formatRideStatusValue(item)).join(', ');
+    }
+    if (value && typeof value === 'object') {
+      return JSON.stringify(value);
+    }
+    return String(value);
+  }
+
   toggleRiderTracking(): void {
     this.showRiderTracking = !this.showRiderTracking;
   }
@@ -1346,7 +1609,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
 
   canCancelTrip(tripSummary: TripSummary | null): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!tripSummary || !tripSummary.status) return false;
     return true;
   }
@@ -1368,17 +1631,17 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       icon: 'ph ph-warning',
       accept: () => {
         this.rideStatusLoading = true;
-        this._tripTicketService.cancelUberTrip(this.Ticket.id.toString()).pipe(
+        this._tripTicketService.cancelMedrideTrip(this.Ticket!.id!.toString()).pipe(
           takeUntil(this.destroy$)
         ).subscribe({
           next: (_response) => {
 
-            if ( _response.result === true ) {
-              this._notification.success('Success', 'Uber Trip has been cancelled successfully.');
+            if (_response.result === true) {
+              this._notification.success('Success', 'MedRide Trip has been cancelled successfully.');
               // Refresh ride status to reflect cancellation
               this.loadRideStatus(this.Ticket.id?.toString());
             } else {
-              this._notification.error('Error', 'Failed to cancel Uber trip. Please try again.');
+              this._notification.error('Error', 'Failed to cancel Medride trip. Please try again.');
             }
             this.rideStatusLoading = false;
           },
@@ -1440,8 +1703,10 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
     // If we're in grid view, allow normal navigation (but this might log out the user)
     // This is the expected behavior for truly leaving the trip ticket page
-  } ngOnInit(): void {
-    console.debug('🚀 ngOnInit started, isInitialLoad:', this.isInitialLoad);
+  }
+
+  ngOnInit(): void {
+    console.debug('🚀 ngOnInit started, isInitialLoad:', this.isInitialLoad, "Ticket:", this.Ticket);
     // Start interval to update current time every 5 seconds for timezone display
     this.currentTimeInterval = setInterval(() => {
       this.updateCurrentTime();
@@ -1747,6 +2012,19 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       { field: 'customer', header: 'Customer' }
     ];
 
+    // Load the user's last-used values for # of records per page, sort column, and sort order, for this report specifically.
+    const prefs = this._tablePreferences.load('trip-tickets');
+    console.debug('[TablePrefs] ngOnInit restore — loaded prefs:', prefs,
+      '| before:', { rows: this.rows, rowsPerPage: this.rowsPerPage, sortField: this.sortField, sortOrder: this.sortOrder });
+    if (prefs.rows) {
+      this.rowsPerPage = prefs.rows;
+      this.rows = prefs.rows; // getTicketsList() pages off this.rows, not rowsPerPage
+    }
+    if (prefs.sortField) this.sortField = prefs.sortField;
+    if (prefs.sortOrder) this.sortOrder = prefs.sortOrder;
+    console.debug('[TablePrefs] ngOnInit restore — after:',
+      { rows: this.rows, rowsPerPage: this.rowsPerPage, sortField: this.sortField, sortOrder: this.sortOrder });
+
     this.exportColumns = this.cols.map(col => ({ title: col.header, dataKey: col.field }));
     console.debug('📋 ngOnInit calling getTicketsList (call #1)');
     this.getTicketsList();
@@ -1765,6 +2043,12 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * to eliminate vertical scrollbars while maximizing visible tickets
    */
   private calculateOptimalRowsPerPage(): void {
+    if (this._tablePreferences.load('trip-tickets').rows) {
+      console.debug('[TablePrefs] calculateOptimalRowsPerPage SKIPPED (saved rows present)');
+      return;
+    }
+    console.debug('[TablePrefs] calculateOptimalRowsPerPage RUNNING (no saved rows) — will override page size');
+
     console.debug('📐 calculateOptimalRowsPerPage called, isInitialLoad:', this.isInitialLoad, 'TicketsList length:', this.TicketsList?.length || 0);
     try {
       // Get the actual table container element if it exists
@@ -2063,7 +2347,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
         // Format passenger info
         ticket._passenger = `Passenger : ${ticket.customer_seats_required || 0} ${ticket.customer_mobility_factors && ticket.customer_mobility_factors !== 'None' ? '[' + ticket.customer_mobility_factors + ']' : ''}`;
 
-        ticket._mobility_device = `${ticket.customer_mobility_factors && ticket.customer_mobility_factors !== 'None' ? ticket.customer_mobility_factors  : ''}`;
+        ticket._mobility_device = `${ticket.customer_mobility_factors && ticket.customer_mobility_factors !== 'None' ? ticket.customer_mobility_factors : ''}`;
 
         ticket._attendants = `${ticket.customer_seats_required || 0}`;
 
@@ -2078,15 +2362,16 @@ export class TripTicketComponent implements OnInit, OnDestroy {
         ticket.selected = false;
 
         // Format pickup and dropoff datetime for display
-        ticket._requested_pickupDateTime = (ticket.requested_pickup_date || '') + ' ' + (ticket.requested_pickup_time || '');
+        ticket._requested_pickupDateTime = (ticket._requested_pickup_date || ticket.requested_pickup_date || '') + ' ' + (ticket._requested_pickup_time || ticket.requested_pickup_time || '');
         // Only show dropoff date/time if both are present and valid
+        const requestedDropoffTime = ticket.requested_dropoff_time || ticket['requested_dropOff_time'];
         if (
           ticket.requested_dropoff_date &&
           ticket.requested_dropoff_date !== '-' &&
-          ticket.requested_dropoff_time &&
-          ticket.requested_dropoff_time !== ''
+          requestedDropoffTime &&
+          requestedDropoffTime !== ''
         ) {
-          ticket._requested_dropOffDateTime = ticket.requested_dropoff_date + ' ' + ticket.requested_dropoff_time;
+          ticket._requested_dropOffDateTime = (ticket._requested_dropoff_date || ticket.requested_dropoff_date) + ' ' + (ticket._requested_dropoff_time || requestedDropoffTime);
         } else {
           ticket._requested_dropOffDateTime = '';
         }
@@ -2185,16 +2470,30 @@ export class TripTicketComponent implements OnInit, OnDestroy {
           // Set claimantProviders display text if there are claims
           if (claims.length > 0) {
             // Extract provider names for display
-
-            const claimantNames = claims
-                                  .filter((c: any) => c.status?.type !== 'Cancelled' && c.status?.type !== 'Rescinded' && c.status?.type !== 'Declined')
-                                  .map((c: any) => c.claimant_provider_name).filter(Boolean);
+            const activeClaims = claims.filter((c: any) => c.status?.type !== 'Cancelled' && c.status?.type !== 'Rescinded' && c.status?.type !== 'Declined');
+            const claimantNames = activeClaims.map((c: any) => c.claimant_provider_name).filter(Boolean);
             ticket.claimantProviders = claimantNames.join(', ') || 'No Claimants';
+            ticket.claimantProviderDisplayItems = activeClaims
+              .filter((c: any) => c.claimant_provider_name)
+              .map((c: any) => ({
+                providerName: c.claimant_provider_name,
+                tripTicketId: c.claimant_trip_ticket_id == null || c.claimant_trip_ticket_id === ''
+                  ? null
+                  : String(c.claimant_trip_ticket_id)
+              }));
           }
         } else {
           // No claims for this ticket
           ticket.claimantProviders = 'No Claimants';
+          ticket.claimantProviderDisplayItems = [];
         }
+
+        ticket.trip_ticket_comments?.forEach(comment => {
+          if (new Date(comment.created_at) > this.twentyFourHoursAgo) {
+            comment.is_new = true;
+            ticket.hasNewComments = true;
+          }
+        })
       });
     }
 
@@ -2214,6 +2513,33 @@ export class TripTicketComponent implements OnInit, OnDestroy {
           queryParamsHandling: 'replace'
         });
       }
+    }
+
+    // Warm the change-request cache for the visible rows so the per-request action icons
+    // (review / cancel) appear in the grid without first opening each trip's detail view.
+    this.warmChangeRequestCache();
+  }
+
+  /**
+   * Load change requests for each claimed trip currently in the grid, into changeRequestsByTicket.
+   * Only claimed trips can have change requests, so unclaimed/terminal trips are skipped to avoid
+   * needless calls. Errors (incl. 204 No Content) cache an empty list.
+   */
+  private warmChangeRequestCache(): void {
+    if (!Array.isArray(this.TicketsList)) return;
+    for (const ticket of this.TicketsList) {
+      if (!ticket || ticket.id == null) continue;
+      if (!this.isTicketClaimed(ticket)) continue;
+      this._tripTicketService.getChangeRequests(ticket.id)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res: any) => {
+            this.changeRequestsByTicket[ticket.id] = Array.isArray(res) ? res : (res ? [res] : []);
+          },
+          error: () => {
+            this.changeRequestsByTicket[ticket.id] = [];
+          }
+        });
     }
   }
 
@@ -2250,6 +2576,14 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     if (this.isInitialLoad) {
       return;
     }
+
+    console.debug('[TablePrefs] loadTicketsLazy SAVE (past initial-load guard) —',
+      { rows: this.rows, sortField: this.sortField, sortOrder: this.sortOrder });
+    this._tablePreferences.save('trip-tickets', {
+      rows: this.rows,
+      sortField: this.sortField,
+      sortOrder: this.sortOrder,
+    });
 
     // If a filter is active, use it for pagination
     if (this.activeFilterState) {
@@ -2310,14 +2644,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
           if (isNaN(hour)) {
             console.warn('Invalid hour format:', timeParts[0]);
             ticket._requested_pickup_time = '';
-          } else if (hour > 12) {
-            ticket._requested_pickup_time = (hour - 12).toString().padStart(2, '0') + ':' + minute + ' PM';
-          } else if (hour === 12) {
-            ticket._requested_pickup_time = hour + ':' + minute + ' PM';
-          } else if (hour === 0) {
-            ticket._requested_pickup_time = '12:' + minute + ' AM';
           } else {
-            ticket._requested_pickup_time = hour.toString().padStart(2, '0') + ':' + minute + ' AM';
+            ticket._requested_pickup_time = hour.toString().padStart(2, '0') + ':' + minute;
           }
         } else {
           console.warn('Invalid time format for pickup:', ticket.requested_pickup_time);
@@ -2337,7 +2665,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     }
 
     const hasDropoffDate = ticket.requested_dropoff_date !== undefined && ticket.requested_dropoff_date !== null && String(ticket.requested_dropoff_date).trim() !== '';
-    const hasDropoffTime = ticket.requested_dropOff_time !== undefined && ticket.requested_dropOff_time !== null && String(ticket.requested_dropOff_time).trim() !== '';
+    const requestedDropoffTime = ticket.requested_dropoff_time ?? ticket.requested_dropOff_time;
+    const hasDropoffTime = requestedDropoffTime !== undefined && requestedDropoffTime !== null && String(requestedDropoffTime).trim() !== '';
 
     if (!hasDropoffDate) {
       ticket._requested_dropoff_date = '';
@@ -2346,28 +2675,22 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       // Only format dropoff time when provided
       if (!hasDropoffTime) {
         ticket._requested_dropoff_time = '';
-      } else if (typeof ticket.requested_dropOff_time !== 'string') {
-        console.warn('Unexpected requested_dropOff_time format:', ticket.requested_dropOff_time);
+      } else if (typeof requestedDropoffTime !== 'string') {
+        console.warn('Unexpected requested_dropoff_time format:', requestedDropoffTime);
         ticket._requested_dropoff_time = '';
       } else {
-        const timeParts = ticket.requested_dropOff_time.split(':');
+        const timeParts = requestedDropoffTime.split(':');
         if (timeParts.length >= 2) {
           const hour = parseInt(timeParts[0], 10);
           const minute = timeParts[1];
           if (isNaN(hour)) {
             console.warn('Invalid hour format for dropoff:', timeParts[0]);
             ticket._requested_dropoff_time = '';
-          } else if (hour > 12) {
-            ticket._requested_dropoff_time = (hour - 12).toString().padStart(2, '0') + ':' + minute + ' PM';
-          } else if (hour === 12) {
-            ticket._requested_dropoff_time = hour + ':' + minute + ' PM';
-          } else if (hour === 0) {
-            ticket._requested_dropoff_time = '12:' + minute + ' AM';
           } else {
-            ticket._requested_dropoff_time = hour.toString().padStart(2, '0') + ':' + minute + ' AM';
+            ticket._requested_dropoff_time = hour.toString().padStart(2, '0') + ':' + minute;
           }
         } else {
-          console.warn('Invalid time format for dropoff:', ticket.requested_dropOff_time);
+          console.warn('Invalid time format for dropoff:', requestedDropoffTime);
           ticket._requested_dropoff_time = '';
         }
       }
@@ -2457,7 +2780,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatDateMMDDYYYY(value: string|Date|undefined|null): string | null {
+  formatDateMMDDYYYY(value: string | Date | undefined | null): string | null {
     if (!value) return null;
     const d = value instanceof Date ? value : new Date(value);
     if (isNaN(d.getTime())) return null;
@@ -2532,6 +2855,9 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
 
     this.loadRideStatus(ticket.id);
+
+    // Load any change requests so the inline approve/deny UI and edit gating reflect server state.
+    this.loadChangeRequests(ticket);
 
     // Reset UI state
     this.showGrid = false;
@@ -2819,6 +3145,12 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Submit cancellation with reason
    */
   submitCancellation(): void {
+
+    if (!this.cancelStatusId || this.cancelStatusId === -1) {
+      this._notification.warn('Warning', 'Please select a status');
+      return;
+    }
+
     if (!this.cancellationReason || this.cancellationReason.trim() === '') {
       this._notification.warn('Warning', 'Please enter a reason for cancellation');
       return;
@@ -2838,6 +3170,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
     this._tripTicketService.cancelTripTicket({
       ticketId: this.ticketToCancel.id,
+      statusId: this.cancelStatusId,
       reason: this.cancellationReason.trim()
     })
       .pipe(
@@ -2845,6 +3178,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
         finalize(() => {
           this.isTripTicketCancel = false;
           this.ticketToCancel = null;
+          this.cancelStatusId = -1;
           this.cancellationReason = '';
         })
       )
@@ -3460,8 +3794,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     filter['isServiceFilterApply'] = ticketFilter.isServiceFilterApply;
     let userId: any
     if (this.loggedRole == "ROLE_ADMIN") {
+      userId = parseInt(this._localStorage.get('selectedProvidersUserId'))
 
-      userId = parseInt(this._localStorage.get('selecteProvidersUserId'))
       if (!userId) {
         userId = parseInt(this._localStorage.get('userId'))
       }
@@ -3940,7 +4274,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     // Close the action overflow menu if clicking outside of it
     const actionOverflowEl = target.closest ? target.closest('.action-overflow') : null;
     if (!actionOverflowEl) {
-      this.overflowMenuOpen = false;
+      this.overflowMenuOpenForTicket = null;
     }
   }
 
@@ -4015,6 +4349,27 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       );
     } else {
       this.filteredPickupAddresses = [];
+    }
+  }
+
+  /** Address autocomplete suggestions for a change-request 'location' field, keyed by field key. */
+  filterChangeRequestAddress(event: any, key: string): void {
+    const addressWord = event.query;
+    if (addressWord && addressWord.length >= 3) {
+      this._tripTicketService.getaddress(addressWord).pipe(
+        takeUntil(this.destroy$)
+      ).subscribe(
+        (response: any) => {
+          this.crFilteredAddresses[key] = response
+            ? (Array.isArray(response) ? response : Object.values(response)) : [];
+        },
+        (_error: any) => {
+          this.crFilteredAddresses[key] = [];
+          this._notification.error('Error', 'Failed to fetch addresses');
+        }
+      );
+    } else {
+      this.crFilteredAddresses[key] = [];
     }
   }
 
@@ -4473,7 +4828,12 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
     let userId: any
     if (this.loggedRole == "ROLE_ADMIN") {
-      userId = parseInt(this._localStorage.get('selecteProvidersUserId'))
+      if (!this._localStorage.get('selectedProvidersUserId')) {
+        this._notification.warn('Warning', 'Please select a valid provider');
+        return;
+      }
+
+      userId = parseInt(this._localStorage.get('selectedProvidersUserId'));
     }
     else {
       userId = parseInt(this._localStorage.get('userId'))
@@ -4521,6 +4881,10 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
                 // Format the comment dates and times for display (convert UTC to America/Denver timezone)
                 for (let i = 0, iLen = this.Ticket.trip_ticket_comments.length; i < iLen; i++) {
+                  console.log("created at", new Date(this.Ticket.trip_ticket_comments[i].created_at), "24 hours ago:", this.twentyFourHoursAgo);
+                  if ((new Date(this.Ticket.trip_ticket_comments[i].created_at)) >= this.twentyFourHoursAgo ) {
+                    this.Ticket.trip_ticket_comments[i].is_new = true;
+                  }
                   this.Ticket.trip_ticket_comments[i].created_at = this.formatUtcToDenver(this.Ticket.trip_ticket_comments[i].created_at);
                 }
               } else {
@@ -5465,7 +5829,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
 
     // Handle pickup date and time
     console.log('Create claim modal from ticketData:', ticketData);
-    if ( ticketData.requested_pickup_date &&  ticketData.requested_pickup_date !== '-') {
+    if (ticketData.requested_pickup_date && ticketData.requested_pickup_date !== '-') {
       this.pickupDate = ticketData.requested_pickup_date;
       this.createClaimPickupDate = false;
       this.isPickupDateNull = false;
@@ -5479,13 +5843,13 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       this.pickupDate = this.dropoffDate;
     }
 
-    if (ticketData.requested_pickup_time ) {
+    if (ticketData.requested_pickup_time) {
       this.proposedPickupTime = (ticketData.requested_pickup_time).slice(0, 5);
       this.validPickupTime = true;
     } else {
       this.proposedPickupTime = '';
       this.validPickupTime = false;
-      if ( ticketData.requested_dropoff_time ) {
+      if (ticketData.requested_dropoff_time) {
         this.dropoffTime = (ticketData.requested_dropoff_time).slice(0, 5);
       }
     }
@@ -7059,7 +7423,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     ).subscribe({
       next: (response: any) => {
-        this._localStorage.set('selecteProvidersUserId', response);
+        this._localStorage.set('selectedProvidersUserId', response);
         this.commentForProvider = true;
       },
       error: (error: any) => {
@@ -7175,6 +7539,298 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     return report;
   }
 
+  public get summaryCards(): TripTicketSummaryCard[] {
+    return [
+      {
+        className: 'nr',
+        value: this.summaryValue('totalCliamsSubmitted'),
+        label: 'New Requests',
+      },
+      {
+        className: '',
+        value: this.summaryValue('totalTicketCount', this.totalRecords),
+        label: 'Total',
+      },
+      {
+        className: 'av',
+        value: this.summaryValue('availabeTicketCount', this.countTicketsByStatus(['Available'])),
+        label: 'Available',
+      },
+      {
+        className: 'ap',
+        value: this.summaryValue('approvedTicketCount', this.countTicketsByStatus(['Approved'])),
+        label: 'Approved',
+      },
+      {
+        className: 'pe',
+        value: this.summaryValue(
+          'pendingClaimReceived',
+          this.countTicketsByStatus(['Pending', 'Claim Pending']) + this.countPendingClaimsInVisibleTickets()
+        ),
+        label: 'Pending',
+      },
+      {
+        className: 'co',
+        value: this.summaryValue('completedTicketCount', this.countTicketsByStatus(['Completed'])),
+        label: 'Completed',
+      },
+      {
+        className: 'ex',
+        value: this.summaryValue('expiredTicketCount', this.countTicketsByStatus(['Expired', 'Rescinded', 'Cancelled'])),
+        label: 'Expired',
+      }
+    ];
+  }
+
+  private summaryValue(key: string, fallback: number = 0): number {
+    const value = Number(this.summaryReport?.[key]);
+    if (Number.isFinite(value) && value >= 0) {
+      return value;
+    }
+
+    return fallback;
+  }
+
+  private countTicketsByStatus(statuses: string[]): number {
+    const wanted = statuses.map(status => status.toLowerCase());
+    return (this.TicketsList || []).filter(ticket => {
+      const status = String(ticket?._status || ticket?.status?.type || '').toLowerCase();
+      return wanted.includes(status);
+    }).length;
+  }
+
+  private countPendingClaimsInVisibleTickets(): number {
+    return (this.TicketsList || []).reduce((count, ticket: any) => {
+      const claims = Array.isArray(ticket?.trip_Claims) ? ticket.trip_Claims : [];
+      return count + claims.filter((claim: any) => String(claim?.status?.type || '').toLowerCase() === 'pending').length;
+    }, 0);
+  }
+
+  getTicketDisplayId(ticket: any): string {
+    const id = ticket?.requester_trip_id ?? ticket?.trip_ticket_id ?? ticket?.id;
+    return id == null || id === '' ? '' : String(id);
+  }
+
+  getMobilityLabel(value: any): string {
+    const label = String(value || '').trim();
+    return label || '—';
+  }
+
+  getMobilityIcon(value: any): string {
+    const normalized = String(value || '').toLowerCase();
+    if (normalized.includes('wheel')) return 'ph-wheelchair';
+    if (normalized.includes('walker')) return 'ph-person-simple-walk';
+    if (normalized.includes('scooter')) return 'ph-scooter';
+    if (normalized.includes('cane')) return 'ph-person-simple-walk';
+    if (normalized.includes('ambul')) return 'ph-person';
+    return 'ph-person';
+  }
+
+  getTicketActions(ticket: any): TripTicketAction[] {
+    if (!ticket || this.loggedRole === 'ROLE_READONLY') {
+      return [];
+    }
+
+    const actions: TripTicketAction[] = [
+      {
+        id: 'view',
+        label: 'View ticket',
+        icon: 'ph-eye',
+        tone: 'neutral',
+      },
+    ];
+
+    if (this.canEditTicket(ticket)) {
+      actions.push({
+        id: 'edit-ticket',
+        label: 'Edit ticket',
+        icon: 'ph-pencil-simple',
+        tone: 'neutral',
+      });
+    }
+
+    if (this.canRequestChanges(ticket)) {
+      actions.push({
+        id: 'request-changes',
+        label: 'Request changes',
+        icon: 'ph-chat-text',
+        tone: 'info',
+      });
+    }
+
+    // A request addressed TO this provider: open the single review dialog (Approve/Deny inside).
+    const pendingRequest = this.pendingRequestForMe(ticket);
+    if (pendingRequest) {
+      actions.push({
+        id: 'review-change',
+        label: 'Review requested changes',
+        icon: 'ph-warning-circle',
+        tone: 'danger',
+        request: pendingRequest,
+      });
+    }
+
+    // A request created BY this provider: offer to withdraw it.
+    const myPendingRequest = this.pendingRequestFromMe(ticket);
+    if (myPendingRequest) {
+      actions.push({
+        id: 'cancel-change',
+        label: 'Cancel change request',
+        icon: 'ph-x-circle',
+        tone: 'warning',
+        request: myPendingRequest,
+      });
+    }
+
+    if (this.canCancelTicket(ticket)) {
+      actions.push({
+        id: 'cancel',
+        label: 'Cancel ticket',
+        icon: 'ph-x-circle',
+        tone: 'danger',
+      });
+    }
+
+    // Keep the WCAG action presentation aligned with master: claim buttons are
+    // gated by the same grid branches, not by permission helpers alone.
+    if (this.canClaimTicket(ticket)) {
+      actions.push({
+        id: 'create-claim',
+        label: 'Create claim',
+        icon: 'ph-file-plus',
+        tone: 'neutral',
+      });
+
+      if (this.canEditClaim(ticket)) {
+        actions.push({
+          id: 'edit-claim',
+          label: 'Edit claim',
+          icon: 'ph-note-pencil',
+          tone: 'neutral',
+        });
+      }
+
+      if (this.canRescindTicket(ticket)) {
+        actions.push({
+          id: 'rescind',
+          label: 'Rescind',
+          icon: 'ph-x',
+          tone: 'danger',
+        });
+      }
+
+      if (this.canApproveClaim(ticket)) {
+        actions.push({
+          id: 'approve-claim',
+          label: 'Approve claim',
+          icon: 'ph-thumbs-up',
+          tone: 'success',
+        });
+      }
+
+      if (this.canDeclineClaim(ticket)) {
+        actions.push({
+          id: 'decline-claim',
+          label: 'Decline claim',
+          icon: 'ph-thumbs-down',
+          tone: 'danger',
+        });
+      }
+    }
+
+    if (ticket._status === 'Approved' && this.canEditClaim(ticket)) {
+      actions.push({
+        id: 'edit-claim',
+        label: 'Edit claim',
+        icon: 'ph-note-pencil',
+        tone: 'neutral',
+      });
+    }
+
+    if (ticket._status === 'Approved' && this.canRescindTicket(ticket)) {
+      actions.push({
+        id: 'rescind',
+        label: 'Rescind',
+        icon: 'ph-x',
+        tone: 'danger',
+      });
+    }
+
+    return actions;
+  }
+
+  getTicketActionGroups(ticket: any): TripTicketActionGroups {
+    const all = this.getTicketActions(ticket);
+    if (!all.length) {
+      return { view: null, primary: null, overflow: [] };
+    }
+
+    const view = all.find(a => a.id === 'view') ?? null;
+
+    const primary = all.find(a => a.id !== 'view') ?? null;
+
+    const usedIds = new Set<string>();
+    if (view) usedIds.add(view.id);
+    if (primary) usedIds.add(primary.id);
+    const overflow = all.filter(a => !usedIds.has(a.id));
+
+    return { view, primary, overflow };
+  }
+
+  toggleTicketActionMenu(event: Event, ticket: any): void {
+    event.stopPropagation();
+    const key = this.getTicketActionKey(ticket);
+    this.overflowMenuOpenForTicket = this.overflowMenuOpenForTicket === key ? null : key;
+  }
+
+  isTicketActionMenuOpen(ticket: any): boolean {
+    return this.overflowMenuOpenForTicket === this.getTicketActionKey(ticket);
+  }
+
+  runTicketAction(action: TripTicketAction, ticket: any): void {
+    this.overflowMenuOpenForTicket = null;
+
+    switch (action.id) {
+      case 'view':
+        this.viewTicket(ticket);
+        break;
+      case 'edit-ticket':
+        this.editTicket(ticket);
+        break;
+      case 'request-changes':
+        this.openChangeRequestDialog(ticket);
+        break;
+      case 'review-change':
+        this.reviewRequestedChanges(ticket);
+        break;
+      case 'cancel-change':
+        this.cancelChangeRequest(ticket);
+        break;
+      case 'create-claim':
+        this.showModalOfCreateClaimsFromGrid(ticket.id, ticket, 'createClaim');
+        break;
+      case 'edit-claim':
+        this.showModalOfCreateClaimsFromGrid(ticket.id, ticket, 'update');
+        break;
+      case 'approve-claim':
+        this.changeStatusToApprovedFromGrid(ticket);
+        break;
+      case 'decline-claim':
+        this.changeStatusToDeclineFromGrid(ticket);
+        break;
+      case 'rescind':
+        this.changeStatusToRescindFromGrid(ticket);
+        break;
+      case 'cancel':
+        this.cancelTicket(ticket);
+        break;
+    }
+  }
+
+  private getTicketActionKey(ticket: any): string | number | null {
+    return ticket?.id ?? ticket?.requester_trip_id ?? ticket?._customerName ?? null;
+  }
+
   // Permission-related methods required by the HTML template
 
   /**
@@ -7205,28 +7861,461 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can update a ticket
    */
   canEditTicket(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
-    // console.log('canEditTicket check for ticket:', ticket);
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket || ticket.status?.type === 'Completed') return false;
+    // Super admin can edit anything, anytime.
     if (this.loggedRole === 'ROLE_ADMIN') return true;
 
-    //return ticket.originator_provider_id === this.loggedProviderId &&
-    //       ticket.status === 'Available';
-    return (ticket.myTicket === true ||
-      (ticket.origin_provider_id === this.loggedProviderId && ticket.status?.type === 'Available')
-    );
+    // Unclaimed trips: the originating provider can edit freely.
+    if (!this.isTicketClaimed(ticket)) {
+      return ticket.origin_provider_id === this.loggedProviderId && ticket.status?.type === 'Available';
+    }
 
+    // Claimed trips are never editable directly by a provider. Changes go through the
+    // change-request workflow, which applies approved changes to the trip automatically.
+    // Only a super admin (handled above) may edit a claimed trip directly.
+    return false;
+  }
+
+  /**
+   * A trip is "claimed" when it has an approved claimant and is in an active claimed state.
+   * Unclaimed/terminal states (Available, Cancelled, Completed, Expired, Rescinded) are not.
+   */
+  isTicketClaimed(ticket: any): boolean {
+    if (!ticket) return false;
+    const type = (ticket.status?.type || '').toString();
+    const terminalOrOpen = ['Available', 'Cancelled', 'Completed', 'Expired', 'Rescinded'];
+    if (terminalOrOpen.includes(type)) return false;
+    const claimantId = ticket.claimant_provider_id ?? ticket.claimant?.providerId ?? null;
+    return claimantId != null;
+  }
+
+  /** True if the current provider is the originator or the approved claimant of the trip. */
+  isPartyToTicket(ticket: any): boolean {
+    if (!ticket) return false;
+    const claimantId = ticket.claimant_provider_id ?? ticket.claimant?.providerId ?? null;
+    return ticket.origin_provider_id === this.loggedProviderId || claimantId === this.loggedProviderId;
+  }
+
+  /** True if the requested pickup is less than 24 hours away (or already past). */
+  isWithin24Hours(ticket: any): boolean {
+    const pickup = this.getTicketRequestedPickupDateTime(ticket);
+    if (!pickup || isNaN(pickup.getTime())) return false; // unknown schedule: don't lock on time
+    const cutoff = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    return pickup.getTime() < cutoff.getTime();
+  }
+
+  /**
+   * Whether the current user can open the change-request dialog for this trip:
+   * a provider admin who is a party to a claimed trip. A request pending FROM this provider is
+   * allowed (the dialog will offer to edit it); a request pending TO this provider is not (they
+   * approve/deny it instead).
+   */
+  canRequestChanges(ticket: any): boolean {
+    if (this.loggedRole === 'ROLE_READONLY') return false;
+    if (this.loggedRole === 'ROLE_ADMIN') return false; // super admin edits directly
+    if (this.loggedRole !== 'ROLE_PROVIDERADMIN') return false;
+    if (!this.isTicketClaimed(ticket)) return false;
+    if (!this.isPartyToTicket(ticket)) return false;
+    // NOTE: within-24h is intentionally NOT excluded here. We keep the icon visible so that
+    // clicking it shows the "within 24 hours — only a super admin can change it" popup
+    // (handled in openChangeRequestDialog) rather than silently hiding the action.
+    // A pending request addressed TO us is handled via Approve/Deny, not this button.
+    if (this.pendingRequestForMe(ticket)) return false;
+    return true;
+  }
+
+  /** A pending request created by the current provider (the one this provider can edit). */
+  pendingRequestFromMe(ticket: any): any | null {
+    return this.requestsFor(ticket).find((r: any) =>
+      (r.status === 'Pending' || r.status_id === 30) &&
+      r.requested_by_provider_id === this.loggedProviderId) || null;
+  }
+
+  private requestsFor(ticket: any): any[] {
+    if (!ticket || ticket.id == null) return [];
+    return this.changeRequestsByTicket[ticket.id] || [];
+  }
+
+  /**
+   * True if this provider has an approved request on the trip. Approval applies the proposed
+   * changes to the trip automatically — this no longer unlocks manual editing; it is used only to
+   * drive the "changes applied" banner.
+   */
+  hasApprovedChangeRequest(ticket: any): boolean {
+    return this.requestsFor(ticket).some(r =>
+      (r.status === 'Approved' || r.status_id === 31) &&
+      r.requested_by_provider_id === this.loggedProviderId);
+  }
+
+  hasPendingChangeRequest(ticket: any): boolean {
+    return this.requestsFor(ticket).some(r => r.status === 'Pending' || r.status_id === 30);
+  }
+
+  /** A pending request addressed to the current provider that they must approve/deny. */
+  pendingRequestForMe(ticket: any): any | null {
+    return this.requestsFor(ticket).find(r =>
+      (r.status === 'Pending' || r.status_id === 30) &&
+      r.target_provider_id === this.loggedProviderId) || null;
+  }
+
+  /** Load change requests for a ticket into the cache (used to drive inline UI). */
+  loadChangeRequests(ticket: any): void {
+    if (!ticket || ticket.id == null) return;
+    this._tripTicketService.getChangeRequests(ticket.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.changeRequestsByTicket[ticket.id] = Array.isArray(res) ? res : (res ? [res] : []);
+        },
+        error: () => {
+          // 204 No Content / no requests yet
+          this.changeRequestsByTicket[ticket.id] = [];
+        }
+      });
+  }
+
+  // ---- Request-changes dialog ----------------------------------------------
+
+  openChangeRequestDialog(ticket: any): void {
+    if (!ticket || ticket.id == null) {
+      this.buildChangeRequestDialog(ticket, null);
+      return;
+    }
+    // Within 24h of pickup, only a super admin can change the trip and the server will reject a
+    // change request (403). Catch it here so we explain it in a popup instead of opening a form
+    // that can't be submitted.
+    if (this.isWithin24Hours(ticket)) {
+      this._confirmation.confirm({
+        header: 'Cannot request changes',
+        message: 'This trip is within 24 hours of pickup. Change requests are no longer allowed — only a super admin can change it now.',
+        icon: 'ph ph-warning',
+        acceptLabel: 'OK',
+        rejectVisible: false,
+        accept: () => { /* acknowledge only */ }
+      });
+      return;
+    }
+    // Fetch the latest change requests on demand (the cache may not be warm when opened from the
+    // grid), then decide: edit an existing pending request from this provider, or start fresh.
+    this._tripTicketService.getChangeRequests(ticket.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.changeRequestsByTicket[ticket.id] = Array.isArray(res) ? res : (res ? [res] : []);
+          this.promptOrBuildChangeRequestDialog(ticket);
+        },
+        error: () => {
+          // 204 No Content / none yet -> start fresh.
+          this.changeRequestsByTicket[ticket.id] = [];
+          this.promptOrBuildChangeRequestDialog(ticket);
+        }
+      });
+  }
+
+  /** With the cache populated, prompt to edit a pending request from this provider, else open blank. */
+  private promptOrBuildChangeRequestDialog(ticket: any): void {
+    const pending = this.pendingRequestFromMe(ticket);
+    if (pending) {
+      this._confirmation.confirm({
+        header: 'Pending change request',
+        message: 'There is already a pending change request for this trip. Would you like to edit it?',
+        accept: () => this.buildChangeRequestDialog(ticket, pending)
+      });
+      return;
+    }
+    this.buildChangeRequestDialog(ticket, null);
+  }
+
+  /** Build and open the change-request form. When `existing` is provided, populate from it (edit mode). */
+  private buildChangeRequestDialog(ticket: any, existing: any | null): void {
+    this.changeRequestTicket = ticket;
+    this.editingChangeRequestId = existing && existing.id != null ? existing.id : null;
+    const proposed = (existing && existing.proposed_changes) ? existing.proposed_changes : {};
+    const group: any = { message: [existing ? (existing.message || '') : '', Validators.required] };
+    for (const f of this.changeRequestFields) {
+      let has: boolean;
+      let value: any;
+      if (f.type === 'datetime') {
+        // Stored as two keys (date MM/DD/YYYY + time hh:mm A); show as one combined Date.
+        const dateStr = String(proposed[f.dateKey!] ?? '').trim();
+        const timeStr = String(proposed[f.timeKey!] ?? '').trim();
+        has = dateStr !== '' || timeStr !== '';
+        value = has ? this.parseDateTimeValue(dateStr, timeStr) : null;
+      } else {
+        has = Object.prototype.hasOwnProperty.call(proposed, f.key)
+          && String(proposed[f.key] ?? '').trim() !== '';
+        value = has ? String(proposed[f.key] ?? '') : '';
+      }
+      group['include_' + f.key] = [has];
+      group['value_' + f.key] = [value];
+    }
+    this.changeRequestForm = this.formBuilder.group(group, {
+      validators: this.atLeastOneProposedChange.bind(this)
+    });
+    this.showChangeRequestDialog = true;
+  }
+
+  /**
+   * Form-level validator: at least one trip attribute field must be both checked (its `include_`
+   * control) and carry a non-empty value (its `value_` control). Without this the request would
+   * carry no proposed changes, and an approval would apply nothing to the trip.
+   */
+  private atLeastOneProposedChange(group: AbstractControl): ValidationErrors | null {
+    const anyChosen = this.changeRequestFields.some(f => {
+      const included = group.get('include_' + f.key)?.value === true;
+      if (!included) return false;
+      const raw = group.get('value_' + f.key)?.value;
+      if (f.type === 'datetime') {
+        return raw != null && raw !== ''; // a Date (or any non-empty value) from the calendar
+      }
+      return String(raw ?? '').trim() !== '';
+    });
+    return anyChosen ? null : { noProposedChange: true };
+  }
+
+  /** Combine a stored date string (MM/DD/YYYY) and time string (hh:mm A) into a Date for p-calendar. */
+  private parseDateTimeValue(dateStr: string, timeStr: string): Date | null {
+    const combined = (dateStr + ' ' + timeStr).trim();
+    const m = moment(combined, ['MM/DD/YYYY hh:mm A', 'MM/DD/YYYY'], true);
+    return m.isValid() ? m.toDate() : null;
+  }
+
+  closeChangeRequestDialog(): void {
+    this.showChangeRequestDialog = false;
+    this.changeRequestTicket = null;
+    this.isSubmittingChangeRequest = false;
+    this.editingChangeRequestId = null;
+  }
+
+  /**
+   * Cancel (withdraw) this provider's pending change request for the trip. Fetches the latest
+   * requests on demand (cache may be cold when invoked from the grid), confirms, then cancels.
+   */
+  cancelChangeRequest(ticket: any): void {
+    if (!ticket || ticket.id == null) return;
+    this._tripTicketService.getChangeRequests(ticket.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.changeRequestsByTicket[ticket.id] = Array.isArray(res) ? res : (res ? [res] : []);
+          this.confirmCancelChangeRequest(ticket);
+        },
+        error: () => {
+          this.changeRequestsByTicket[ticket.id] = [];
+          this.confirmCancelChangeRequest(ticket);
+        }
+      });
+  }
+
+  private confirmCancelChangeRequest(ticket: any): void {
+    const pending = this.pendingRequestFromMe(ticket);
+    if (!pending) {
+      this._notification.error('Error', 'There is no pending change request to cancel for this trip.');
+      return;
+    }
+    this._confirmation.confirm({
+      header: 'Cancel change request',
+      message: 'Please confirm you would like to cancel this change request. The other provider will be notified.',
+      accept: () => {
+        this._tripTicketService.cancelChangeRequest(ticket.id, pending.id)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              this._notification.success('Request cancelled', 'Your change request was cancelled and the other provider was notified.');
+              this.loadChangeRequests(ticket);
+            },
+            error: (error: any) => {
+              this._notification.error('Error', 'Failed to cancel change request: ' + (error?.message || error));
+            }
+          });
+      }
+    });
+  }
+
+  submitChangeRequest(): void {
+    if (!this.changeRequestForm || this.changeRequestForm.invalid || this.isSubmittingChangeRequest) return;
+    const fv = this.changeRequestForm.value;
+    const proposed: { [k: string]: string } = {};
+    for (const f of this.changeRequestFields) {
+      if (!fv['include_' + f.key]) continue;
+      const raw = fv['value_' + f.key];
+      if (f.type === 'datetime') {
+        // One combined control -> two stored keys (date + time) so the email keeps separate lines.
+        const m = moment(raw);
+        if (m.isValid()) {
+          proposed[f.dateKey!] = m.format('MM/DD/YYYY');
+          proposed[f.timeKey!] = m.format('hh:mm A');
+        }
+        continue;
+      }
+      const formatted = this.formatChangeRequestValue(f.type, raw);
+      if (formatted !== '') {
+        proposed[f.key] = formatted;
+      }
+    }
+    const body: any = { message: fv.message };
+    if (Object.keys(proposed).length > 0) body.proposed_changes = proposed;
+
+    const isEdit = this.editingChangeRequestId != null;
+    const call = isEdit
+      ? this._tripTicketService.updateChangeRequest(this.changeRequestTicket.id, this.editingChangeRequestId, body)
+      : this._tripTicketService.createChangeRequest(this.changeRequestTicket.id, body);
+
+    this.isSubmittingChangeRequest = true;
+    call
+      .pipe(takeUntil(this.destroy$), finalize(() => { this.isSubmittingChangeRequest = false; }))
+      .subscribe({
+        next: () => {
+          this._notification.success(
+            isEdit ? 'Request updated' : 'Request sent',
+            isEdit
+              ? 'Your change request was updated and the other provider was notified.'
+              : 'Your change request was sent to the other provider for approval.');
+          this.loadChangeRequests(this.changeRequestTicket);
+          this.closeChangeRequestDialog();
+        },
+        error: (error: any) => {
+          this._notification.error('Error',
+            (isEdit ? 'Failed to update change request: ' : 'Failed to send change request: ')
+            + (error?.message || error));
+        }
+      });
+  }
+
+  /**
+   * Normalize a non-datetime proposed-change value to the string the server stores. ('datetime' is
+   * handled inline in submitChangeRequest because it expands to two keys.) Location autocomplete
+   * values may be objects; text is trimmed. Returns '' for empty input.
+   */
+  private formatChangeRequestValue(type: 'datetime' | 'location' | 'text', raw: any): string {
+    if (raw === null || raw === undefined || raw === '') return '';
+    if (type === 'location') {
+      // Autocomplete value may be a selected suggestion object (with an `address` string) or
+      // free-typed text. Store the address string either way.
+      if (raw && typeof raw === 'object') {
+        return String(raw.address ?? raw.commonName ?? '').trim();
+      }
+      return String(raw).trim();
+    }
+    return String(raw).trim();
+  }
+
+  // ---- Review / respond (approve/deny) dialog ------------------------------
+
+  /**
+   * Open the review dialog for a change request addressed to this provider. Fetches the latest
+   * requests on demand (cache may be cold from the grid), then opens the populated dialog with
+   * Approve/Deny buttons.
+   */
+  reviewRequestedChanges(ticket: any): void {
+    if (!ticket || ticket.id == null) return;
+    this._tripTicketService.getChangeRequests(ticket.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.changeRequestsByTicket[ticket.id] = Array.isArray(res) ? res : (res ? [res] : []);
+          this.openReviewDialog(ticket);
+        },
+        error: () => {
+          this.changeRequestsByTicket[ticket.id] = [];
+          this.openReviewDialog(ticket);
+        }
+      });
+  }
+
+  private openReviewDialog(ticket: any): void {
+    const req = this.pendingRequestForMe(ticket);
+    if (!req) {
+      this._notification.error('Error', 'There is no pending change request to review for this trip.');
+      return;
+    }
+    this.respondTicket = ticket;
+    this.respondRequest = req;
+    this.respondMessage = '';
+    this.showRespondDialog = true;
+  }
+
+  /** True when the request carries at least one structured proposed change. */
+  get respondHasChanges(): boolean {
+    const pc = this.respondRequest && this.respondRequest.proposed_changes;
+    return !!pc && Object.keys(pc).length > 0;
+  }
+
+  /** Proposed changes as {label, value} pairs for display, with friendly per-key labels. */
+  get respondChangeEntries(): Array<{ label: string; value: string }> {
+    const pc = this.respondRequest && this.respondRequest.proposed_changes;
+    if (!pc) return [];
+    return Object.keys(pc)
+      .filter(k => pc[k] != null && String(pc[k]).trim() !== '')
+      .map(k => ({ label: this.changeRequestKeyLabel(k), value: String(pc[k]) }));
+  }
+
+  /** Friendly label for a stored proposed-change key (handles the date/time + location keys). */
+  private changeRequestKeyLabel(key: string): string {
+    const map: { [k: string]: string } = {
+      requested_pickup_date: 'Pickup date',
+      requested_pickup_time: 'Pickup time',
+      requested_dropoff_date: 'Dropoff date',
+      requested_dropoff_time: 'Dropoff time',
+      pickup_location: 'Pickup location',
+      dropoff_location: 'Dropoff location',
+      customer_seats_required: 'Seats required',
+      trip_notes: 'Trip notes'
+    };
+    if (map[key]) return map[key];
+    const spaced = key.replace(/_/g, ' ').trim();
+    return spaced ? spaced.charAt(0).toUpperCase() + spaced.slice(1) : spaced;
+  }
+
+  closeRespondDialog(): void {
+    this.showRespondDialog = false;
+    this.respondRequest = null;
+    this.respondTicket = null;
+    this.isRespondingToChangeRequest = false;
+  }
+
+  submitRespond(approve: boolean): void {
+    if (!this.respondRequest || !this.respondTicket || this.isRespondingToChangeRequest) return;
+    this.respondApprove = approve;
+    this.isRespondingToChangeRequest = true;
+    const body = { response_message: this.respondMessage || '' };
+    const call = approve
+      ? this._tripTicketService.approveChangeRequest(this.respondTicket.id, this.respondRequest.id, body)
+      : this._tripTicketService.denyChangeRequest(this.respondTicket.id, this.respondRequest.id, body);
+
+    call.pipe(takeUntil(this.destroy$), finalize(() => { this.isRespondingToChangeRequest = false; }))
+      .subscribe({
+        next: () => {
+          this._notification.success(
+            this.respondApprove ? 'Approved' : 'Denied',
+            this.respondApprove
+              ? 'Change request approved. The other provider has been notified.'
+              : 'Change request denied. The other provider has been notified.');
+          this.loadChangeRequests(this.respondTicket);
+          this.closeRespondDialog();
+        },
+        error: (error: any) => {
+          this._notification.error('Error', 'Failed to respond to change request: ' + (error?.message || error));
+        }
+      });
   }
 
   showUberButton(ticket: any): boolean {
-    //console.log('Checking Uber button visibility for ticket:', ticket , " with current trip summary:", this.currentTripSummary);
-    //console.log('Show Uber button for ticket:', ticket);
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
-    if ( this.currentTripSummary && this.currentTripSummary?.status?.indexOf('cancel') !== -1 ) return true; // trip is cancelled
-    if ( this.currentTripSummary && this.currentTripSummary?.guest?.guest_id && ticket.status?.type !== 'Available' ) return false; // this is already an Uber Trip
-    return ( this.currentTripSummary && (this.loggedRole === 'ROLE_ADMIN' ||   this.loggedProviderId === 32) );
+    //console.log('Checking Medride button visibility for ticket:', ticket , " with current trip summary:", this.currentTripSummary);
+    //console.log('Show Medride button for ticket:', ticket);
+    if (this.loggedRole === 'ROLE_READONLY') return false;
+    if (this.currentTripSummary && this.currentTripSummary?.status?.indexOf('cancel') !== -1) return true; // trip is cancelled
+    if (this.currentTripSummary && this.currentTripSummary?.guest?.guest_id && ticket.status?.type !== 'Available') return false; // this is already an Medride Trip
+    return (this.currentTripSummary && (this.loggedRole === 'ROLE_ADMIN' || this.loggedProviderId === 32));
   }
 
+  showMedrideButton(ticket: any): boolean {
+    if (this.loggedRole === 'ROLE_READONLY') return false;
+    if (this.currentTripSummary && this.currentTripSummary?.status?.indexOf('cancel') !== -1) return true; // trip is cancelled
+    if (this.currentTripSummary && this.currentTripSummary?.guest?.guest_id && ticket.status?.type !== 'Available') return false; // this is already an Medride Trip
+    return (this.currentTripSummary && (this.loggedRole === 'ROLE_ADMIN' || this.loggedProviderId === 32));
+  }
 
   showRideStatusButton(ticket: any): boolean {
 
@@ -7237,7 +8326,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can rescind a ticket
    */
   canRescindTicket(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket) return false;
     if (this.loggedRole === 'ROLE_ADMIN') return true;
     // Originators can rescind while not Cancelled/Completed
@@ -7261,7 +8350,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   }
 
   canCancelTicket(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket) return false;
     if (this.loggedRole === 'ROLE_ADMIN') return true;
     // Originators can cancel while not Cancelled/Completed
@@ -7359,39 +8448,58 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       moment.ISO_8601 as unknown as string
     ];
 
+    // A combined value is only usable if it's a clean string without leftover "undefined"/"null"
+    // fragments (the grid builds these as `date + ' ' + time`, which yields "2026-06-15 undefined"
+    // when the time is missing — that must NOT be treated as a parseable datetime).
+    const combinedUsable = typeof combined === 'string'
+      && !/undefined|null/i.test(combined) && combined.trim() !== '';
+
     let dt: Date | null = null;
-    if (combined) {
+    if (combinedUsable) {
       dt = parseWithMoment(combined, combinedFormats);
-      if (dt) return dt;
+      if (dt && !isNaN(dt.getTime())) return dt;
       // Try native Date as a last resort
       const native = new Date(combined);
       if (!isNaN(native.getTime())) return native;
     }
 
-    // Fall back to separate date and time fields
+    // Fall back to separate date and time fields. Pickup first; if pickup is absent, fall back to
+    // dropoff (mirrors the server's isWithinLockWindow, which uses the dropoff date when there is
+    // no requested pickup date — otherwise the 24h check disagrees with the server).
     const dateStr = pickFirst(
       ticket,
       'requested_pickup_date',
       'requested_pickUp_date',
       '_requested_pickup_date',
-      '_requested_pickUp_date'
+      '_requested_pickUp_date',
+      'requested_dropoff_date',
+      'requested_dropOff_date',
+      '_requested_dropoff_date',
+      '_requested_dropOff_date'
     );
     const timeStr = pickFirst(
       ticket,
       'requested_pickup_time',
       'requested_pickUp_time',
       '_requested_pickup_time',
-      '_requested_pickUp_time'
+      '_requested_pickUp_time',
+      'requested_dropoff_time',
+      'requested_dropOff_time',
+      '_requested_dropoff_time',
+      '_requested_dropOff_time'
     );
 
     const dateFormats = ['MM/DD/YYYY', 'YYYY-MM-DD'];
 
     if (dateStr && timeStr) {
-      // Try combined parsing
+      // Try combined parsing. Include seconds-bearing variants — times come through as "HH:mm:ss"
+      // (e.g. "11:00:00"), so formats without :ss would fail strict parsing.
       const combinedStr = `${dateStr} ${timeStr}`;
       dt = parseWithMoment(combinedStr, [
         'MM/DD/YYYY hh:mm A',
+        'MM/DD/YYYY HH:mm:ss',
         'MM/DD/YYYY HH:mm',
+        'YYYY-MM-DD HH:mm:ss',
         'YYYY-MM-DD HH:mm',
         'YYYY-MM-DD hh:mm A'
       ]);
@@ -7401,8 +8509,10 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     if (dateStr) {
       dt = parseWithMoment(dateStr, dateFormats);
       if (dt) {
-        // Assume end-of-day if only date present, to be lenient
-        dt.setHours(23, 59, 59, 999);
+        // Date present but no time: treat as start-of-day (midnight), mirroring the server's
+        // isWithinLockWindow, which uses LocalTime.MIDNIGHT when no time is set. (Using end-of-day
+        // would push the 24h-lock check ~24h later than the server and disagree with it.)
+        dt.setHours(0, 0, 0, 0);
         return dt;
       }
     }
@@ -7415,10 +8525,10 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can claim a ticket
    */
   canClaimTicket(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket) return false;
-    if (ticket.status?.type === 'Cancelled' || ticket.status?.type === 'Completed' ) return false;
-    if ( this.loggedRole === 'ROLE_ADMIN') return true;
+    if (ticket.status?.type === 'Cancelled' || ticket.status?.type === 'Completed') return false;
+    if (this.loggedRole === 'ROLE_ADMIN') return true;
     const isAlreadyClaimant = (ticket.trip_Claims ?? []).some((claim: any) =>
       claim.claimant_provider_id === this.loggedProviderId
     );
@@ -7444,7 +8554,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can approve a claim
    */
   canApproveClaim(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket) return false;
 
     // Only originators of the ticket can approve claims
@@ -7456,7 +8566,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can decline a claim
    */
   canDeclineClaim(ticket: any): boolean {
-    if ( this.loggedRole === 'ROLE_READONLY' ) return false;
+    if (this.loggedRole === 'ROLE_READONLY') return false;
     if (!ticket) return false;
     // Only originators of the ticket can decline claims
     return ticket.origin_provider_id === this.loggedProviderId &&
@@ -7480,8 +8590,8 @@ export class TripTicketComponent implements OnInit, OnDestroy {
    * Check if user can edit a claim
    */
   canEditClaim(ticket: any): boolean {
-    if (!ticket || this.loggedRole === 'ROLE_READONLY' ) return false;
-    return ( this.loggedRole === 'ROLE_ADMIN' || (ticket.myTicket && ticket?.claimant?.providerId === this.loggedProviderId) )
+    if (!ticket || this.loggedRole === 'ROLE_READONLY') return false;
+    return (this.loggedRole === 'ROLE_ADMIN' || (ticket.myTicket && ticket?.claimant?.providerId === this.loggedProviderId))
   }
 
 
@@ -7686,17 +8796,56 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   }
 
 
-  toggleCollapse(sectionId: string, event: MouseEvent): void {
-    // Prevent the default behavior which causes logout
-    event.preventDefault();
-
-    // Find the collapse element
+  toggleCollapse(sectionId: string, event?: Event): void {
+    event?.preventDefault();
     const collapseElement = document.getElementById(sectionId);
-
     if (collapseElement) {
-      // Toggle the 'in' class which controls the expanded state
       collapseElement.classList.toggle('in');
     }
+  }
+
+  isCollapseExpanded(sectionId: string): boolean {
+    return document.getElementById(sectionId)?.classList.contains('in') ?? true;
+  }
+
+  getStatusBadgeClass(s?: string | null): string {
+    if (!s) return '';
+    const map: { [k: string]: string } = {
+      'Available': 'status-active',
+      'Approved': 'status-approved',
+      'Pending': 'status-pending',
+      'Claim Pending': 'status-pending',
+      'No Show': 'status-noshow',
+      'Completed': 'status-completed',
+      'Expired': 'status-cancelled',
+      'Rescinded': 'status-cancelled',
+      'Cancelled': 'status-cancelled',
+      'Cancelled By Client': 'status-cancelled',
+      'Cancelled By Provider': 'status-cancelled',
+    };
+    return map[s] || '';
+  }
+
+  getInitials(name?: string | null): string {
+    if (!name) return '?';
+    return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  }
+
+  inlineComment: string = '';
+
+  postInlineComment(): void {
+    const body = (this.inlineComment || '').trim();
+    if (!body || !this.Ticket?.id) return;
+    this.addComment(this.Ticket.id, body);
+    this.inlineComment = '';
+  }
+
+  approvedClaim(ticket: any): any {
+    return (ticket?.trip_Claims || []).find((c: any) => c?.status?.type === 'Approved') || null;
+  }
+
+  approvedClaimId(ticket: any): any {
+    return this.approvedClaim(ticket)?.id || null;
   }
 
   onTimeFromChange(event: any) {
@@ -7807,7 +8956,13 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       dropoffDate: [null],
       ticketStatusId: [null],
       seatsRequired: [1, [Validators.required, Validators.min(1), Validators.max(10)]],
-      notes: ['']
+      notes: [''],
+      // Not rendered in this form and not read on save (cancellation has its own dialog using
+      // cancelStatusId/cancellationReason). Keeping it required made the form permanently invalid
+      // on the change-request edit path, where setEditability(true) does not clear control-level
+      // validators — disabling Save. No validator here.
+      cancelStatus: [null],
+      cancellationReason: ['']
     }, { validators: [this.atLeastOneDateValidator] });
 
     this.tripResultForm = this.formBuilder.group({
@@ -7836,10 +8991,17 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   // participate in validation, so the form can be submitted to change status only.
   private setEditability(isEditable: boolean): void {
     const controlsToToggle = ['customerFirstName', 'customerLastName', 'pickupDate', 'dropoffDate', 'seatsRequired', 'notes'];
+    const isDRCOGOrAdmin = this.loggedRole === 'ROLE_ADMIN' || this.loggedProviderId === 32;
+
     for (const name of controlsToToggle) {
       const ctrl = this.editTicketForm.get(name);
       if (!ctrl) continue;
-      if (isEditable) {
+
+      // Keep date fields editable for DRCOG users and admins even when other fields are locked
+      const isDateField = name === 'pickupDate' || name === 'dropoffDate';
+      const shouldEnable = isEditable || (isDateField && isDRCOGOrAdmin);
+
+      if (shouldEnable) {
         ctrl.enable({ emitEvent: false });
       } else {
         ctrl.disable({ emitEvent: false });
@@ -7869,7 +9031,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
   };
 
   editTicket(ticket: any): void {
-   // console.log('Editing ticket:', ticket);
+    // console.log('Editing ticket:', ticket);
     this.currentEditingTicket = ticket;
 
     // Robust parsing: API contains inconsistent field names and date/time formats.
@@ -7998,7 +9160,9 @@ export class TripTicketComponent implements OnInit, OnDestroy {
       seatsRequired: ticket.customer_seats_required,
       notes: ticket.trip_notes
     });
-    // If ticket status isn't 'Available', lock all fields except status
+    // If ticket status isn't 'Available', fields are locked. A claimed trip is never directly
+    // editable by a provider — changes go through the change-request workflow, which applies
+    // approved changes automatically (super admins are already handled in setEditability).
     const statusType = ticket?.status?.type ? String(ticket.status.type).trim() : '';
     const editable = statusType.toLowerCase() === 'available';
     this.setEditability(editable);
@@ -8027,7 +9191,7 @@ export class TripTicketComponent implements OnInit, OnDestroy {
         requested_pickup_time: formValue.pickupDate ? moment(formValue.pickupDate).format('HH:mm:ss') : null,
         requested_dropoff_date: formValue.dropoffDate ? moment(formValue.dropoffDate).format('YYYY-MM-DD') : null,
         requested_dropoff_time: formValue.dropoffDate ? moment(formValue.dropoffDate).format('HH:mm:ss') : null,
-        status_id: formValue.ticketStatusId ? formValue.ticketStatusId  : null,
+        status_id: formValue.ticketStatusId ? formValue.ticketStatusId : null,
         customer_seats_required: formValue.seatsRequired,
         trip_notes: formValue.notes
       };
@@ -8306,6 +9470,12 @@ export class TripTicketComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Called when the Medride dialog is closed to refresh Trip Details
+  onMedrideDialogClosed(): void {
+    if (this.Ticket) {
+      this.viewTicket(this.Ticket);
+    }
+  }
 
   // ---------------- Selection and Export Methods ----------------
 

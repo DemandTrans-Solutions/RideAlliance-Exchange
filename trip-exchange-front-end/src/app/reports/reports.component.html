@@ -3,14 +3,16 @@
   <div class="view-container">
     <section id="content" class="animate-fade-up">
       <div class="page-container">
-        <header class="page-header">
-          <div class="header-content">
-            <div class="header-icon">
-              <i class="ph ph-file" aria-hidden="true"></i>
+        <div class="page-head">
+          <div>
+            <div class="crumbs">
+              <i class="ph ph-chart-line-up" aria-hidden="true"></i>
+              Reports
             </div>
-            <h1 class="page-title">{{ 'REPORTS.TITLE' | translate }}</h1>
+            <h1>{{ 'REPORTS.TITLE' | translate }}</h1>
+            <div class="sub">Analytics and operational reports for the Ride Alliance partner network.</div>
           </div>
-        </header>
+        </div>
 
         <div class="reports-layout">
           <nav class="reports-sidebar" aria-label="Reports navigation">
@@ -62,7 +64,7 @@
             </ul>
           </nav>
 
-          <main class="reports-content">
+          <main id="main-content" tabindex="-1" class="reports-content">
             <router-outlet></router-outlet>
           </main>
         </div>

@@ -6,8 +6,9 @@
     (click)="toggleChatbot()"
     pTooltip="Open Chat Assistant"
     tooltipPosition="left"
+    aria-label="Open chat assistant"
     type="button">
-    <i class="pi pi-comments"></i>
+    <i class="pi pi-comments" aria-hidden="true"></i>
   </button>
 
   <!-- Chatbot Window -->
@@ -15,7 +16,7 @@
     <!-- Header -->
     <div class="chatbot-header">
       <div class="header-content">
-        <i class="pi pi-android"></i>
+        <i class="pi pi-android" aria-hidden="true"></i>
         <span class="title">AI Assistant</span>
         <div class="status-indicator" [class.online]="!isLoading"></div>
       </div>
@@ -24,35 +25,39 @@
           class="header-btn"
           (click)="minimizeChat()"
           pTooltip="Minimize"
+          [attr.aria-label]="isMinimized ? 'Maximize chat' : 'Minimize chat'"
           type="button">
-          <i class="pi" [class.pi-window-minimize]="!isMinimized" [class.pi-window-maximize]="isMinimized"></i>
+          <i class="pi" [class.pi-window-minimize]="!isMinimized" [class.pi-window-maximize]="isMinimized" aria-hidden="true"></i>
         </button>
         <button
           class="header-btn"
           (click)="newChat()"
           pTooltip="New Chat"
+          aria-label="New chat"
           type="button">
-          <i class="pi pi-plus"></i>
+          <i class="pi pi-plus" aria-hidden="true"></i>
         </button>
         <button
           class="header-btn"
           (click)="clearChat()"
           pTooltip="Clear Chat"
+          aria-label="Clear chat"
           type="button">
-          <i class="pi pi-trash"></i>
+          <i class="pi pi-trash" aria-hidden="true"></i>
         </button>
         <button
           class="header-btn close-btn"
           (click)="closeChat()"
           pTooltip="Close"
+          aria-label="Close chat"
           type="button">
-          <i class="pi pi-times"></i>
+          <i class="pi pi-times" aria-hidden="true"></i>
         </button>
       </div>
     </div>
 
     <!-- Error Message -->
-    <div class="error-container" *ngIf="error">
+    <div class="error-container" *ngIf="error" role="alert">
       <p-message
         severity="error"
         [text]="error"
@@ -87,6 +92,7 @@
             (keypress)="onKeyPress($event)"
             [disabled]="isLoading"
             placeholder="Type your message here..."
+            aria-label="Message"
             class="message-input"
             autocomplete="off">
 
@@ -94,21 +100,26 @@
             class="send-button"
             (click)="sendMessage()"
             [disabled]="!newMessage.trim() || isLoading"
+            aria-label="Send message"
             type="button">
-            <i class="pi pi-send" *ngIf="!isLoading"></i>
-            <i class="pi pi-spin pi-spinner" *ngIf="isLoading"></i>
+            <i class="pi pi-send" *ngIf="!isLoading" aria-hidden="true"></i>
+            <i class="pi pi-spin pi-spinner" *ngIf="isLoading" aria-hidden="true"></i>
           </button>
         </div>
 
         <!-- Toggle for response type -->
-        <div class="toggle-container" style="margin-top: 8px; display: flex; align-items: center; gap: 12px;">
-          <label style="display: flex; align-items: center; gap: 4px;">
-            <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="TEXT"> TEXT
+        <fieldset
+          class="toggle-container"
+          style="margin-top: 8px; display: flex; align-items: center; gap: 12px; border: 0; padding: 0;"
+        >
+          <legend class="visually-hidden">Response type</legend>
+          <label for="chatbot-query-type-text" style="display: flex; align-items: center; gap: 4px;">
+            <input id="chatbot-query-type-text" type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="TEXT"> TEXT
           </label>
-          <label style="display: flex; align-items: center; gap: 4px;">
-            <input type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="REPORTING_CHARTING"> Report/Chart
+          <label for="chatbot-query-type-reporting" style="display: flex; align-items: center; gap: 4px;">
+            <input id="chatbot-query-type-reporting" type="radio" name="queryType" [(ngModel)]="selectedQueryType" value="REPORTING_CHARTING"> Report/Chart
           </label>
-        </div>
+        </fieldset>
 
         <div class="input-footer">
           <small class="input-hint">Press Enter to send, Shift+Enter for new line</small>

@@ -264,7 +264,8 @@ export class TripTicketUploadService {
       const fileFormat = (fileExtension === 'xlsx' || fileExtension === 'xls') ? FileFormat.EXCEL : FileFormat.CSV;
 
       const { headers, records } = await this.parseUploadFile(file, fileExtension);
-
+console.log('headers:', headers);
+      console.log('records:', records);
       const headerValidation = this.validateHeaders(headers, fileFormat);
 
       if (!headerValidation.isValid) {
@@ -694,13 +695,14 @@ export class TripTicketUploadService {
         !normalizedHeaders.includes(this.normalizeHeaderForComparison(req))
       );
 
+      console.log("missing headers:", missingRequired);
       return {
         isValid: missingRequired.length === 0,
         missingHeaders: missingRequired,
         unexpectedHeaders: [] // don't treat extra or other missing non-required columns as errors
       };
     } else if (fileFormat === FileFormat.EXCEL) {
-      // Required Excel headers for Trip Exchange template
+      // Required Excel headers for Ride Alliance template
       const requiredHeaders = [
         'First Name',
         'Last Name',
@@ -716,6 +718,7 @@ export class TripTicketUploadService {
 
       // Normalize headers for comparison
       const normalizedUploadedHeaders = headers.map(h => this.normalizeHeaderForComparison(h));
+      console.log("normalized headers: ", normalizedUploadedHeaders);
 
       // Check for normalized matches of required headers
       const missingRequired = requiredHeaders.filter((requiredName: string) => {
@@ -951,6 +954,7 @@ export class TripTicketUploadService {
     // Parse "Date & Time Of Trip" for Excel and split into date + time
     const dateTimeOfTrip = get('', 'Date & Time Of Trip');
     const { date: parsedDate, time: parsedTime } = parseDateTimeString(dateTimeOfTrip);
+    console.log('parsedDate:', parsedDate, 'parsedTime:', parsedTime);
     const tripType = get('', 'Pick-Up/Drop-Off Time');
 
 
