@@ -134,6 +134,16 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return new ResponseEntity<>(error, HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
     }
 
+    //edit not allowed (claimed trip / within 24h) ... 403 forbidden
+    @ExceptionHandler(value = {EditNotAllowedException.class})
+    protected ResponseEntity<ErrorResponse> editNotAllowedException(EditNotAllowedException ex) {
+        log.error("EDIT NOT ALLOWED", ex);
+        ErrorResponse error = new ErrorResponse();
+        error.setErrorCode(HttpStatus.FORBIDDEN.value());
+        error.setMessage(ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
     //newly added 400 bad request
     @ExceptionHandler(value = {InvalidInputException.class})
     protected ResponseEntity<ErrorResponse> invalidInputException(InvalidInputException ex) {

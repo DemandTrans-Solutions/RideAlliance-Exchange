@@ -8,10 +8,12 @@ import com.clearinghouse.dao.*;
 import com.clearinghouse.dto.ActivityDTO;
 import com.clearinghouse.dto.TripTicketCommentDTO;
 import com.clearinghouse.entity.*;
-import com.clearinghouse.enumentity.NotificationStatus;
 import com.clearinghouse.enumentity.NotificationTemplateCodeValue;
 import com.clearinghouse.enumentity.TripTicketStatusConstants;
 import com.clearinghouse.listresponseentity.ProviderList;
+import com.clearinghouse.service.notification.NotificationComposer;
+import com.clearinghouse.service.notification.NotificationParamBuilder;
+import com.clearinghouse.service.notification.NotificationRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -39,33 +41,16 @@ public class TripTicketCommentService implements IConvertBOToDTO, IConvertDTOToB
 
 
     private final TripTicketCommentDAO tripTicketCommentDAO;
-
-
     private final TripTicketDAO tripTicketDAO;
-
-
     private final TripClaimService tripClaimService;
-
-
     private final UserDAO userDAO;
-
-
     private final ListDAO listDAO;
-
-
     private final ActivityService activityService;
-
-
-    private final ProviderDAO providerDAO;
-
-
     private final UserNotificationDataDAO userNotificationDataDAO;
-
-
     private final NotificationDAO notificationDAO;
-
-
+    private final FileGenerateService fileGenerateService;
     private final ModelMapper tripTicketCommentModelMapper;
+    private final UserContextService userContextService;
 
     private static final DateTimeFormatter DISPLAY_DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter DISPLAY_TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a");
@@ -173,44 +158,11 @@ public class TripTicketCommentService implements IConvertBOToDTO, IConvertDTOToB
                 String userrole = userAuthority.get(0).getAuthority();
                 if (user.isIsNotifyTripCommentAdded() ) {
 
-                    Notification emailNotificationForClaimant = new Notification();
-                    NotificationTemplate notificationTemplateForClaimant = new NotificationTemplate();
-
-                    emailNotificationForClaimant.setIsEMail(true);
-                    emailNotificationForClaimant.setStatusId(NotificationStatus.newStatus.status());
-                    notificationTemplateForClaimant.setNotificationTemplateId(NotificationTemplateCodeValue.tripCommentAdded.templateCodeValue());
-                    emailNotificationForClaimant.setNotificationTemplate(notificationTemplateForClaimant);
-                    emailNotificationForClaimant.setNumberOfAttempts(0);
-                    emailNotificationForClaimant.setIsActive(true);
-
-                    emailNotificationForClaimant.setEmailTo(user.getEmail());
-
-                    //   Setting parameter values in according to the template for email notofication.
-                    Map rescindClaimantTemplateMap = new HashMap<String, String>();
-                    rescindClaimantTemplateMap.put("nameOftheuser", user.getName());
-                    rescindClaimantTemplateMap.put("commonTripTicketId", tripTicket.getCommonTripId());
-                    rescindClaimantTemplateMap.put("customerName", tripTicket.getCustomerFirstName() + " " + tripTicket.getCustomerLastName());
-                    rescindClaimantTemplateMap.put("year", Year.now().toString());
-
-                    populatePickupDetails(rescindClaimantTemplateMap, tripTicket);
-                    String jsonValueOfTemplate = "";
-
-                    Iterator<Map.Entry<String, String>> entries = rescindClaimantTemplateMap.entrySet().iterator();
-                    while (entries.hasNext()) {
-
-                        Map.Entry<String, String> entry = entries.next();
-                        jsonValueOfTemplate = jsonValueOfTemplate + "\"" + entry.getKey() + "\":\"" + entry.getValue() + "\"";
-                        if (entries.hasNext()) {
-                            jsonValueOfTemplate = jsonValueOfTemplate + ",";
-                        }
-
-                    }
-                    String FinaljsonValueOfTemplateForRescindClaimant = "{" + jsonValueOfTemplate + "}";
+                    Map<String, String> params = NotificationParamBuilder.tripCommentAddedParams(user.getName(), tripTicket);
+                    NotificationRequest req = new NotificationRequest(user.getEmail(), NotificationTemplateCodeValue.tripCommentAdded, "Trip comment is added", params, false, null);
 
                     //            sending mail to claimant provider
-                    emailNotificationForClaimant.setParameterValues(FinaljsonValueOfTemplateForRescindClaimant);
-                    emailNotificationForClaimant.setSubject("Trip comment is added");
-                    notificationDAO.createNotification(emailNotificationForClaimant);
+                    new NotificationComposer(notificationDAO, fileGenerateService).enqueue(req, tripTicket);
                 }
 
             }

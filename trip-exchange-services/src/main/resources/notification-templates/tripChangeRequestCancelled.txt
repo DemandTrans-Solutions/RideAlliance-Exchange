@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trip Comment Added</title>
+<title>Change Request Withdrawn</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -30,6 +30,12 @@
   .email-body {
     padding: 20px;
   }
+  .email-body .detail {
+    background: #f4f4f4;
+    border-left: 4px solid #176799;
+    padding: 10px 14px;
+    margin: 12px 0;
+  }
   .email-footer {
     background-color: #ebebeb;
     text-align: center;
@@ -37,34 +43,30 @@
     font-size: 12px;
     color: #666;
   }
-  a {
-    color: #176799;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
 </style>
 </head>
 <body>
 <div class="email-container">
   <div class="email-header">
-    <h1>Trip Comment Added</h1>
+    <h1>Change Request Withdrawn</h1>
   </div>
   <div class="email-body">
-    <p>Hello ${nameOftheuser},</p>
-    <p>A new comment has been added to following trip ticket.</p>
-        <p>
-          <strong>Trip ticket: ${tripTicketnumber}</strong><br><br>
-          <strong><u>Trip Details</u></strong><br><br>
-          ${currentTripDetails}
-        </p>
-    <p>Please log in to view the details.</p>
+    <p>Hello ${name},</p>
+    <p style="color:#c0392b;">${requesterProviderName} has withdrawn these requested changes to the following trip.</p>
+    <p>
+      <strong>Trip ticket: ${tripTicketnumber}</strong><br><br>
+      <strong><u>Current Trip Details</u></strong><br><br>
+      ${currentTripDetails}
+    </p>
+    <div class="detail">
+      <p><strong>Message:</strong> ${message}</p>
+      <p><strong><u>Requested Changes</u></strong><br><br>${requestedChangesList}</p>
+    </div>
     <p>Thank you,</p>
     <p>Trip Exchange Team.</p>
   </div>
   <div class="email-footer">
-    <p>&copy; 2026 Trip Exchange</p>
+    <p>&copy; 2025 Trip Exchange</p>
   </div>
 </div>
 </body>

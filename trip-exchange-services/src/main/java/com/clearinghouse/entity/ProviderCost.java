@@ -27,17 +27,26 @@ public class ProviderCost extends AbstractEntity implements Serializable {
     @Column(name = "CostPerHour")
     private float costPerHour;
 
-    @Column(name = "CostPerMile")
-    private float costPerMile;
+    @Column(name = "AmbulatoryCostPerMile")
+    private float ambulatoryCostPerMile;
 
-    @Column(name = "AmbularyCost")
-    private float ambularyCost;
+    @Column(name = "WheelchairCostPerMile")
+    private float wheelchairCostPerMile;
+
+    @Column(name = "AmbulatoryCost")
+    private float ambulatoryCost;
 
     @Column(name = "WheelchairCost")
     private float wheelchairCost;
 
     @Column(name = "TotalCost")
     private float totalCost;
+
+    @Column(name = "CancelledTripCost", columnDefinition = "decimal(10,2)")
+    private float cancelledTripCost;
+
+    @Column(name = "UseCostFromProvider", columnDefinition = "tinyint(1) default 0")
+    private boolean useCostFromProvider;
 
     public int getProviderCostId() {
         return providerCostId;
@@ -63,20 +72,28 @@ public class ProviderCost extends AbstractEntity implements Serializable {
         this.costPerHour = costPerHour;
     }
 
-    public float getCostPerMile() {
-        return costPerMile;
+    public float getAmbulatoryCostPerMile() {
+        return ambulatoryCostPerMile;
     }
 
-    public void setCostPerMile(float costPerMile) {
-        this.costPerMile = costPerMile;
+    public void setAmbulatoryCostPerMile(float ambulatoryCostPerMile) {
+        this.ambulatoryCostPerMile = ambulatoryCostPerMile;
     }
 
-    public float getAmbularyCost() {
-        return ambularyCost;
+    public float getWheelchairCostPerMile() {
+        return wheelchairCostPerMile;
     }
 
-    public void setAmbularyCost(float ambularyCost) {
-        this.ambularyCost = ambularyCost;
+    public void setWheelchairCostPerMile(float wheelchairCostPerMile) {
+        this.wheelchairCostPerMile = wheelchairCostPerMile;
+    }
+
+    public float getAmbulatoryCost() {
+        return ambulatoryCost;
+    }
+
+    public void setAmbulatoryCost(float ambulatoryCost) {
+        this.ambulatoryCost = ambulatoryCost;
     }
 
     public float getWheelchairCost() {
@@ -95,6 +112,22 @@ public class ProviderCost extends AbstractEntity implements Serializable {
         this.totalCost = totalCost;
     }
 
+    public float getCancelledTripCost() {
+        return cancelledTripCost;
+    }
+
+    public void setCancelledTripCost(float cancelledTripCost) {
+        this.cancelledTripCost = cancelledTripCost;
+    }
+
+    public boolean isUseCostFromProvider() {
+        return useCostFromProvider;
+    }
+
+    public void setUseCostFromProvider(boolean useCostFromProvider) {
+        this.useCostFromProvider = useCostFromProvider;
+    }
+
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
@@ -102,8 +135,10 @@ public class ProviderCost extends AbstractEntity implements Serializable {
     @Override
     public String toString() {
         return "ProviderCost [providerCostId=" + providerCostId + ", provider=" + provider + ", costPerHour="
-                + costPerHour + ", costPerMile=" + costPerMile + ", ambularyCost=" + ambularyCost + ", wheelchairCost="
-                + wheelchairCost + ", totalCost=" + totalCost + "]";
+                + costPerHour + ", ambulatoryCostPerMile=" + ambulatoryCostPerMile + ", wheelchairCostPerMile="
+                + wheelchairCostPerMile + ", ambulatoryCost=" + ambulatoryCost + ", wheelchairCost="
+                + wheelchairCost + ", totalCost=" + totalCost + ", cancelledTripCost=" + cancelledTripCost
+                + ", useCostFromProvider=" + useCostFromProvider + "]";
     }
 
 

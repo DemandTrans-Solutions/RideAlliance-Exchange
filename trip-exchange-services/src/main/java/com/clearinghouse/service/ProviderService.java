@@ -67,6 +67,10 @@ public class ProviderService implements IConvertBOToDTO, IConvertDTOToBO {
         return findByName("Uber");
     }
 
+    public Provider findMedrideProvider() {
+        return findByName("MedRide");
+    }
+
     public ProviderDTO findProviderByProviderId(int providerId) {
         Provider provider = providerDAO.findProviderByProviderId(providerId);
         if (provider != null) {

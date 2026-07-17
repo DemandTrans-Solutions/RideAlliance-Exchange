@@ -112,12 +112,12 @@ class ReportControllerTest {
         ReportFilterDTO filter = new ReportFilterDTO();
         List<DetailedTripTicketDTO> reports = new ArrayList<>();
         reports.add(new DetailedTripTicketDTO());
-        when(reportService.findCompletedTripTicketDetailsByReportFilterOBJ(filter)).thenReturn(reports);
+        when(reportService.findTripTicketDetailsByStatusesReportFilterOBJ(filter)).thenReturn(reports);
 
         ResponseEntity<List<DetailedTripTicketDTO>> response = reportController.completedTicketReport(filter);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(reports, response.getBody());
-        verify(reportService).findCompletedTripTicketDetailsByReportFilterOBJ(filter);
+        verify(reportService).findTripTicketDetailsByStatusesReportFilterOBJ(filter);
     }
 }

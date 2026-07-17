@@ -152,6 +152,30 @@ public enum NotificationTemplateCodeValue {
             return 33;
         }
     },
+    tripChangeRequestReceived(34) {
+        @Override
+        public int templateCodeValue() {
+            return 34;
+        }
+    },
+    tripChangeRequestApproved(35) {
+        @Override
+        public int templateCodeValue() {
+            return 35;
+        }
+    },
+    tripChangeRequestDenied(36) {
+        @Override
+        public int templateCodeValue() {
+            return 36;
+        }
+    },
+    tripChangeRequestCancelled(37) {
+        @Override
+        public int templateCodeValue() {
+            return 37;
+        }
+    },
     ;
     private final int value;
 

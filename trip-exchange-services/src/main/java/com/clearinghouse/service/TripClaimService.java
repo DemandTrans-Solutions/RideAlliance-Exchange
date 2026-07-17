@@ -71,6 +71,9 @@ public class TripClaimService implements IConvertBOToDTO, IConvertDTOToBO {
         return tripClaimDAO.findTripTicketsByProviderAndExceptStatus(provider, statusId);
     }
 
+    public List<TripTicket> findTripTicketsByProviderAndExceptStatuses(Provider provider, List<Integer> statusIds) {
+        return tripClaimDAO.findTripTicketsByProviderAndExceptStatuses(provider, statusIds);
+    }
 
     public TripClaimDTO createTripClaim(int trip_ticket_id, TripClaimDTO tripClaimDTO) {
         boolean allowPriceMismatch = tripClaimDTO.isOverridePriceMismatch();

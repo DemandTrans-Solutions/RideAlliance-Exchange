@@ -84,7 +84,32 @@ public enum TripTicketStatusConstants {
         public int tripTicketStatusUpdate() {
             return 13;
         }
-    };
+    },
+    pending(14) {
+        @Override
+        public int tripTicketStatusUpdate() {
+            return 14;
+        }
+    },
+    pendingYourApproval(15) {
+        @Override
+        public int tripTicketStatusUpdate() {
+            return 15;
+        }
+    },
+    priceMismatched(16) {
+        @Override
+        public int tripTicketStatusUpdate() { return 16; }
+    },
+    cancelledByClient(19) {
+        @Override
+        public int tripTicketStatusUpdate() { return 19; }
+    },
+    cancelledByProvider(20) {
+        @Override
+        public int tripTicketStatusUpdate() { return 20; }
+    }
+    ;
 
     private final int value;
 

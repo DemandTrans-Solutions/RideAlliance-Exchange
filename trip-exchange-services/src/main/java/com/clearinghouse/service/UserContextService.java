@@ -2,6 +2,7 @@ package com.clearinghouse.service;
 
 import com.clearinghouse.dao.UserDAO;
 import com.clearinghouse.dto.UserContextDTO;
+import com.clearinghouse.entity.User;
 import com.clearinghouse.entity.UserAuthentication;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,6 +53,23 @@ public class UserContextService {
 
         int providerId = user.getProvider().getProviderId();
         return new UserContextDTO(providerId, userRole, user.getId());
+    }
+
+    /**
+     * Re-fetches the given user from the database so callers work with a fully populated,
+     * managed entity (including provider and authorities) rather than a possibly-detached
+     * instance taken from the security context.
+     *
+     * @param user the user to hydrate; may be {@code null}
+     * @return the database copy of the user, or the supplied {@code user} if it is {@code null}
+     * or no matching record is found
+     */
+    public User hydrate(User user) {
+        if (user == null) {
+            return null;
+        }
+        User dbUser = userDAO.findUserByUserId(user.getId());
+        return dbUser != null ? dbUser : user;
     }
 
 }

@@ -20,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -418,7 +415,13 @@ public class UberService {
     public List<TripTicket> findUpcomingUberTripTickets() {
         // find all trip tickets with a status of in progress and a provider of Uber
         var uberProvider = providerService.findUberProvider();
-        var activeUberTickets = tripClaimService.findTripTicketsByProviderAndExceptStatus(uberProvider, TripTicketStatusConstants.completed.tripTicketStatusUpdate());
+        List<Integer> statusIds = new ArrayList<>();
+        statusIds.add(TripTicketStatusConstants.completed.tripTicketStatusUpdate());
+        statusIds.add(TripTicketStatusConstants.cancelled.tripTicketStatusUpdate());
+        statusIds.add(TripTicketStatusConstants.cancelledByClient.tripTicketStatusUpdate());
+        statusIds.add(TripTicketStatusConstants.cancelledByProvider.tripTicketStatusUpdate());
+
+        var activeUberTickets = tripClaimService.findTripTicketsByProviderAndExceptStatuses(uberProvider, statusIds);
         return activeUberTickets;
     }
 

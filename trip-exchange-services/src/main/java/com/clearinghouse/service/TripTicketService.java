@@ -43,82 +43,31 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
 
-
     private final UserService userService;
-
     private final TripTicketVectorStoreService tripTicketVectorStoreService;
-
-
     private final TripTicketDAO tripTicketDAO;
-
-
     private final ProviderDAO providerDAO;
-
-
     private final NotificationDAO notificationDAO;
-
-
     private final ActivityService activityService;
-
-
     private final UserNotificationDataDAO userNotificationDataDAO;
-
-
-    private final ProviderPartnerDAO providerPartnerDAO;
-
-
     private final ListDAO listDAO;
-
-
     private final ServiceDAO serviceDAO;
-
-
     private final ModelMapper tripTicketModelMapper;
-
-
-    private final ModelMapper claimantTripModelMapper;
-
-
     private final ModelMapper providerModelMapper;
-
-
     private final UserDAO userDAO;
-
-
-    private final ConvertRequestToTripTicketDTOService convertRequestToTripTicketDTOService;
-
-
     private final ModelMapper modelMapper;
-
-
     private final WorkingHoursService workingHoursService;
-
-
     private final ProviderCostDAO providerCostDAO;
-
-
     private final TripTicketDistanceService tripTicketDistanceService;
-
-
     private final TripTicketDistanceDAO tripTicketDistanceDAO;
-
-
     private final TripClaimDAO tripClaimDAO;
-
-
     private final TripClaimService tripClaimService;
-
-
     private final ClaimantTripTicketDAO claimantTripticketDAO;
-
     private final DetailedTripTicketConverterService detailedTripTicketConverterService;
-
     private final TripResultService tripResultService;
-
     private final TripTicketCommentService tripTicketCommentService;
-
-
     private final ProviderService providerService;
+    private final UserContextService userContextService;
 
 
     /**
@@ -1158,6 +1107,14 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
     public TripTicketDTO updateTripTicket(TripTicketDTO tripTicketDTO) {
 
         TripTicket tripTicket = (TripTicket) toBO(tripTicketDTO);
+        // Preserve the existing approved-claim link. The DTO->entity mapping does not (and must not)
+        // reconstruct approvedTripClaim, because that association is @OneToOne(cascade = ALL): a stub
+        // would cascade-merge and null out the real claim row. Instead, carry over the actual claim
+        // from the persisted trip so the edit leaves the claim intact.
+        TripTicket existing = tripTicketDAO.findTripTicketByTripTicketId(tripTicket.getId());
+        if (existing != null) {
+            tripTicket.setApprovedTripClaim(existing.getApprovedTripClaim());
+        }
         tripTicketDAO.updateTripTicket(tripTicket);
         var dto = (TripTicketDTO) toDTO(tripTicket);
         tripTicketVectorStoreService.updateTripTicket(dto);
@@ -1198,7 +1155,7 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
     public TripTicketDTO rescindTripTicket(int id) {
         TripTicket tripTicket = tripTicketDAO.findTripTicketByTripTicketId(id);
 
-        //NotificationEnginePart.. for trip ticket originator
+        //NotificationEnginePart... for trip ticket originator
         Notification emailNotificationForTripOriginator = new Notification();
         NotificationTemplate notificationTemplateForTripOriginator = new NotificationTemplate();
         emailNotificationForTripOriginator.setEmailTo(tripTicket.getOriginProvider().getContactEmail());
@@ -1837,9 +1794,10 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
 
         float miles = getTimeAndDistance.getTripTicketDistance();
         float hours = getTimeAndDistance.getTripTicketTime();
-        float costPerMile = costforProvider.getCostPerMile();
         float costPerHr = costforProvider.getCostPerHour();
-        float ambulatoryCost = costforProvider.getAmbularyCost();
+        // Per-mile rate differs by service level: ambulatory vs wheelchair/WAV.
+        float costPerMile = costforProvider.getAmbulatoryCostPerMile();
+        float ambulatoryCost = costforProvider.getAmbulatoryCost();
         float wheelchairCost = 0;
 
         String serviceLevel = "AMB";
@@ -1850,6 +1808,7 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
                 serviceLevel.equalsIgnoreCase("wav") ||
                 serviceLevel.equalsIgnoreCase("accessible") ) {
 
+            costPerMile = costforProvider.getWheelchairCostPerMile();
             wheelchairCost = costforProvider.getWheelchairCost();
             ambulatoryCost = 0;
         }
@@ -2092,13 +2051,27 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
 
     public void changeTripTicketStatusToCancel(TripTicket availableTripTicket, CancelRequest cancelRequest) {
 
+        int statusId = (cancelRequest != null) ? cancelRequest.statusId() : -1;
+
         Status status = new Status();
-        status.setStatusId(TripTicketStatusConstants.cancelled.tripTicketStatusUpdate());
+
+        if (statusId == TripTicketStatusConstants.cancelledByClient.tripTicketStatusUpdate())
+            status.setStatusId(TripTicketStatusConstants.cancelledByClient.tripTicketStatusUpdate());
+        else if (statusId == TripTicketStatusConstants.cancelledByProvider.tripTicketStatusUpdate())
+            status.setStatusId(TripTicketStatusConstants.cancelledByProvider.tripTicketStatusUpdate());
+        else
+            status.setStatusId(TripTicketStatusConstants.cancelled.tripTicketStatusUpdate());
+
         availableTripTicket.setStatus(status);
         tripTicketDAO.updateTripTicket(availableTripTicket);
         // sending ACK mail to requester and claimant provider for cancel trip
         sendACKMailToOriginatorForTripCancellation(availableTripTicket);
-        rescindTripTicket(availableTripTicket.getId());
+
+        // JH 6/19/2026: Malorie would like to still have the claimant show on cancelled trips,
+        // so rather than rescind the trip, just send the notification email to the claimant.
+        // Note: The claimant provider is notified of the cancellation by email via the call to sendACKMailToOriginatorForTripCancellation above.
+        // In that method is a call to a method to also email the claimant.
+        // rescindTripTicket(availableTripTicket.getId());
 
         // see if this already has a TripResult, it so use it
         AtomicReference<TripResultDTO> tripResult = new AtomicReference<>();
@@ -2119,11 +2092,13 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
         tripResult.get().setTripTicketId(availableTripTicket.getId());
         tripResult.get().setCancellationReason(cancelRequest.reason());
 
+        User currentUser = userContextService.hydrate(getCurrentUser());
+
         var comment = new TripTicketCommentDTO();
         comment.setTripTicketId(availableTripTicket.getId());
-        comment.setUserName(userService.getCurrentUserName());
+        comment.setUserName(currentUser.getUsername());
         comment.setBody(cancelRequest.reason());
-        comment.setUserId(userService.getCurrentUserId());
+        comment.setUserId(currentUser.getId());
         tripTicketCommentService.createTripTicketComment(availableTripTicket.getId(), comment);
 
         tripResultService.updateTripResult(tripResult.get());
@@ -2142,7 +2117,10 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
         Set<TripClaim> tripClaims = tripTicket.getTripClaims();
         var actionBy = getActionBy();
         for (TripClaim tripClaim : tripClaims) {
-            if (tripClaim.getStatus().getStatusId() != TripTicketStatusConstants.cancelled.tripTicketStatusUpdate()) {
+            if (tripClaim.getStatus().getStatusId() != TripTicketStatusConstants.cancelled.tripTicketStatusUpdate()
+                && tripClaim.getStatus().getStatusId() != TripTicketStatusConstants.cancelledByClient.tripTicketStatusUpdate()
+                && tripClaim.getStatus().getStatusId() != TripTicketStatusConstants.cancelledByProvider.tripTicketStatusUpdate()
+            ) {
                 tripClaimService.sendACKMailToClaimantForTripCancellation(tripTicket, tripClaim.getId(), actionBy);
             }
         }
@@ -2197,6 +2175,7 @@ public class TripTicketService implements IConvertBOToDTO, IConvertDTOToBO {
 
         }
     }
+
 
     /**
      * Creates an activity record for a trip ticket when it is cancelled.

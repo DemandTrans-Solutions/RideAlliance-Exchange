@@ -526,6 +526,11 @@ public class SpringAppConfiguration implements WebMvcConfigurer {
                     return src.getStatus() != null && src.getStatus().getStatusId() > 0 ? new Status(src.getStatus().getStatusId()) : null;
                 }).map(source, destination.getStatus());
 
+                // NOTE: approvedTripClaim is intentionally NOT reconstructed here. The association is
+                // @OneToOne(cascade = ALL), so mapping in a stub TripClaim (id only) would cascade a
+                // merge that nulls out the real claim's columns. The approved-claim link is instead
+                // preserved in the update service by copying it from the existing persisted trip.
+
 
 
 

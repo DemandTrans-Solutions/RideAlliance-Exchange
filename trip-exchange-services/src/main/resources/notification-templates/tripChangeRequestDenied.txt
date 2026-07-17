@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trip Comment Added</title>
+<title>Change Request Denied</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -30,6 +30,12 @@
   .email-body {
     padding: 20px;
   }
+  .email-body .detail {
+    background: #f4f4f4;
+    border-left: 4px solid #c0392b;
+    padding: 10px 14px;
+    margin: 12px 0;
+  }
   .email-footer {
     background-color: #ebebeb;
     text-align: center;
@@ -37,34 +43,33 @@
     font-size: 12px;
     color: #666;
   }
-  a {
-    color: #176799;
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
 </style>
 </head>
 <body>
 <div class="email-container">
   <div class="email-header">
-    <h1>Trip Comment Added</h1>
+    <h1>Change Request Denied</h1>
   </div>
   <div class="email-body">
-    <p>Hello ${nameOftheuser},</p>
-    <p>A new comment has been added to following trip ticket.</p>
-        <p>
-          <strong>Trip ticket: ${tripTicketnumber}</strong><br><br>
-          <strong><u>Trip Details</u></strong><br><br>
-          ${currentTripDetails}
-        </p>
-    <p>Please log in to view the details.</p>
+    <p>Hello ${name},</p>
+    <p>${targetProviderName} has <strong>denied</strong> your change request.</p>
+    <p><strong>Trip ticket: ${tripTicketnumber}</strong></p>
+    <div class="detail">
+      <p><strong>Their message:</strong> ${responseMessage}</p>
+    </div>
+    <p>
+      <strong><u>Current Trip Details</u></strong><br><br>
+      ${currentTripDetails}
+    </p>
+    <div class="detail">
+      <p><strong><u>Requested Changes</u></strong><br><br>${requestedChangesList}</p>
+    </div>
+    <p>The trip remains unchanged.</p>
     <p>Thank you,</p>
     <p>Trip Exchange Team.</p>
   </div>
   <div class="email-footer">
-    <p>&copy; 2026 Trip Exchange</p>
+    <p>&copy; 2025 Trip Exchange</p>
   </div>
 </div>
 </body>

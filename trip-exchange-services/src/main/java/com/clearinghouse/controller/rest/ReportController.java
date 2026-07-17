@@ -77,7 +77,7 @@ public class ReportController {
     @RequestMapping(value = "/completedTripsReport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DetailedTripTicketDTO>> completedTicketReport(@Valid @RequestBody ReportFilterDTO reportFilterDTOObj) {
 
-        List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findCompletedTripTicketDetailsByReportFilterOBJ(reportFilterDTOObj);
+        List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findTripTicketDetailsByStatusesReportFilterOBJ(reportFilterDTOObj);
         if (detailedTripTicketDTO.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -89,7 +89,7 @@ public class ReportController {
     @RequestMapping(value = "/cancelTicketsReport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<DetailedTripTicketDTO>> cancelTicketsReport(@Valid @RequestBody ReportFilterDTO reportFilterDTOObj) {
 
-        List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findCancelTripTicketDetailsByReportFilterOBJ(reportFilterDTOObj);
+        List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findTripTicketDetailsByStatusesReportFilterOBJ(reportFilterDTOObj);
         if (detailedTripTicketDTO.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -97,4 +97,18 @@ public class ReportController {
 
     }
 
+    @RequestMapping(value = "/providerMonthlyTripsReport", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<DetailedTripTicketDTO>> providerMonthlyTripTicketReport(@Valid @RequestBody ReportFilterDTO reportFilterDTOObj) {
+
+        List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findTripTicketDetailsByStatusesReportFilterOBJ(reportFilterDTOObj);
+        // TO MAKE THE PROVIDER MONTHLY REPORT CLAIMANT-BASED (attribute trips to the claiming/
+        // performing provider, falling back to the originator when there is no approved claim),
+        // use the line below instead of the one above. NOT YET TESTED.
+        // List<DetailedTripTicketDTO> detailedTripTicketDTO = reportService.findTripTicketDetailsByClaimantReportFilterOBJ(reportFilterDTOObj);
+        if (detailedTripTicketDTO.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(detailedTripTicketDTO, HttpStatus.OK);
+
+    }
 }

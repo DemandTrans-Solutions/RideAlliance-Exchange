@@ -39,6 +39,18 @@ class ReportServiceTest {
     @org.mockito.Mock
     private com.clearinghouse.service.ProviderPartnerService providerPartnerService;
 
+    @Mock
+    private TripTicketService tripTicketService;
+
+    @Mock
+    private com.clearinghouse.dao.ProviderCostDAO providerCostDAO;
+
+    @Mock
+    private com.clearinghouse.dao.TripTicketDistanceDAO tripTicketDistanceDAO;
+
+    @Mock
+    private DetailedTripTicketConverterService detailedTripTicketConverterService;
+
     private ReportService reportService;
 
     // MockitoExtension will initialize mocks; no manual setup required
@@ -69,7 +81,7 @@ class ReportServiceTest {
         };
 
         // Construct ReportService explicitly so it gets our concrete mappers
-        reportService = new ReportService(reportDAO, tripTicketDAO, tripTicketModelMapper, providerModelMapper, providerPartnerService);
+        reportService = new ReportService(reportDAO, tripTicketDAO, tripTicketModelMapper, providerModelMapper, providerPartnerService, tripTicketService, providerCostDAO, tripTicketDistanceDAO, detailedTripTicketConverterService);
     }
 
     @Test
@@ -145,7 +157,9 @@ class ReportServiceTest {
         List<TripTicket> tripTickets = List.of(tripTicket1, tripTicket2);
         when(reportDAO.getTripTicketsByReportFilterObj(reportFilterDTO)).thenReturn(tripTickets);
 
-    // mappers are already stubbed in setUp
+    // The row conversion is delegated to the shared converter; return a non-null DTO per ticket.
+    org.mockito.Mockito.lenient().when(detailedTripTicketConverterService.convertToDetailedTripTicketDTO(org.mockito.ArgumentMatchers.any()))
+            .thenReturn(new DetailedTripTicketDTO());
 
         List<DetailedTripTicketDTO> result = reportService.findDetailedTripTicketByReportFilterOBJ(reportFilterDTO);
 

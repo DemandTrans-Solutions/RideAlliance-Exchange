@@ -16,17 +16,22 @@ public class ProviderCostDTO {
     private int providerCostId;
     private int providerId;
     private float costPerHour;
-    private float costPerMile;
-    private float ambularyCost;
+    private float ambulatoryCostPerMile;
+    private float wheelchairCostPerMile;
+    private float ambulatoryCost;
     private float wheelchairCost;
     private float totalCost;
+    private float cancelledTripCost;
+    private boolean useCostFromProvider;
 
 
     @Override
     public String toString() {
         return "ProviderCostDTO [providerCostId=" + providerCostId + ", providerId=" + providerId + ", costPerHour="
-                + costPerHour + ", costPerMile=" + costPerMile + ", ambularyCost=" + ambularyCost + ", wheelchairCost="
-                + wheelchairCost + ", totalCost=" + totalCost + "]";
+                + costPerHour + ", ambulatoryCostPerMile=" + ambulatoryCostPerMile + ", wheelchairCostPerMile="
+                + wheelchairCostPerMile + ", ambulatoryCost=" + ambulatoryCost + ", wheelchairCost="
+                + wheelchairCost + ", totalCost=" + totalCost + ", cancelledTripCost=" + cancelledTripCost
+                + ", useCostFromProvider=" + useCostFromProvider + "]";
     }
 
 

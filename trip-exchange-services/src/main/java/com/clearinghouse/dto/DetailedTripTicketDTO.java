@@ -38,6 +38,17 @@ public class DetailedTripTicketDTO extends TripTicketDTO {
 
     private boolean isNewRecord;
 
+    /* Trip cost for the "All Trips by Provider" report. Resolved per-row in ReportService:
+       cancelled -> claimant (else originator) CancelledTripCost; completed -> tripresult fare
+       when the provider's UseCostFromProvider flag is set, otherwise the rate-card formula. */
+    private float tripCost;
+
+    /* Trip mileage for the "All Trips by Provider" report. Resolved per-row in ReportService
+       from the tripticketdistance row (the real Azure-computed route distance, in miles).
+       NOTE: this is distinct from the inherited estimated_trip_distance, which is not populated
+       from the route computation and is normally 0. */
+    private float mileage;
+
 
 
     public void extractComments() {

@@ -361,7 +361,7 @@ Common deployment issues:
 
 2. **ECR Authentication**: If you can't push to ECR, ensure your AWS credentials are properly configured:
    ```bash
-   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin .dkr.ecr.us-east-1.amazonaws.com
+   aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 750446117464.dkr.ecr.us-east-1.amazonaws.com
    ```
 
 3. **Docker Buildx**: If buildx commands fail, ensure Docker Desktop is properly configured for multi-architecture builds:
@@ -445,40 +445,9 @@ delete from tripticket;
 For more details, see the [mcp-server-bedrock-plan.md](.github/plans/mcp-server-bedrock-plan.md).
 
 
-## Federal Compliance & Data Management
-
-This project complies with U.S. Department of Transportation (USDOT) data management requirements and the DRCOG Data Management Plan. 
-
-### DCAT-US Metadata
-
-The project includes a [data.json](data.json) file that conforms to the **DCAT-US v1.1 (Project Open Data Metadata Schema)** standard, which is the federal requirement for data search and discovery across government data catalogs including [data.gov](https://data.gov) and [transportation.data.gov](https://transportation.data.gov).
-
-**What is DCAT-US?**
-- DCAT-US is the federal standard metadata schema for describing datasets and APIs
-- Enables automatic discovery and cataloging in government data repositories
-- Provides standardized information about data access, licensing, formats, and contacts
-- Required for federal grant-funded projects per USDOT Public Access Plan
-
-**What's in the data.json file?**
-The metadata file describes:
-- Dataset title, description, and keywords for discovery
-- Access information including API endpoints and downloadable resources
-- Contact information and publisher details
-- Licensing terms (Public Domain)
-- Distribution formats (REST API, OpenAPI spec, source code, documentation)
-- Compliance with federal metadata standards
-
-**Data Preservation:**
-All project data will be preserved in the National Transportation Library (NTL), a repository managed by the USDOT, to ensure long-term access and adherence to federal data management standards.
-
-**Learn More:**
-- [DCAT-US v1.1 Standard](https://resources.data.gov/resources/dcat-us/)
-- [USDOT Public Access Plan](https://www.transportation.gov/public-access)
-- [Project Open Data](https://project-open-data.cio.gov/)
-
 ## Contact
 
-- **Project Maintainer**: [Todd Voirol](mailto:todd.voirol@demandtrans.com)
+- **Project Maintainer**: [Project Manager Name](mailto:todd.voirol@demandtrans.com)
 
 
 Version: 0.0.1-SNAPSHOT (alpha)

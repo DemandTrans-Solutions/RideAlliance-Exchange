@@ -393,7 +393,7 @@
                 </executions>
                 <configuration>
                     <image>
-                        <name>.dkr.ecr.us-east-1.amazonaws.com/clearinghouse</name>
+                        <name>750446117464.dkr.ecr.us-east-1.amazonaws.com/clearinghouse</name>
                         <tags>
                             <tag>latest</tag>
                             <tag>${git.commit.id}</tag>

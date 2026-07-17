@@ -38,7 +38,6 @@ public class TripResultDTO {
     private double pickUpLatitude;
     private double pickupLongitude;
 
-
     private double dropOffLatitude;
     private double dropOffLongitude;
 
@@ -54,6 +53,7 @@ public class TripResultDTO {
     private int numberOfAttendants;
     private int numberOfPassengers;
     private int orgProviderId;
+
 
     @JsonProperty("driver_name")
     private String driverName;

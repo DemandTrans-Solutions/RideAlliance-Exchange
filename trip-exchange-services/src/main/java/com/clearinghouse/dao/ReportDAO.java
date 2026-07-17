@@ -358,8 +358,7 @@ public class ReportDAO extends AbstractDAO<Integer, Object> {
         return query.getResultList();
     }
 
-
-    public List<TripTicket> getTripTicketsForCompletedStatusReportFilter(ReportFilterDTO reportFilterDTOObj) {
+    public List<TripTicket> getTripTicketsForStatusesReportFilter(ReportFilterDTO reportFilterDTOObj) {
         List<String> ticketStatusList = reportFilterDTOObj.getReportTicketFilterStatus();
         ZonedDateTime fromDate = reportFilterDTOObj.getFromDateTime();
         ZonedDateTime toDate = reportFilterDTOObj.getToDateTime();
@@ -367,6 +366,7 @@ public class ReportDAO extends AbstractDAO<Integer, Object> {
         if ( reportFilterDTOObj.getInClauseQuery() == null || reportFilterDTOObj.getInClauseQuery().trim().isEmpty()) {
             queryString = new StringBuilder("SELECT t FROM TripTicket t WHERE (t.createdAt >= :fromDate AND t.createdAt <= :toDate)");
         }
+
         if (ticketStatusList != null && !ticketStatusList.isEmpty() && !ticketStatusList.get(0).trim().isEmpty()) {
             queryString.append(" AND (");
             for (int i = 0; i < ticketStatusList.size(); i++) {
@@ -388,13 +388,32 @@ public class ReportDAO extends AbstractDAO<Integer, Object> {
         return query.getResultList();
     }
 
-    public List<TripTicket> getTripTicketsForCancelStatusReportFilter(ReportFilterDTO reportFilterDTOObj) {
+    /**
+     * Like {@link #getTripTicketsForStatusesReportFilter} but scopes rows by the CLAIMING provider:
+     * a trip is included for the filtered provider id(s) when the approved claim's claimant matches,
+     * or — when there is no approved claim — when the originating provider matches. This is used by
+     * the Provider Monthly Trips report only; the completed/cancelled reports remain originator-scoped.
+     *
+     * <p>The provider id(s) come from the same {@code getInClauseQuery()} IN-clause (e.g. " IN (1, 2) ").
+     *
+     * <p>NOT YET TESTED — wired and ready, but the report currently runs originator-based; enable
+     * via the commented claimant entry point in ReportService.
+     */
+    public List<TripTicket> getTripTicketsForStatusesReportFilterByClaimant(ReportFilterDTO reportFilterDTOObj) {
         List<String> ticketStatusList = reportFilterDTOObj.getReportTicketFilterStatus();
         ZonedDateTime fromDate = reportFilterDTOObj.getFromDateTime();
         ZonedDateTime toDate = reportFilterDTOObj.getToDateTime();
-        StringBuilder queryString = new StringBuilder("SELECT t FROM TripTicket t WHERE (t.createdAt >= :fromDate AND t.createdAt <= :toDate)  AND t.originProvider.providerId " + reportFilterDTOObj.getInClauseQuery());
-        if ( reportFilterDTOObj.getInClauseQuery() == null || reportFilterDTOObj.getInClauseQuery().trim().isEmpty()) {
-            queryString = new StringBuilder("SELECT t FROM TripTicket t WHERE (t.createdAt >= :fromDate AND t.createdAt <= :toDate)");
+        String inClause = reportFilterDTOObj.getInClauseQuery();
+
+        StringBuilder queryString = new StringBuilder(
+                "SELECT t FROM TripTicket t WHERE (t.createdAt >= :fromDate AND t.createdAt <= :toDate)");
+        if (inClause != null && !inClause.trim().isEmpty()) {
+            // Claimant if there is an approved claim; otherwise fall back to the originating provider.
+            queryString.append(" AND ( (t.approvedTripClaim IS NOT NULL AND t.approvedTripClaim.claimantProvider.providerId ")
+                    .append(inClause)
+                    .append(") OR (t.approvedTripClaim IS NULL AND t.originProvider.providerId ")
+                    .append(inClause)
+                    .append(") )");
         }
 
         if (ticketStatusList != null && !ticketStatusList.isEmpty() && !ticketStatusList.get(0).trim().isEmpty()) {

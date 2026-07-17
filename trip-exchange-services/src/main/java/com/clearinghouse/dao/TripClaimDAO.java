@@ -112,6 +112,28 @@ public class TripClaimDAO extends AbstractDAO<Integer, TripClaim> {
     }
 
 
+    /**
+     * Find all TripTickets that have a TripClaim with the specified provider whose claim
+     * status is not one of the specified statuses
+     *
+     * @param provider  The provider to match against the claimantProvider
+     * @param statusIds The status IDs to exclude from the claim status
+     * @return List of TripTickets matching the criteria
+     */
+    public List<TripTicket> findTripTicketsByProviderAndExceptStatuses(Provider provider, List<Integer> statusIds) {
+        List<TripTicket> tripTickets = getEntityManager()
+                .createQuery(
+                        "SELECT DISTINCT tc.tripTicket FROM TripClaim tc " +
+                                "WHERE tc.claimantProvider.providerId = :providerId " +
+                                "AND tc.tripTicket.status.id NOT IN :statusIds " +
+                                "ORDER BY tc.tripTicket.requestedPickupDate DESC", TripTicket.class)
+                .setParameter("providerId", provider.getProviderId())
+                .setParameter("statusIds", statusIds)
+                .getResultList();
+
+        return tripTickets;
+    }
+
     public TripClaim deleteTripClaim(TripClaim tripClaim) {
 
         delete(tripClaim);

@@ -61,6 +61,7 @@ public class TripTicketController {
     private final ProviderService providerService;
     private final UberService uberService;
     private final TripResultService tripResultService;
+    private final TripChangeRequestService tripChangeRequestService;
 
 
 
@@ -283,6 +284,10 @@ public class TripTicketController {
             log.error("#updateTripTicket tripTicketId not found [" + id + "]");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        // Enforce edit-permission rules (super admin / unclaimed originator / approved change request).
+        // Throws EditNotAllowedException (403) when the edit is not permitted.
+        tripChangeRequestService.assertCanEditDirectly(
+                tripTicketService.getTripTicketByTripTicketId(id), tripTicketService.getCurrentUser());
         TripTicketDTO updatedTicketDTO = tripTicketService.updateTripTicket(tripTicketDTO);
         return new ResponseEntity<>(updatedTicketDTO, HttpStatus.OK);
     }
@@ -296,6 +301,11 @@ public class TripTicketController {
             log.error("#updateTripTicket tripTicketId not found [" + id + "]");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        // Enforce edit-permission rules (super admin / unclaimed originator / approved change request).
+        // Throws EditNotAllowedException (403) when the edit is not permitted.
+        tripChangeRequestService.assertCanEditDirectly(
+                tripTicketService.getTripTicketByTripTicketId(id), tripTicketService.getCurrentUser());
 
         // customer name fields
         if ( updateRequest.getCustomer_first_name() != null ) {
@@ -402,7 +412,10 @@ public class TripTicketController {
         }
         log.debug("Cancelling trip id " + id + " with reason " + cancelRequest.reason());
 
-        if (availableTripTicket.getStatus().getStatusId() != TripTicketStatusConstants.noShow.tripTicketStatusUpdate()) {
+        if (availableTripTicket.getStatus().getStatusId() != TripTicketStatusConstants.noShow.tripTicketStatusUpdate()
+            && availableTripTicket.getStatus().getStatusId() != TripTicketStatusConstants.cancelledByClient.tripTicketStatusUpdate()
+            && availableTripTicket.getStatus().getStatusId() != TripTicketStatusConstants.cancelledByProvider.tripTicketStatusUpdate()
+        ) {
 
             if ( tripTicketService.isUberRide(id) ) {
                 cancelUberTripTicketService.cancelTripTicket(id);
